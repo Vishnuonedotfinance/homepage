@@ -345,7 +345,7 @@
         const std=r>0?(r-m)*0.3:0;
         let net = r>0? r-m-std-i : -i;
         net=Math.max(net,-200000);
-        sumH.innerText=formatRS(net);
+        sumH.innerText=formatRS(Math.round(net));
       }
       [rentR,muni,intL].forEach(el=>el.addEventListener('input',updateHHP));
 
