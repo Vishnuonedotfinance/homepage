@@ -69,7 +69,7 @@
       .result-table tbody tr:nth-child(odd){background:var(--light-bg)!important;}
       .result-table tbody tr:nth-child(even){background:var(--card-bg)!important;}
     }
-    #reviewBody tr:nth-child(4) td,
+    #reviewBody tr:nth-child(6) td,
     #reviewBody tr:last-child td,
     #taxBreakdownBody tr:last-child td { font-weight:700; }
   </style>
@@ -251,6 +251,14 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('input[type=number]').forEach(i => {
+      i.setAttribute('inputmode', 'numeric');
+      i.setAttribute('pattern', '\\d*');
+      i.setAttribute('step', '1');
+      i.addEventListener('input', () => {
+        i.value = i.value.replace(/\D/g, '');
+      });
+    });    
       // References
       const fyI = document.getElementById('fy'),
             ayI = document.getElementById('ay'),
@@ -365,7 +373,7 @@
         const g = c1+c2+cap2+(+d80G.value||0)*0.5
                 +(+dedTTA.textContent.replace(/[^0-9]/g,'')) 
                 +(+dedTTB.textContent.replace(/[^0-9]/g,''));
-        sum6A.innerText=formatRS(g);
+        sum6A.innerText=formatRS(Math.round(g));
       }
       [d80C,d80CCD,d80CCD2,d80G].forEach(el=>el.addEventListener('input',update6A));
 
@@ -379,7 +387,15 @@
         pc = Math.min(pc, 5000);
         // Combined must not exceed maxPrem
         if (s + pc > maxPrem) pc = maxPrem - s;
-      }
+        
+        let par = +pParent.value || 0;
+        let m = +mExp.value || 0;
+        par = Math.min(par, 50000);
+        m = Math.min(m, 50000);
+        if (par + m > 50000) m = 50000 - par;
+
+        sum8D.innerText = formatRS(Math.round(s + pc + par + m));
+          }
       [pSelf,pCheck,pParent,mExp].forEach(el=>el.addEventListener('input',update8D));
 
       // Navigation & final render
@@ -423,7 +439,7 @@
         const sur=tax*sRate;
         const reb=income<=(age==='below60'?500000:300000)?tax:0;
         const base=tax+sur-reb, cess=base*.04;
-        return {basicTax:tax,surcharge:sur,rebate:reb,cess,totalTax:base+cess};
+        return {basicTax:Math.round(tax),surcharge:Math.round(sur),rebate:Math.round(reb),cess: Math.round(cess),totalTax:Math.round(base+cess)};
       }
       function computeTaxNew(income){
         let tax=0, fy=fyI.value;
@@ -450,7 +466,7 @@
         else if(income>10000000) sRate=.15;
         else if(income>5000000) sRate=.10;
         const sur=tax*sRate, base=tax+sur-reb, cess=base*.04;
-        return {basicTax:tax,surcharge:sur,rebate:reb,cess,totalTax:base+cess};
+        return {basicTax:Math.round(tax),surcharge:Math.round(sur),rebate:Math.round(reb),cess:Math.round(cess),totalTax:Math.round(base+cess)};
       }
 
       // Render final review
