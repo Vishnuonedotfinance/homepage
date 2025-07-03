@@ -69,7 +69,7 @@
       .result-table tbody tr:nth-child(odd){background:var(--light-bg)!important;}
       .result-table tbody tr:nth-child(even){background:var(--card-bg)!important;}
     }
-    #reviewBody tr:nth-child(6) td,
+    #reviewBody tr:nth-child(7) td,
     #reviewBody tr:last-child td,
     #taxBreakdownBody tr:last-child td { font-weight:700; }
   </style>
@@ -323,7 +323,7 @@
         const b=+bPay.value||0, h=+hraR.value||0;
         let msg='';
         if(p>30000) msg='Prof Tax ≤ ₹30,000';
-        else if(o+b+h>g) msg='(Other+Basic+HRA) ≤ Gross';
+        else if(o+b+h+p>g) msg='(Other+Basic+HRA+PTax) ≤ Gross';
         document.getElementById('step2Error').innerText=msg;
         return !msg;
       }
@@ -369,7 +369,7 @@
         c1=Math.min(c1,150000);
         c2=Math.min(c2,200000-c1);
         const base = (+bPay.value>0?+bPay.value:+grossS.value-gEx);
-        let cap2 = Math.min(c22, base*(ageG.value==='below60'?0.10:0.14));
+        let cap2 = Math.min(c22, base* 0.10);
         const g = c1+c2+cap2+(+d80G.value||0)*0.5
                 +(+dedTTA.textContent.replace(/[^0-9]/g,'')) 
                 +(+dedTTB.textContent.replace(/[^0-9]/g,''));
@@ -477,8 +477,11 @@
         document.getElementById('reviewAY').textContent = ayI.value;
 
         const salary = +grossS.value||0;
-        const stdOld = Math.min(50000, salary), stdNew = Math.min(75000, salary);
-        const netOld = salary-stdOld, netNew = salary-stdNew;
+        const exOld = (+profT.value||0) + (+hraEx.value||0) + (+otherEx.value||0);
+        const exNew = 0;
+        const stdOld = Math.min(50000, (salary - exOld)), stdNew = Math.min(75000, (salary - exNew));
+        
+        const netOld = salary - exOld -stdOld, netNew = salary - exNew -stdNew;
 
         let hhpRaw = (+rentR.value? (+rentR.value-Math.min(+muni.value||0,+rentR.value))*0.7 - (+intL.value||0) : -(+intL.value||0));
         const hhpOld = Math.max(hhpRaw,-200000), hhpNew = Math.max(hhpRaw,0);
@@ -490,11 +493,10 @@
         const grossOld = netOld+hhpAdj+others;
         const grossNew = Math.max(0, netNew+hhpNew+others);
 
-        const exOld = (+profT.value||0) + (+hraEx.value||0) + (+otherEx.value||0);
-        const exNew = 0;
 
         const total6Old = Number(sum6A.textContent.replace(/[^0-9]/g,''))||0;
-        const base = (+bPay.value>0?+bPay.value:Math.max(0,salary-exOld));
+        let gEx=+otherEx.value||0;
+        const base = (+bPay.value>0?+bPay.value:Math.max(0,salary-gEx));
         const maxCcd2 = base*0.14;
         let userCcd2 = +d80CCD2.value||0;
         if(userCcd2>maxCcd2){
@@ -506,18 +508,18 @@
         const total8Old = Number(sum8D.textContent.replace(/[^0-9]/g,''))||0;
         const total8New = 0;
 
-        const taxOldInc = Math.max(0, grossOld - exOld - total6Old - total8Old);
-        const taxNewInc = Math.max(0, grossNew - exNew - total6New - total8New);
+        const taxOldInc = Math.max(0, grossOld - total6Old - total8Old);
+        const taxNewInc = Math.max(0, grossNew - total6New - total8New);
 
         const rows = [
           ['Gross Salary', salary, salary],
+          ['Total Exemptions', exOld, exNew],
           ['Standard Deduction', -stdOld, -stdNew],
           ['Net Salary', netOld, netNew],
           ['House Property', hhpAdj, hhpNew],
           ['Other Sources', others, others],
           ['Gross Total Income', grossOld, grossNew],
           ['Total Deductions', total6Old+total8Old, total6New+total8New],
-          ['Total Exemptions', exOld, exNew],
           ['Taxable Income', taxOldInc, taxNewInc]
         ];
         revBody.innerHTML = '';
