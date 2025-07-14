@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator - One.Finance</title>
+    <!-- Favicon (optional, replace with your own) -->
+    <link rel="icon" href="icon.png" type="image/png">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- jsPDF and html2canvas for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Custom CSS for base styles and overrides */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f8fa; /* Light background */
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header Styles (replicated from website-revamp-prototype) */
+        .header {
+            background-color: #FFFFFF;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8em; /* Kept for potential future text, but visually hidden now */
+            font-weight: 800;
+            color: #1A8917;
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 38px;
+            margin-right: 0px; /* Removed margin to align logo only */
+            border-radius: 5px;
+        }
+        /* Visually hide the text for the logo, keeping it for screen readers */
+        .logo span {
+            display: none;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-menu a {
+            color: #333333;
+            font-weight: 500;
+            font-size: 1.05em;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: #1A8917;
+            transition: width 0.3s ease;
+        }
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        .dropdown {
+            position: relative;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            list-style: none;
+            min-width: 200px;
+            z-index: 10;
+            border-radius: 8px;
+            padding: 0.4rem 0;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        .dropdown-menu li a {
+            padding: 8px 18px;
+            display: block;
+            white-space: nowrap;
+            font-size: 0.95em;
+            color: #333333;
+        }
+        .dropdown-menu li a:hover {
+            background-color: #F8F8F8;
+            color: #1A8917;
+        }
+        .menu-toggle {
+            display: none;
+            font-size: 1.8em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333333;
+        }
+
+        /* Main Content Area */
+        .main-content-area {
+            flex-grow: 1;
+            padding: 2.5rem 0;
+        }
+
+        /* Invoice Generator Specific Styles */
+        .invoice-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px; /* Main content on left, CTA on right */
+            gap: 2rem;
+        }
+
+        .invoice-form-section {
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            padding: 1rem; /* TWEAK: Further reduced padding for UI/UX */
+        }
+
+        .invoice-form-section h2 {
+            color: #1A8917;
+            text-align: center;
+            margin-bottom: 1rem; /* TWEAK: Further reduced margin */
+            font-size: 1.8rem; /* TWEAK: Slightly smaller font size for UI/UX */
+            font-weight: 700;
+        }
+
+        .form-section-heading {
+            font-size: 1.1rem; /* TWEAK: Slightly reduced font size for UI/UX */
+            font-weight: 600;
+            color: #1A8917;
+            margin-top: 1.5rem; /* TWEAK: Added margin top for better separation */
+            margin-bottom: 0.6rem; /* TWEAK: Further reduced margin */
+            border-bottom: 1px solid #e0e0e0; /* TWEAK: Thinner border */
+            padding-bottom: 0.3rem; /* TWEAK: Further reduced padding */
+        }
+
+        .input-group {
+            margin-bottom: 0.4rem; /* TWEAK: Further reduced margin for UI/UX */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.2rem; /* TWEAK: Further reduced margin for UI/UX */
+            font-weight: 500;
+            color: #333333;
+            font-size: 0.85rem; /* TWEAK: Slightly reduced font size for UI/UX */
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="email"],
+        .input-group input[type="tel"],
+        .input-group input[type="date"],
+        .input-group input[type="number"],
+        .input-group textarea {
+            width: 100%;
+            padding: 0.4rem 0.6rem; /* TWEAK: Further reduced padding for UI/UX */
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 0.85rem; /* TWEAK: Slightly reduced font size for UI/UX */
+            color: #333333;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #1A8917;
+            box-shadow: 0 0 0 3px rgba(26, 137, 23, 0.15);
+        }
+
+        textarea {
+            min-height: 50px; /* TWEAK: Further reduced min-height for UI/UX */
+            resize: vertical;
+        }
+
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.6rem; /* TWEAK: Further reduced gap for UI/UX */
+        }
+        .grid-cols-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem; /* TWEAK: Further reduced gap for UI/UX */
+        }
+        .grid-cols-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.4rem; /* TWEAK: Further reduced gap for UI/UX */
+        }
+
+        /* Error message for validation */
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.75rem; /* TWEAK: Slightly reduced font size for UI/UX */
+            margin-top: 0.05rem; /* TWEAK: Further reduced margin */
+            display: block;
+        }
+
+
+        /* Line Items Table */
+        .line-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.8rem; /* TWEAK: Further reduced margin */
+        }
+
+        .line-items-table th,
+        .line-items-table td {
+            padding: 0.4rem 0.2rem; /* TWEAK: Further reduced padding for UI/UX */
+            border: 1px solid #E0E0E0;
+            text-align: left;
+            font-size: 0.8rem; /* TWEAK: Slightly reduced font size for UI/UX */
+        }
+
+        .line-items-table th {
+            background-color: #1A8917;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        .line-items-table td input {
+            border: none;
+            padding: 0.2rem; /* TWEAK: Further reduced padding for UI/UX */
+            width: 100%;
+            background-color: transparent;
+        }
+
+        .line-items-table td input:focus {
+            outline: none;
+            background-color: #f0f9f4;
+        }
+
+        .add-item-btn {
+            background-color: #26C281;
+            color: #FFFFFF;
+            padding: 0.3rem 0.6rem; /* TWEAK: Further reduced padding for UI/UX */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 0.5rem; /* TWEAK: Further reduced margin */
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem; /* TWEAK: Further reduced gap */
+            font-size: 0.85rem; /* TWEAK: Slightly reduced font size for UI/UX */
+        }
+        .add-item-btn:hover {
+            background-color: #1a9e69;
+        }
+
+        .remove-item-btn {
+            background-color: #e74c3c;
+            color: #FFFFFF;
+            padding: 0.15rem 0.4rem; /* TWEAK: Further reduced padding for UI/UX */
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 0.7rem; /* TWEAK: Slightly reduced font size for UI/UX */
+        }
+        .remove-item-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Totals Section */
+        .totals-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-top: 0.8rem; /* TWEAK: Further reduced margin */
+            padding-top: 0.8rem; /* TWEAK: Further reduced padding */
+            border-top: 1px solid #E0E0E0;
+        }
+
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 220px; /* TWEAK: Further reduced max-width for UI/UX */
+            margin-bottom: 0.4rem; /* TWEAK: Further reduced margin */
+            font-size: 0.85rem; /* TWEAK: Slightly reduced font size for UI/UX */
+        }
+
+        .totals-row.grand-total {
+            font-size: 1.2rem; /* TWEAK: Slightly reduced font size for UI/UX */
+            font-weight: 700;
+            color: #1A8917;
+            border-top: 2px solid #1A8917;
+            padding-top: 0.4rem; /* TWEAK: Further reduced padding */
+            margin-top: 0.4rem; /* TWEAK: Further reduced margin */
+        }
+
+        /* Buttons for Generate/Reset/Download */
+        .invoice-actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem; /* TWEAK: Further reduced gap for UI/UX */
+            margin-top: 1.2rem; /* TWEAK: Further reduced margin */
+        }
+
+        .invoice-actions button {
+            padding: 0.6rem 1.2rem; /* TWEAK: Further reduced padding for UI/UX */
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem; /* TWEAK: Further reduced gap for UI/UX */
+            font-size: 0.85rem; /* TWEAK: Slightly reduced font size for UI/UX */
+        }
+
+        .invoice-actions .btn-primary {
+            background-color: #1A8917;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .invoice-actions .btn-primary:hover {
+            background-color: #167A14;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice-actions .btn-secondary {
+            background-color: #6c757d;
+            color: #FFFFFF;
+        }
+        .invoice-actions .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .invoice-actions .btn-download {
+            background-color: #34495e;
+            color: #fff;
+        }
+
+        .invoice-actions .btn-download:hover {
+            background-color: #2c3e50;
+            transform: translateY(-2px);
+        }
+
+        /* CTA Form Container (replicated from income-tax-calculator) */
+        .cta-form-container {
+            background: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            align-self: start;
+            /* TWEAK: Removed initial opacity/transform for immediate visibility, animation handled by JS */
+            /* opacity: 0;
+            transform: translateY(20px); */
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .cta-form-container.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cta-form-container h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            color: #1A8917;
+            text-align: center;
+        }
+
+        .cta-form-container .form-field {
+            margin-bottom: 1rem;
+        }
+
+        .cta-form-container label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333333;
+        }
+
+        .cta-form-container input[type="text"],
+        .cta-form-container input[type="email"],
+        .cta-form-container input[type="tel"],
+        .cta-form-container select,
+        .cta-form-container textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #E0E0E0;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: #333333;
+        }
+
+        .cta-form-container input:focus,
+        .cta-form-container select:focus,
+        .cta-form-container textarea:focus {
+            outline: none;
+            border-color: #1A8917;
+            box-shadow: 0 0 0 3px rgba(26, 137, 23, 0.15);
+        }
+
+        .cta-form-container button {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            background: #1A8917;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            margin-top: 1rem;
+        }
+
+        .cta-form-container button:hover {
+            background: #167A14;
+            transform: translateY(-1px);
+        }
+
+        /* Footer Styles (replicated from website-revamp-prototype) */
+        .footer {
+            background-color: #333333;
+            color: #FFFFFF;
+            padding: 2rem 0;
+            font-size: 0.8em;
+            margin-top: auto;
+        }
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        .footer-col {
+            flex: 1;
+            min-width: 160px;
+        }
+        .footer-col h4 {
+            color: #FFFFFF;
+            margin-bottom: 0.7rem;
+            font-size: 1em;
+        }
+        .footer-col p, .footer-col a {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+        .footer-col a:hover {
+            color: #FFFFFF;
+        }
+        .social-links {
+            margin-top: 0.7rem;
+        }
+        .social-links a {
+            display: inline-block;
+            color: #FFFFFF;
+            font-size: 1.3em;
+            margin-right: 0.7rem;
+            transition: transform 0.2s ease;
+        }
+        .social-links a:hover {
+            color: #1A8917;
+            transform: translateY(-3px);
+        }
+        .footer-bottom {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- Hidden Invoice Template Styles (OPTIMIZED FOR SINGLE PAGE & NAVY BLUE) --- */
+        #invoiceTemplate {
+            display: none; /* Hidden by default */
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
+            padding: 10mm; /* TWEAK: Further reduced padding for more content space */
+            box-sizing: border-box;
+            background-color: #FFFFFF;
+            font-family: 'Inter', sans-serif;
+            color: #333333;
+            font-size: 8pt; /* TWEAK: Further smaller base font size for compactness */
+            line-height: 1.15; /* TWEAK: Tighter line height */
+            margin: 0 auto;
+            border: 1px solid #e0e0e0; /* Added a subtle border to the template */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            /* TWEAK: Define Navy Blue colors for PDF */
+            --pdf-primary-color: #001F3F; /* Dark Navy Blue */
+            --pdf-primary-light: #003366; /* Slightly lighter Navy Blue */
+            --pdf-bg-light: #e6f0f7; /* Very light blue/grey for backgrounds */
+        }
+
+        #invoiceTemplate h1 {
+            font-size: 16pt; /* TWEAK: Further smaller font size */
+            font-weight: 800;
+            color: var(--pdf-primary-color); /* TWEAK: Use Navy Blue */
+            text-align: right;
+            margin-bottom: 6mm; /* TWEAK: Further reduced margin */
+        }
+
+        #invoiceTemplate .invoice-header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6mm; /* TWEAK: Further reduced margin */
+        }
+
+        #invoiceTemplate .company-info,
+        #invoiceTemplate .invoice-meta {
+            width: 48%;
+        }
+
+        #invoiceTemplate .company-info img {
+            max-width: 90px; /* TWEAK: Smaller logo size */
+            height: auto;
+            margin-bottom: 1.5mm; /* TWEAK: Further reduced margin */
+        }
+
+        #invoiceTemplate .company-info p,
+        #invoiceTemplate .invoice-meta p {
+            margin-bottom: 0.8mm; /* TWEAK: Further reduced margin */
+            font-size: 7.5pt; /* TWEAK: Smaller font size */
+        }
+        #invoiceTemplate .company-info strong,
+        #invoiceTemplate .invoice-meta strong {
+            font-size: 8.5pt; /* TWEAK: Slightly smaller font size */
+            color: var(--pdf-primary-color); /* TWEAK: Use Navy Blue */
+        }
+
+        #invoiceTemplate .bill-ship-section {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 6mm; /* TWEAK: Further reduced margin */
+        }
+
+        #invoiceTemplate .bill-to {
+            width: 60%;
+            border: 1px solid var(--pdf-primary-color); /* TWEAK: Stronger border color for Bill To (Navy Blue) */
+            padding: 4mm; /* TWEAK: Further reduced padding */
+            border-radius: 5px;
+            background-color: var(--pdf-bg-light); /* TWEAK: Light background for Bill To (Navy Blue tint) */
+        }
+
+        #invoiceTemplate .bill-to h3 {
+            font-size: 9.5pt; /* TWEAK: Further smaller font size */
+            font-weight: 700;
+            color: var(--pdf-primary-color); /* TWEAK: Use Navy Blue */
+            margin-bottom: 1.5mm; /* TWEAK: Further reduced margin */
+        }
+        #invoiceTemplate .bill-to p {
+            font-size: 7.5pt; /* TWEAK: Smaller font size */
+            margin-bottom: 0.8mm; /* TWEAK: Further reduced margin */
+        }
+
+        #invoiceTemplate .item-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 6mm; /* TWEAK: Further reduced margin */
+        }
+
+        #invoiceTemplate .item-table th,
+        #invoiceTemplate .item-table td {
+            border: 1px solid #e0e0e0;
+            padding: 3mm 1.5mm; /* TWEAK: Further reduced padding */
+            text-align: left;
+            font-size: 7.5pt; /* TWEAK: Smaller font size */
+        }
+
+        #invoiceTemplate .item-table th {
+            background-color: var(--pdf-primary-color); /* TWEAK: Use Navy Blue */
+            color: #FFFFFF;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 7.5pt; /* TWEAK: Smaller font size */
+        }
+        #invoiceTemplate .item-table td {
+            vertical-align: top;
+        }
+
+        #invoiceTemplate .item-table .text-right {
+            text-align: right;
+        }
+        #invoiceTemplate .item-table .text-center {
+            text-align: center;
+        }
+
+        #invoiceTemplate .invoice-summary {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 6mm; /* TWEAK: Further reduced margin */
+        }
+
+        #invoiceTemplate .summary-details {
+            width: 45%;
+            min-width: 150px;
+            border: 1px solid var(--pdf-primary-color); /* TWEAK: Stronger border (Navy Blue) */
+            border-radius: 5px;
+            padding: 3mm; /* TWEAK: Further reduced padding */
+            background-color: var(--pdf-bg-light); /* TWEAK: Light background (Navy Blue tint) */
+        }
+
+        #invoiceTemplate .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1mm; /* TWEAK: Further reduced margin */
+            font-size: 8pt; /* TWEAK: Slightly smaller font size */
+        }
+        #invoiceTemplate .summary-row strong {
+            font-weight: 600;
+        }
+
+        #invoiceTemplate .summary-row.grand-total {
+            font-size: 9.5pt; /* TWEAK: Slightly smaller font size */
+            font-weight: 700;
+            color: var(--pdf-primary-color); /* TWEAK: Use Navy Blue */
+            border-top: 1px solid #e0e0e0;
+            padding-top: 2mm; /* TWEAK: Further reduced padding */
+            margin-top: 2mm; /* TWEAK: Further reduced margin */
+        }
+
+        #invoiceTemplate .payment-terms {
+            margin-bottom: 6mm; /* TWEAK: Further reduced margin */
+        }
+        #invoiceTemplate .payment-terms h3 {
+            font-size: 9.5pt; /* TWEAK: Further smaller font size */
+            font-weight: 700;
+            color: var(--pdf-primary-color); /* TWEAK: Use Navy Blue */
+            margin-bottom: 1.5mm; /* TWEAK: Further reduced margin */
+        }
+        #invoiceTemplate .payment-terms p {
+            font-size: 7.5pt; /* TWEAK: Smaller font size */
+            margin-bottom: 0.8mm; /* TWEAK: Further reduced margin */
+        }
+
+        #invoiceTemplate .footer-note { /* TWEAK: Added a footer note for PDF */
+            text-align: center;
+            font-size: 7pt; /* TWEAK: Smaller font size */
+            color: #666;
+            margin-top: 6mm; /* TWEAK: Further reduced margin */
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .invoice-grid {
+                grid-template-columns: 1fr;
+            }
+            .cta-form-container {
+                margin-top: 2rem;
+            }
+            .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+            .invoice-form-section {
+                padding: 1.5rem;
+            }
+            .invoice-form-section h2 {
+                font-size: 1.75rem;
+            }
+            .form-section-heading {
+                font-size: 1.25rem;
+            }
+            .invoice-actions {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .invoice-actions button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header .nav-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: #FFFFFF;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                padding: 1rem 0;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            }
+            .header .nav-menu.active {
+                display: flex;
+            }
+            .header .nav-menu li {
+                text-align: center;
+                margin: 0.5rem 0;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .invoice-form-section {
+                padding: 1rem;
+            }
+            .invoice-form-section h2 {
+                font-size: 1.5rem;
+            }
+            .form-section-heading {
+                font-size: 1.1rem;
+            }
+            .input-group input, .input-group textarea {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            .line-items-table th, .line-items-table td {
+                padding: 0.5rem 0.3rem;
+                font-size: 0.85rem;
+            }
+            .line-items-table td input {
+                padding: 0.3rem;
+            }
+            .totals-row {
+                font-size: 0.9rem;
+            }
+            .totals-row.grand-total {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section (NO CHANGES - as per request) -->
+    <header class="header" id="home">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="One.Finance Logo">
+                <span>One.Finance</span>
+            </a>
+            <nav>
+                <button class="menu-toggle" aria-label="Toggle navigation menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Services <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cfo-service.html">CFO Service</a></li>
+                            <li><a href="income-tax.html">Income Tax Consultation</a></li>
+                            <li><a href="gst-filing.html">GST Filing & Registration</a></li>
+                            <li><a href="other-service.html">Other Service</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Tools <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="income-tax-calculator.html">Income Tax Calculator</a></li>
+                            <li><a href="invoice-generator.html">Invoice Generator</a></li>
+                            <li><a href="rental-agreement-generator.html">Rental Agreement Generator</a></li>
+                            <li><a href="#" onclick="return false;">Loan Prepayment Planner (Coming Soon)</a></li>
+                            <li><a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai" target="_blank">One.finance AI</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="#ctaForm">Talk to us</a></li> <!-- TWEAK: Linked to CTA form ID -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content-area">
+        <div class="container invoice-grid">
+            <div class="invoice-form-section">
+                <h2>Invoice Generator</h2>
+
+                <div class="grid-cols-2">
+                    <div class="input-group">
+                        <label for="invoiceNumber">Invoice #</label>
+                        <input type="text" id="invoiceNumber" placeholder="INV-001">
+                    </div>
+                    <div class="input-group">
+                        <label for="invoiceDate">Invoice Date</label>
+                        <input type="date" id="invoiceDate">
+                    </div>
+                    <div class="input-group">
+                        <label for="dueDate">Due Date</label>
+                        <input type="date" id="dueDate">
+                        <span id="dueDateError" class="error-message hidden">Due Date cannot be before Invoice Date.</span>
+                    </div>
+                    <!-- Company Logo URL input field removed as per previous request -->
+                </div>
+
+                <h3 class="form-section-heading">Your Company Details</h3>
+                <div class="grid-cols-2">
+                    <div class="input-group">
+                        <label for="yourCompanyName">Company Name</label>
+                        <input type="text" id="yourCompanyName" placeholder="Your Company Name">
+                    </div>
+                    <div class="input-group">
+                        <label for="yourAddress">Address</label>
+                        <input type="text" id="yourAddress" placeholder="Your Company Address">
+                    </div>
+                    <div class="input-group">
+                        <label for="yourCityStateZip">City, State, Zip</label>
+                        <input type="text" id="yourCityStateZip" placeholder="City, State, Zip Code">
+                    </div>
+                    <div class="input-group">
+                        <label for="yourGSTIN">GSTIN / PAN (Optional)</label>
+                        <input type="text" id="yourGSTIN" placeholder="GSTIN / PAN">
+                    </div>
+                    <div class="input-group">
+                        <label for="yourEmail">Email</label>
+                        <input type="email" id="yourEmail" placeholder="your.email@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label for="yourPhone">Phone</label>
+                        <input type="tel" id="yourPhone" placeholder="+91 9876543210">
+                    </div>
+                </div>
+
+                <h3 class="form-section-heading">Client Details</h3>
+                <div class="grid-cols-2">
+                    <div class="input-group">
+                        <label for="clientName">Client Name</label>
+                        <input type="text" id="clientName" placeholder="Client Company Name">
+                    </div>
+                    <div class="input-group">
+                        <label for="clientAddress">Address</label>
+                        <input type="text" id="clientAddress" placeholder="Client Address">
+                    </div>
+                    <div class="input-group">
+                        <label for="clientCityStateZip">City, State, Zip</label>
+                        <input type="text" id="clientCityStateZip" placeholder="City, State, Zip Code">
+                    </div>
+                    <div class="input-group">
+                        <label for="clientGSTIN">GSTIN / PAN (Optional)</label>
+                        <input type="text" id="clientGSTIN" placeholder="Client GSTIN / PAN">
+                    </div>
+                    <div class="input-group">
+                        <label for="clientEmail">Email</label>
+                        <input type="email" id="clientEmail" placeholder="client.email@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label for="clientPhone">Phone</label>
+                        <input type="tel" id="clientPhone" placeholder="+91 9876543210">
+                    </div>
+                </div>
+
+                <h3 class="form-section-heading">Line Items</h3>
+                <table class="line-items-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th class="w-24">HSN/SAC</th>
+                            <th class="w-16">Qty</th>
+                            <th class="w-24">Unit Price (₹)</th>
+                            <th class="w-28">Amount (₹)</th>
+                            <th class="w-12"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="lineItemsBody">
+                        <!-- Default line item -->
+                        <tr>
+                            <td><input type="text" class="item-description" placeholder="Service or Product"></td>
+                            <td><input type="text" class="item-hsn" placeholder="e.g., 998313"></td>
+                            <td><input type="number" class="item-qty" min="1" value="1"></td>
+                            <td><input type="number" class="item-unit-price" min="0" value="0"></td>
+                            <td><input type="text" class="item-amount" readonly value="0.00"></td>
+                            <td><button class="remove-item-btn"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="addItemBtn" class="add-item-btn"><i class="fas fa-plus-circle"></i> Add Item</button>
+                <span id="maxItemsMessage" class="error-message hidden">Maximum 5 items can be added.</span>
+
+                <div class="totals-section">
+                    <div class="totals-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotalAmount">₹ 0.00</span>
+                    </div>
+                    <div class="totals-row">
+                        <span>Discount (%):</span>
+                        <input type="number" id="discountPercent" class="w-24 text-right px-2 py-1 border rounded-md" min="0" max="100" value="0">
+                    </div>
+                    <div class="totals-row">
+                        <span>Discount Amount:</span>
+                        <span id="discountAmount">₹ 0.00</span>
+                    </div>
+                    <div class="totals-row">
+                        <span>Tax Rate (%):</span>
+                        <input type="number" id="taxRate" class="w-24 text-right px-2 py-1 border rounded-md" min="0" value="18">
+                    </div>
+                    <div class="totals-row">
+                        <span>Tax Amount:</span>
+                        <span id="taxAmount">₹ 0.00</span>
+                    </div>
+                    <div class="totals-row grand-total">
+                        <span>Total:</span>
+                        <span id="totalAmount">₹ 0.00</span>
+                    </div>
+                </div>
+
+                <h3 class="form-section-heading">Payment & Terms</h3>
+                <div class="grid-cols-2">
+                    <div class="input-group">
+                        <label for="bankName">Bank Name</label>
+                        <input type="text" id="bankName" placeholder="e.g., State Bank of India">
+                    </div>
+                    <div class="input-group">
+                        <label for="accountNumber">Account Number</label>
+                        <input type="text" id="accountNumber" placeholder="e.g., 1234567890">
+                    </div>
+                    <div class="input-group">
+                        <label for="ifscCode">IFSC Code</label>
+                        <input type="text" id="ifscCode" placeholder="e.g., SBIN0001234">
+                    </div>
+                    <div class="input-group">
+                        <label for="swiftCode">SWIFT Code (Optional)</label>
+                        <input type="text" id="swiftCode" placeholder="e.g., SWIFTINBB">
+                    </div>
+                </div>
+                <div class="input-group mt-4">
+                    <label for="termsAndConditions">Terms & Conditions</label>
+                    <textarea id="termsAndConditions" placeholder="e.g., Payment due within 30 days. Late payments may incur a fee."></textarea>
+                </div>
+
+                <div class="invoice-actions">
+                    <button id="resetFormBtn" class="btn-secondary"><i class="fas fa-undo"></i> Reset Form</button>
+                    <button id="downloadInvoiceBtn" class="btn-download"><i class="fas fa-download"></i> Download Invoice</button>
+                </div>
+            </div>
+
+            <!-- CTA Form Container (NO CHANGES - as per request) -->
+            <div class="cta-form-container" id="ctaForm">
+                <h3>Need Expert Consultation?</h3>
+                <form action="#" method="post">
+                    <div class="form-field">
+                        <label for="cta-name">Your Name</label>
+                        <input type="text" id="cta-name" name="name" required placeholder="Enter your name">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-email">Your Email</label>
+                        <input type="email" id="cta-email" name="email" required placeholder="your.email@example.com">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-phone">Phone Number</label>
+                        <input type="tel" id="cta-phone" name="phone" placeholder="e.g., +91 9876543210">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-service-interest">Service of Interest</label>
+                        <select id="cta-service-interest" name="service_interest">
+                            <option value="">-- Select a Service --</option>
+                            <option value="Virtual CFO">Virtual CFO Services</option>
+                            <option value="Income Tax">Income Tax Consultation</option>
+                            <option value="GST">GST Filing & Registration</option>
+                            <option value="Incorporation">Incorporation Service</option>
+                            <option value="Accounting Advisory">Accounting Advisory</option>
+                            <option value="Bookkeeping Services">Bookkeeping Services</option>
+                            <option value="MIS Reports">MIS Reports</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-message">Your Message</label>
+                        <textarea id="cta-message" name="message" rows="4" placeholder="Tell us more about your needs..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Submit Request</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section (NO CHANGES - as per request) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-col">
+                <h4>One.Finance</h4>
+                <p>Your dedicated CFO Buddy for startups, handling finances end-to-end so you can focus on building your dream.</p>
+                <div class="social-links">                    
+                    <a href="https://www.linkedin.com/company/onedotfinance/" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.instagram.com/one.finance_?igsh=MTNuemfrdnBkbGhkZg%3D%3D&utm_source=qr" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>                        
+                <a href="blog.html">Blog</a>
+                <a href="#ctaForm">Talk to us</a> <!-- TWEAK: Linked to CTA form ID -->
+            </div>
+            <div class="footer-col">
+                <h4>Our Services</h4>
+                <a href="cfo-service.html">Virtual CFO Services</a>
+                <a href="income-tax.html">Income Tax Consultation</a>
+                <a href="gst-filing.html">GST Filing & Registration</a>
+                <a href="other-service.html">Other Service</a>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <a href="income-tax-calculator.html">Income Tax Calculator</a>
+                <a href="invoice-generator.html">Invoice Generator</a>
+                <a href="rental-agreement-generator.html">Rental Agreement Generator</a>
+                <a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai">One.finance AI</a>                
+            </div>
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <p>Email: <a href="mailto:vishnu@onedotfinance.com">vishnu@onedotfinance.com</a></p>
+                <p>Phone: <a href="tel:+917373772883">+91 7373772883</p>
+                <p>Address: RR Tower 3, SIDCO, Guindy, Chennai - 600032</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 One.Finance. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Hidden Invoice Template for PDF Generation (OPTIMIZED FOR SINGLE PAGE & NAVY BLUE) -->
+    <div id="invoiceTemplate">
+        <div class="invoice-header-section">
+            <div class="company-info">
+                <!-- TWEAK: Default placeholder logo for PDF if no URL is provided -->
+                <img id="pdfCompanyLogo" src="https://placehold.co/90x45/001F3F/ffffff?text=YOUR%20LOGO" alt="Company Logo">
+                <p><strong id="pdfYourCompanyName"></strong></p>
+                <p id="pdfYourAddress"></p>
+                <p id="pdfYourCityStateZip"></p>
+                <p id="pdfYourGSTIN"></p>
+                <p id="pdfYourEmail"></p>
+                <p id="pdfYourPhone"></p>
+            </div>
+            <div class="invoice-meta">
+                <h1>TAX INVOICE</h1>
+                <p>Invoice #: <strong id="pdfInvoiceNumber"></strong></p>
+                <p>Invoice Date: <strong id="pdfInvoiceDate"></strong></p>
+                <p>Due Date: <strong id="pdfDueDate"></strong></p>
+                <!-- Place of Supply and Sales person removed from PDF as per request -->
+            </div>
+        </div>
+
+        <div class="bill-ship-section">
+            <div class="bill-to">
+                <h3>Bill To</h3>
+                <p><strong id="pdfClientName"></strong></p>
+                <p id="pdfClientAddress"></p>
+                <p id="pdfClientCityStateZip"></p>
+                <p id="pdfClientGSTIN"></p>
+                <p id="pdfClientEmail"></p>
+                <p id="pdfClientPhone"></p>
+            </div>
+        </div>
+
+        <table class="item-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Item</th>
+                    <th style="width: 15%;">HSN/SAC</th>
+                    <th style="width: 8%;">Qty</th>
+                    <th style="width: 12%;">Rate (₹)</th>
+                    <th style="width: 10%;">CGST (%)</th>
+                    <th style="width: 10%;">CGST Amt</th>
+                    <th style="width: 10%;">SGST (%)</th>
+                    <th style="width: 10%;">SGST Amt</th>
+                    <th style="width: 10%;" class="text-right">Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody id="pdfLineItemsBody">
+                <!-- Line items will be populated here by JavaScript -->
+            </tbody>
+        </table>
+
+        <div class="invoice-summary">
+            <div class="summary-details">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="pdfSubtotalAmount">₹ 0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Discount:</span>
+                    <span id="pdfDiscountAmount">₹ 0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>CGST:</span>
+                    <span id="pdfCGSTAmount">₹ 0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>SGST:</span>
+                    <span id="pdfSGSTAmount">₹ 0.00</span>
+                </div>
+                <div class="summary-row grand-total">
+                    <span>Total:</span>
+                    <span id="pdfTotalAmount">₹ 0.00</span>
+                </div>
+                <div class="summary-row grand-total">
+                    <span>Balance Due:</span>
+                    <span id="pdfBalanceDue">₹ 0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-terms">
+            <h3>Payment Options</h3>
+            <p id="pdfBankName"></p>
+            <p id="pdfAccountNumber"></p>
+            <p id="pdfIfscCode"></p>
+            <p id="pdfSwiftCode"></p>
+            <h3>Terms & Conditions</h3>
+            <p id="pdfTermsAndConditions"></p>
+        </div>
+        <div class="footer-note">
+            Thank you for your business! We appreciate your prompt payment.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Global Header & Footer JS (NO CHANGES - as per request) ---
+            const header = document.querySelector('.header');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            // Sticky header functionality
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.style.padding = '0.6rem 0';
+                    header.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.1)';
+                } else {
+                    header.style.padding = '1rem 0';
+                    header.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.05)';
+                }
+            });
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                menuToggle.querySelector('i').classList.toggle('fa-bars');
+                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+            });
+
+            // Close mobile menu when a link is clicked
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // Smooth scrolling for anchor links (only for current page anchors)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (this.pathname === window.location.pathname) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // --- Invoice Generator Specific JS ---
+            const lineItemsBody = document.getElementById('lineItemsBody');
+            const addItemBtn = document.getElementById('addItemBtn');
+            const subtotalAmountSpan = document.getElementById('subtotalAmount');
+            const discountPercentInput = document.getElementById('discountPercent');
+            const discountAmountSpan = document.getElementById('discountAmount');
+            const taxRateInput = document.getElementById('taxRate');
+            const taxAmountSpan = document.getElementById('taxAmount');
+            const totalAmountSpan = document.getElementById('totalAmount');
+            const resetFormBtn = document.getElementById('resetFormBtn');
+            const downloadInvoiceBtn = document.getElementById('downloadInvoiceBtn');
+            const invoiceDateInput = document.getElementById('invoiceDate');
+            const dueDateInput = document.getElementById('dueDate');
+            const dueDateError = document.getElementById('dueDateError');
+            const maxItemsMessage = document.getElementById('maxItemsMessage');
+
+            const MAX_LINE_ITEMS = 5;
+
+            // Due Date Validation Function
+            function validateDates() {
+                const invoiceDate = new Date(invoiceDateInput.value);
+                const dueDate = new Date(dueDateInput.value);
+
+                if (invoiceDateInput.value && dueDateInput.value && dueDate < invoiceDate) {
+                    dueDateError.classList.remove('hidden');
+                    return false;
+                } else {
+                    dueDateError.classList.add('hidden');
+                    return true;
+                }
+            }
+
+            // Add event listeners for date validation
+            invoiceDateInput.addEventListener('change', validateDates);
+            dueDateInput.addEventListener('change', validateDates);
+
+
+            // Function to calculate item amount
+            function calculateItemAmount(row) {
+                const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+                const unitPrice = parseFloat(row.querySelector('.item-unit-price').value) || 0;
+                const amount = qty * unitPrice;
+                row.querySelector('.item-amount').value = amount.toFixed(2);
+                updateTotals();
+            }
+
+            // Function to add a new line item
+            function addLineItem() {
+                if (lineItemsBody.children.length >= MAX_LINE_ITEMS) {
+                    maxItemsMessage.classList.remove('hidden');
+                    return;
+                } else {
+                    maxItemsMessage.classList.add('hidden');
+                }
+
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td><input type="text" class="item-description" placeholder="Service or Product"></td>
+                    <td><input type="text" class="item-hsn" placeholder="e.g., 998313"></td>
+                    <td><input type="number" class="item-qty" min="1" value="1"></td>
+                    <td><input type="number" class="item-unit-price" min="0" value="0"></td>
+                    <td><input type="text" class="item-amount" readonly value="0.00"></td>
+                    <td><button class="remove-item-btn"><i class="fas fa-trash"></i></button></td>
+                `;
+                lineItemsBody.appendChild(newRow);
+                attachLineItemListeners(newRow);
+                calculateItemAmount(newRow); // Calculate for new row
+            }
+
+            // Function to attach listeners to a line item row
+            function attachLineItemListeners(row) {
+                const qtyInput = row.querySelector('.item-qty');
+                const unitPriceInput = row.querySelector('.item-unit-price');
+                const removeBtn = row.querySelector('.remove-item-btn');
+
+                qtyInput.addEventListener('input', () => calculateItemAmount(row));
+                unitPriceInput.addEventListener('input', () => calculateItemAmount(row));
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                    updateTotals();
+                    if (lineItemsBody.children.length < MAX_LINE_ITEMS) {
+                        maxItemsMessage.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Function to update all totals
+            function updateTotals() {
+                let subtotal = 0;
+                document.querySelectorAll('.item-amount').forEach(input => {
+                    subtotal += parseFloat(input.value) || 0;
+                });
+                subtotalAmountSpan.textContent = `₹ ${subtotal.toFixed(2)}`;
+
+                const discountPercent = parseFloat(discountPercentInput.value) || 0;
+                const discountAmount = subtotal * (discountPercent / 100);
+                discountAmountSpan.textContent = `₹ ${discountAmount.toFixed(2)}`;
+
+                const subtotalAfterDiscount = subtotal - discountAmount;
+
+                const taxRate = parseFloat(taxRateInput.value) || 0;
+                const taxAmount = subtotalAfterDiscount * (taxRate / 100);
+                taxAmountSpan.textContent = `₹ ${taxAmount.toFixed(2)}`;
+
+                const total = subtotalAfterDiscount + taxAmount;
+                totalAmountSpan.textContent = `₹ ${total.toFixed(2)}`;
+            }
+
+            // Helper to set text content only if value exists, otherwise hide element
+            function setPdfText(elementId, value, prefix = '', suffix = '') {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    // For paragraphs, set text and then decide display
+                    if (element.tagName === 'P' || element.tagName === 'STRONG') {
+                        element.innerHTML = `${prefix}${value}${suffix}`; // Use innerHTML for strong tags
+                        element.style.display = (value && value.trim() !== '') ? 'block' : 'none';
+                    } else { // For other elements like inputs or img
+                        if (value && value.trim() !== '' && value !== 'N/A') {
+                            element.textContent = prefix + value + suffix;
+                            element.style.display = 'block';
+                        } else {
+                            element.textContent = '';
+                            element.style.display = 'none';
+                        }
+                    }
+                }
+            }
+
+            // Function to populate the hidden invoice template
+            function populateInvoiceTemplate() {
+                // Header Details
+                setPdfText('pdfInvoiceNumber', document.getElementById('invoiceNumber').value, 'Invoice #: ');
+                setPdfText('pdfInvoiceDate', document.getElementById('invoiceDate').value, 'Invoice Date: ');
+                setPdfText('pdfDueDate', document.getElementById('dueDate').value, 'Due Date: ');
+                
+                // Company Logo logic - uses a placeholder if no URL is provided
+                const pdfCompanyLogo = document.getElementById('pdfCompanyLogo');
+                // The companyLogo input was removed, so we'll always use the default placeholder
+                pdfCompanyLogo.src = "https://placehold.co/90x45/001F3F/ffffff?text=YOUR%20LOGO"; // TWEAK: Changed placeholder logo color to Navy Blue
+                pdfCompanyLogo.style.display = 'block';
+
+                // Your Company Details
+                setPdfText('pdfYourCompanyName', document.getElementById('yourCompanyName').value);
+                setPdfText('pdfYourAddress', document.getElementById('yourAddress').value);
+                setPdfText('pdfYourCityStateZip', document.getElementById('yourCityStateZip').value);
+                setPdfText('pdfYourGSTIN', document.getElementById('yourGSTIN').value, 'GSTIN: ');
+                setPdfText('pdfYourEmail', document.getElementById('yourEmail').value, 'Email: ');
+                setPdfText('pdfYourPhone', document.getElementById('yourPhone').value, 'Phone: ');
+                
+                // Client Details (Bill To)
+                setPdfText('pdfClientName', document.getElementById('clientName').value);
+                setPdfText('pdfClientAddress', document.getElementById('clientAddress').value);
+                setPdfText('pdfClientCityStateZip', document.getElementById('clientCityStateZip').value);
+                setPdfText('pdfClientGSTIN', document.getElementById('clientGSTIN').value, 'GSTIN: ');
+                setPdfText('pdfClientEmail', document.getElementById('clientEmail').value, 'Email: ');
+                setPdfText('pdfClientPhone', document.getElementById('clientPhone').value, 'Phone: ');
+
+                // Line Items
+                const pdfLineItemsBody = document.getElementById('pdfLineItemsBody');
+                pdfLineItemsBody.innerHTML = ''; // Clear existing items
+
+                let totalCGST = 0;
+                let totalSGST = 0;
+                
+                document.querySelectorAll('#lineItemsBody tr').forEach(row => {
+                    const description = row.querySelector('.item-description').value;
+                    const hsn = row.querySelector('.item-hsn').value;
+                    const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+                    const unitPrice = parseFloat(row.querySelector('.item-unit-price').value) || 0;
+                    const amount = qty * unitPrice;
+
+                    const taxRate = parseFloat(taxRateInput.value) || 0;
+                    const cgstRate = taxRate / 2;
+                    const sgstRate = taxRate / 2;
+
+                    const cgstAmount = amount * (cgstRate / 100);
+                    const sgstAmount = amount * (sgstRate / 100);
+
+                    totalCGST += cgstAmount;
+                    totalSGST += sgstAmount;
+
+                    const newPdfRow = document.createElement('tr');
+                    newPdfRow.innerHTML = `
+                        <td>${description || ''}</td>
+                        <td>${hsn || ''}</td>
+                        <td class="text-center">${qty}</td>
+                        <td class="text-right">₹ ${unitPrice.toFixed(2)}</td>
+                        <td class="text-center">${cgstRate.toFixed(1)}%</td>
+                        <td class="text-right">₹ ${cgstAmount.toFixed(2)}</td>
+                        <td class="text-center">${sgstRate.toFixed(1)}%</td>
+                        <td class="text-right">₹ ${sgstAmount.toFixed(2)}</td>
+                        <td class="text-right">₹ ${amount.toFixed(2)}</td>
+                    `;
+                    pdfLineItemsBody.appendChild(newPdfRow);
+                });
+
+                // Totals
+                const subtotal = parseFloat(subtotalAmountSpan.textContent.replace('₹ ', '')) || 0;
+                const discount = parseFloat(discountAmountSpan.textContent.replace('₹ ', '')) || 0;
+                const total = parseFloat(totalAmountSpan.textContent.replace('₹ ', '')) || 0;
+
+                document.getElementById('pdfSubtotalAmount').textContent = `₹ ${subtotal.toFixed(2)}`;
+                document.getElementById('pdfDiscountAmount').textContent = `₹ ${discount.toFixed(2)}`;
+                document.getElementById('pdfCGSTAmount').textContent = `₹ ${totalCGST.toFixed(2)}`;
+                document.getElementById('pdfSGSTAmount').textContent = `₹ ${totalSGST.toFixed(2)}`;
+                document.getElementById('pdfTotalAmount').textContent = `₹ ${total.toFixed(2)}`;
+                document.getElementById('pdfBalanceDue').textContent = `₹ ${total.toFixed(2)}`;
+
+                // Payment & Terms
+                setPdfText('pdfBankName', document.getElementById('bankName').value, 'Bank Name: ');
+                setPdfText('pdfAccountNumber', document.getElementById('accountNumber').value, 'Account Number: ');
+                setPdfText('pdfIfscCode', document.getElementById('ifscCode').value, 'IFSC Code: ');
+                setPdfText('pdfSwiftCode', document.getElementById('swiftCode').value, 'SWIFT Code: ');
+                setPdfText('pdfTermsAndConditions', document.getElementById('termsAndConditions').value);
+            }
+
+            // Function to download invoice as PDF
+            async function downloadInvoicePDF() {
+                if (!validateDates()) {
+                    // Error message is already displayed by validateDates()
+                    return;
+                }
+
+                populateInvoiceTemplate();
+                const invoiceTemplate = document.getElementById('invoiceTemplate');
+                invoiceTemplate.style.display = 'block'; // Make it visible for html2canvas
+
+                // Add a loading indicator
+                const originalBtnText = downloadInvoiceBtn.innerHTML;
+                downloadInvoiceBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+                downloadInvoiceBtn.disabled = true;
+
+                try {
+                    const canvas = await html2canvas(invoiceTemplate, { scale: 2 });
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jspdf.jsPDF({
+                        orientation: 'portrait',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
+
+                    const imgWidth = 210;
+                    const pageHeight = 297;
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    let heightLeft = imgHeight;
+                    let position = 0;
+
+                    // TWEAK: Only add the first page. If content overflows, it will be clipped.
+                    // This is the core change to force single page.
+                    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight > pageHeight ? pageHeight : imgHeight);
+                    
+                    const invoiceNumber = document.getElementById('invoiceNumber').value || 'Invoice';
+                    pdf.save(`${invoiceNumber}.pdf`);
+                } catch (error) {
+                    console.error("Error generating PDF:", error);
+                    // TWEAK: Display a non-blocking error message
+                    const errorMessageDiv = document.createElement('div');
+                    errorMessageDiv.textContent = "Failed to generate PDF. Please ensure all required fields are filled and try again.";
+                    errorMessageDiv.style.cssText = "position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #e74c3c; color: white; padding: 10px 20px; border-radius: 8px; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.2);";
+                    document.body.appendChild(errorMessageDiv);
+                    setTimeout(() => errorMessageDiv.remove(), 5000); // Remove after 5 seconds
+                } finally {
+                    invoiceTemplate.style.display = 'none'; // Hide it again
+                    downloadInvoiceBtn.innerHTML = originalBtnText;
+                    downloadInvoiceBtn.disabled = false;
+                }
+            }
+
+
+            // Event Listeners
+            addItemBtn.addEventListener('click', addLineItem);
+            discountPercentInput.addEventListener('input', updateTotals);
+            taxRateInput.addEventListener('input', updateTotals);
+            resetFormBtn.addEventListener('click', () => {
+                document.getElementById('invoiceNumber').value = '';
+                document.getElementById('invoiceDate').value = '';
+                document.getElementById('dueDate').value = '';
+
+                document.getElementById('yourCompanyName').value = '';
+                document.getElementById('yourAddress').value = '';
+                document.getElementById('yourCityStateZip').value = '';
+                document.getElementById('yourGSTIN').value = '';
+                document.getElementById('yourEmail').value = '';
+                document.getElementById('yourPhone').value = '';
+
+                document.getElementById('clientName').value = '';
+                document.getElementById('clientAddress').value = '';
+                document.getElementById('clientCityStateZip').value = '';
+                document.getElementById('clientGSTIN').value = '';
+                document.getElementById('clientEmail').value = '';
+                document.getElementById('clientPhone').value = '';
+
+                // Clear all line items except one default
+                lineItemsBody.innerHTML = `
+                    <tr>
+                        <td><input type="text" class="item-description" placeholder="Service or Product"></td>
+                        <td><input type="text" class="item-hsn" placeholder="e.g., 998313"></td>
+                        <td><input type="number" class="item-qty" min="1" value="1"></td>
+                        <td><input type="number" class="item-unit-price" min="0" value="0"></td>
+                        <td><input type="text" class="item-amount" readonly value="0.00"></td>
+                        <td><button class="remove-item-btn"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                `;
+                attachLineItemListeners(lineItemsBody.querySelector('tr')); // Re-attach for the default row
+
+                discountPercentInput.value = '0';
+                taxRateInput.value = '18';
+
+                document.getElementById('bankName').value = '';
+                document.getElementById('accountNumber').value = '';
+                document.getElementById('ifscCode').value = '';
+                document.getElementById('swiftCode').value = '';
+                document.getElementById('termsAndConditions').value = '';
+
+                updateTotals(); // Recalculate totals after reset
+                validateDates(); // Re-validate dates on reset
+                maxItemsMessage.classList.add('hidden'); // Hide max items message on reset
+            });
+
+            downloadInvoiceBtn.addEventListener('click', downloadInvoicePDF);
+
+            // Initial setup: attach listeners to the default line item
+            if (lineItemsBody.querySelector('tr')) {
+                attachLineItemListeners(lineItemsBody.querySelector('tr'));
+            }
+            updateTotals(); // Initial calculation
+            validateDates(); // Initial date validation
+
+            // CTA Form Animation
+            const ctaForm = document.getElementById('ctaForm');
+            // TWEAK: Ensure CTA is immediately visible on load, then observe for potential animation if needed later
+            ctaForm.style.opacity = '1';
+            ctaForm.style.transform = 'translateY(0)';
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            });
+            observer.observe(ctaForm);
+        });
+    </script>
+</body>
+</html>

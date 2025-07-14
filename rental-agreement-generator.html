@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Agreement Generator - One.Finance</title>
+    <!-- Favicon (optional, replace with your own) -->
+    <link rel="icon" href="icon.png" type="image/png">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- jsPDF and html2canvas for PDF generation (Added back for download functionality) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* --- CSS Variables for consistent branding (copied from income-tax-calculator.html) --- */
+        :root {
+            --primary-color: #1A8917; /* One.Finance Green */
+            --primary-dark: #167A14;
+            --accent-color: #26C281; /* A brighter green for highlights */
+            --text-dark: #333333;
+            --text-light: #666666;
+            --bg-light: #f5f8fa; /* Lighter background */
+            --bg-white: #FFFFFF;
+            --border-color: #e0e0e0;
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --font-family: 'Inter', sans-serif;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --error: #e74c3c;
+            --guideline-bg: #e6f7ff; /* Light blue for guidelines */
+            --guideline-color: #0056b3; /* Darker blue for guideline text */
+        }
+
+        /* --- Base Styles (Copied from income-tax-calculator.html) --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            color: var(--text-dark); /* Default for light backgrounds */
+            margin-bottom: 0.8em;
+        }
+        /* Specific overrides for calculator headings */
+        .wizard h1, .wizard h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 3.2em; line-height: 1.1; }
+        h2 { font-size: 2.5em; }
+        h3 { font-size: 1.8em; }
+        p { margin-bottom: 1em; color: var(--text-light); }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* --- Header (Copied from income-tax-calculator.html) --- */
+        .header {
+            background-color: var(--bg-white);
+            padding: 1rem 0;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 38px;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+        .logo span {
+            display: inline;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 1.05em;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* Dropdown Menu for Services and Tools */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-light);
+            list-style: none;
+            min-width: 200px;
+            z-index: 10;
+            border-radius: var(--border-radius-sm);
+            padding: 0.4rem 0;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-menu li a {
+            padding: 8px 18px;
+            display: block;
+            white-space: nowrap;
+            font-size: 0.95em;
+            color: var(--text-dark);
+        }
+
+        .dropdown-menu li a:hover {
+            background-color: var(--bg-light);
+            color: var(--primary-color);
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            font-size: 1.8em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        /* --- Main Content Area (Copied from income-tax-calculator.html) --- */
+        .main-content-area {
+            flex-grow: 1;
+            padding: 2.5rem 0;
+        }
+
+        .agreement-grid { /* Renamed from main-container-calculator for clarity in this doc */
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .agreement-form-section { /* Renamed from wizard for clarity in this doc */
+            padding: 2.5rem;
+            background: var(--bg-white);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+        }
+
+        .cta-form-container {
+            background: var(--bg-white);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-medium);
+            padding: 1.5rem;
+            align-self: start;
+            opacity: 1; /* Retained immediate visibility */
+            transform: translateY(0); /* Retained immediate visibility */
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .cta-form-container.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cta-form-container h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .cta-form-container .form-field {
+            margin-bottom: 1rem;
+        }
+
+        .cta-form-container label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        .cta-form-container input[type="text"],
+        .cta-form-container input[type="email"],
+        .cta-form-container input[type="tel"],
+        .cta-form-container select,
+        .cta-form-container textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: var(--font-family);
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .cta-form-container input:focus,
+        .cta-form-container select:focus,
+        .cta-form-container textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 137, 23, 0.15);
+        }
+
+        .cta-form-container button {
+            width: 100%;
+            padding: 0.8rem 1.5rem;
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            margin-top: 1rem;
+        }
+
+        .cta-form-container button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .agreement-form-section .logo-in-form { /* Specific styling for logo within form */
+            display: block;
+            margin: 0 auto 1.5rem;
+            height: 70px;
+            object-fit: contain;
+        }
+
+        /* Form Section Headings (Adjusted to match calculator's h2) */
+        .agreement-form-section h2 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem; /* Matches calculator h2 */
+            font-weight: 700;
+        }
+
+        .form-section-heading { /* Matches calculator's h2 for sub-sections */
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: none; /* Removed border to match calculator */
+            padding-bottom: 0;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem; /* Matches calculator input group spacing */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.6rem; /* Matches calculator label spacing */
+            font-weight: 600; /* Matches calculator label font weight */
+            color: var(--text-dark);
+            font-size: 0.95rem; /* Matches calculator label font size */
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="email"],
+        .input-group input[type="tel"],
+        .input-group input[type="date"],
+        .input-group input[type="number"],
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 0.8rem 1.2rem; /* Matches calculator input padding */
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem; /* Matches calculator input font size */
+            color: var(--text-dark);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(26, 137, 23, 0.2); /* Matches calculator focus shadow */
+        }
+
+        textarea {
+            min-height: 80px; /* Matches calculator textarea height */
+            resize: vertical;
+        }
+
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem; /* Matches calculator grid gap */
+        }
+        .grid-cols-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem; /* Matches calculator grid gap */
+        }
+
+        /* Error message for validation */
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: block;
+            font-weight: 500;
+        }
+
+        /* Buttons for Reset/Download (Adjusted to match calculator buttons) */
+        .agreement-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .agreement-actions button {
+            padding: 0.9rem 2rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.05rem;
+            flex-grow: 1;
+            min-width: 120px;
+        }
+
+        .agreement-actions .btn-secondary {
+            background-color: #6c757d;
+            color: var(--bg-white);
+        }
+        .agreement-actions .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .agreement-actions .btn-download {
+            background-color: #34495e;
+            color: var(--bg-white);
+        }
+
+        .agreement-actions .btn-download:hover {
+            background-color: #2c3e50;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Footer Styles (Copied from income-tax-calculator.html) */
+        .footer {
+            background-color: var(--text-dark);
+            color: var(--bg-white);
+            padding: 2rem 0;
+            font-size: 0.8em;
+            margin-top: auto;
+        }
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        .footer-col {
+            flex: 1;
+            min-width: 160px;
+        }
+        .footer-col h4 {
+            color: var(--bg-white);
+            margin-bottom: 0.7rem;
+            font-size: 1em;
+        }
+        .footer-col p, .footer-col a {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+        .footer-col a:hover {
+            color: var(--bg-white);
+        }
+        .social-links {
+            margin-top: 0.7rem;
+        }
+        .social-links a {
+            display: inline-block;
+            color: var(--bg-white);
+            font-size: 1.3em;
+            margin-right: 0.7rem;
+            transition: transform 0.2s ease;
+        }
+        .social-links a:hover {
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        .footer-bottom {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive adjustments (Copied from income-tax-calculator.html) */
+        @media (max-width: 768px) {
+            .header .nav-menu {
+                top: 70px;
+            }
+            .menu-toggle {
+                font-size: 1.8em;
+            }
+            .logo span {
+                display: inline;
+            }
+            /* Mobile menu specific styles */
+            .header .nav-menu {
+                display: none; /* Hide desktop menu */
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--bg-white);
+                position: absolute;
+                top: 70px; /* Below header */
+                left: 0;
+                padding: 1rem 0;
+                box-shadow: var(--shadow-light);
+            }
+            .header .nav-menu.active {
+                display: flex; /* Show active mobile menu */
+            }
+            .header .nav-menu li {
+                text-align: center;
+                margin: 0.5rem 0;
+            }
+            .menu-toggle {
+                display: block; /* Show hamburger icon */
+            }
+        }
+
+        @media (max-width: 992px) { /* Tablet and smaller desktops */
+            .agreement-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+            .agreement-form-section {
+                padding: 1.5rem;
+            }
+            .cta-form-container {
+                margin-top: 2rem;
+                padding: 1.5rem;
+            }
+            .agreement-form-section h2, .form-section-heading {
+                font-size: 1.8rem;
+            }
+            .input-group label {
+                font-size: 0.9rem;
+            }
+            .input-group input, .input-group select, .input-group textarea {
+                padding: 0.7rem 1rem;
+                font-size: 0.9rem;
+            }
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            .agreement-actions button {
+                flex-grow: 1;
+                width: 100%;
+                margin-bottom: 0.5rem;
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+            .agreement-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) { /* Mobile phones */
+            .agreement-grid {
+                margin: 1rem auto;
+                padding: 0 0.8rem;
+            }
+            .agreement-form-section {
+                padding: 1rem;
+            }
+            .agreement-form-section h2, .form-section-heading {
+                font-size: 1.4rem;
+                margin-bottom: 1rem;
+            }
+            .agreement-form-section .logo-in-form {
+                height: 60px;
+                margin-bottom: 1rem;
+            }
+            .cta-form-container {
+                padding: 1rem;
+            }
+            .cta-form-container h3 {
+                font-size: 1.2rem;
+            }
+            .cta-form-container label {
+                font-size: 0.85rem;
+            }
+            .cta-form-container input, .cta-form-container select, .cta-form-container button {
+                font-size: 0.9rem;
+                padding: 0.6rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header" id="home">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="One.Finance Logo">
+            </a>
+            <nav>
+                <button class="menu-toggle" aria-label="Toggle navigation menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Services <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cfo-service.html">CFO Service</a></li>
+                            <li><a href="income-tax.html">Income Tax Consultation</a></li>
+                            <li><a href="gst-filing.html">GST Filing & Registration</a></li>
+                            <li><a href="other-service.html">Other Service</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Tools <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="income-tax-calculator.html">Income Tax Calculator</a></li>
+                            <li><a href="invoice-generator.html">Invoice Generator</a></li>
+                            <li><a href="rental-agreement-generator.html">Rental Agreement Generator</a></li>
+                            <li><a href="#" onclick="return false;">Loan Prepayment Planner (Coming Soon)</a></li>
+                            <li><a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai" target="_blank">One.finance AI</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="#cta-form">Talk to us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content-area">
+        <div class="container agreement-grid">
+            <div class="agreement-form-section">                
+                <h2>Rental Agreement Generator</h2>
+
+                <h3 class="form-section-heading">Tenant Details</h3>
+                <div class="grid-cols-2">
+                    <div class="input-group">
+                        <label for="tenantName">Tenant Name</label>
+                        <input type="text" id="tenantName" placeholder="e.g., John Doe">
+                    </div>
+                    <div class="input-group">
+                        <label for="tenantPan">Tenant PAN</label>
+                        <input type="text" id="tenantPan" maxlength="10" placeholder="e.g., ABCDE1234F">
+                    </div>
+                    <div class="input-group">
+                        <label for="tenantRelationshipType">Relationship Type</label>
+                        <select id="tenantRelationshipType">
+                            <option value="">Select Type</option>
+                            <option value="S/o">S/o</option>
+                            <option value="D/o">D/o</option>
+                            <option value="W/o">W/o</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="tenantRelativeName">Father's/Spouse's Name</label>
+                        <input type="text" id="tenantRelativeName" placeholder="e.g., Richard Doe">
+                    </div>
+                    <div class="input-group">
+                        <label for="tenantAge">Tenant Age</label>
+                        <input type="number" id="tenantAge" min="18" placeholder="e.g., 30">
+                    </div>
+                    <div class="input-group">
+                        <label for="tenantAddress">Tenant Address</label>
+                        <textarea id="tenantAddress" placeholder="e.g., Flat 101, ABC Apartments, Main Road, City, State, Pincode"></textarea>
+                    </div>
+                </div>
+
+                <h3 class="form-section-heading mt-8">Owner Details</h3>
+                <div class="grid-cols-2">
+                    <div class="input-group">
+                        <label for="ownerName">Owner Name</label>
+                        <input type="text" id="ownerName" placeholder="e.g., Jane Smith">
+                    </div>
+                    <div class="input-group">
+                        <label for="ownerPan">Owner PAN</label>
+                        <input type="text" id="ownerPan" maxlength="10" placeholder="e.g., FGHIJ5678K">
+                    </div>
+                    <div class="input-group">
+                        <label for="ownerRelationshipType">Relationship Type</label>
+                        <select id="ownerRelationshipType">
+                            <option value="">Select Type</option>
+                            <option value="S/o">S/o</option>
+                            <option value="D/o">D/o</option>
+                            <option value="W/o">W/o</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="ownerRelativeName">Father's/Spouse's Name</label>
+                        <input type="text" id="ownerRelativeName" placeholder="e.g., David Smith">
+                    </div>
+                    <div class="input-group">
+                        <label for="ownerAge">Owner Age</label>
+                        <input type="number" id="ownerAge" min="18" placeholder="e.g., 50">
+                    </div>
+                    <div class="input-group">
+                        <label for="ownerAddress">Owner Address</label>
+                        <textarea id="ownerAddress" placeholder="e.g., Villa 202, XYZ Layout, Park Street, City, State, Pincode"></textarea>
+                    </div>
+                </div>
+
+                <h3 class="form-section-heading mt-8">Rental Property & Terms</h3>
+                <div class="grid-cols-2">
+                    <div class="input-group">
+                        <label for="rentalPropertyAddress">Rental Property Address</label>
+                        <textarea id="rentalPropertyAddress" placeholder="e.g., House No. 123, Sector 4, Green Valley, City, State, Pincode"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="rentPerMonth">Rent Per Month (₹)</label>
+                        <input type="number" id="rentPerMonth" min="0" step="1" placeholder="e.g., 15000">
+                        <span id="rentError" class="error-message hidden">Rent must be a whole number.</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="securityDeposit">Security Deposit (₹)</label>
+                        <input type="number" id="securityDeposit" min="0" step="1" placeholder="e.g., 45000">
+                        <span id="securityError" class="error-message hidden">Security Deposit must be a whole number.</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="startDate">Agreement Start Date</label>
+                        <input type="date" id="startDate">
+                        <span id="startDateError" class="error-message hidden"></span>
+                    </div>
+                    <div class="input-group">
+                        <label for="endDate">Agreement End Date</label>
+                        <input type="date" id="endDate">
+                        <span id="endDateError" class="error-message hidden">End Date cannot be before Start Date.</span>
+                    </div>
+                    <div class="input-group">
+                        <label for="placeOfExecution">Place of Execution</label>
+                        <input type="text" id="placeOfExecution" placeholder="e.g., Chennai">
+                    </div>
+                </div>
+
+                <div class="agreement-actions">
+                    <button id="resetFormBtn" class="btn-secondary"><i class="fas fa-undo"></i> Reset Form</button>
+                    <button id="downloadAgreementBtn" class="btn-download"><i class="fas fa-download"></i> Download Agreement</button>
+                </div>
+            </div>
+
+            <!-- CTA Form Container -->
+            <div class="cta-form-container" id="ctaForm">
+                <h3>Need Expert Consultation?</h3>
+                <form action="#" method="post">
+                    <div class="form-field">
+                        <label for="cta-name">Your Name</label>
+                        <input type="text" id="cta-name" name="name" required placeholder="Enter your name">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-email">Your Email</label>
+                        <input type="email" id="cta-email" name="email" required placeholder="your.email@example.com">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-phone">Phone Number</label>
+                        <input type="tel" id="cta-phone" name="phone" placeholder="e.g., +91 9876543210">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-service-interest">Service of Interest</label>
+                        <select id="cta-service-interest" name="service_interest">
+                            <option value="">-- Select a Service --</option>
+                            <option value="Virtual CFO">Virtual CFO Services</option>
+                            <option value="Income Tax">Income Tax Consultation</option>
+                            <option value="GST">GST Filing & Registration</option>
+                            <option value="Incorporation">Incorporation Service</option>
+                            <option value="Accounting Advisory">Accounting Advisory</option>
+                            <option value="Bookkeeping Services">Bookkeeping Services</option>
+                            <option value="MIS Reports">MIS Reports</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-message">Your Message</label>
+                        <textarea id="cta-message" name="message" rows="4" placeholder="Tell us more about your needs..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Submit Request</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-col">
+                <h4>One.Finance</h4>
+                <p>Your dedicated CFO Buddy for startups, handling finances end-to-end so you can focus on building your dream.</p>
+                <div class="social-links">                    
+                    <a href="https://www.linkedin.com/company/onedotfinance/" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.instagram.com/one.finance_?igsh=MTNuemfrdnBkbGhkZg%3D%3D&utm_source=qr" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>                        
+                <a href="blog.html">Blog</a>
+                <a href="#ctaForm">Talk to us</a> <!-- TWEAK: Linked to CTA form ID -->
+            </div>
+            <div class="footer-col">
+                <h4>Our Services</h4>
+                <a href="cfo-service.html">Virtual CFO Services</a>
+                <a href="income-tax.html">Income Tax Consultation</a>
+                <a href="gst-filing.html">GST Filing & Registration</a>
+                <a href="other-service.html">Other Service</a>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <a href="income-tax-calculator.html">Income Tax Calculator</a>
+                <a href="invoice-generator.html">Invoice Generator</a>
+                <a href="rental-agreement-generator.html">Rental Agreement Generator</a>
+                <a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai">One.finance AI</a>                
+            </div>
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <p>Email: <a href="mailto:vishnu@onedotfinance.com">vishnu@onedotfinance.com</a></p>
+                <p>Phone: <a href="tel:+917373772883">+91 7373772883</p>
+                <p>Address: RR Tower 3, SIDCO, Guindy, Chennai - 600032</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 One.Finance. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Global Header & Footer JS ---
+            const header = document.querySelector('.header');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            // Sticky header functionality
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.style.padding = '0.6rem 0';
+                    header.style.boxShadow = 'var(--shadow-medium)';
+                } else {
+                    header.style.padding = '1rem 0'; /* Adjusted to match income-tax-calculator */
+                    header.style.boxShadow = 'var(--shadow-light)';
+                }
+            });
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                menuToggle.querySelector('i').classList.toggle('fa-bars');
+                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+            });
+
+            // Close mobile menu when a link is clicked
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // Smooth scrolling for anchor links (only for current page anchors)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (this.pathname === window.location.pathname) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // --- Rental Agreement Generator Specific JS ---
+            const tenantNameInput = document.getElementById('tenantName');
+            const tenantPanInput = document.getElementById('tenantPan');
+            const tenantRelationshipTypeSelect = document.getElementById('tenantRelationshipType');
+            const tenantRelativeNameInput = document.getElementById('tenantRelativeName');
+            const tenantAgeInput = document.getElementById('tenantAge');
+            const tenantAddressInput = document.getElementById('tenantAddress');
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const ownerNameInput = document.getElementById('ownerName');
+            const ownerPanInput = document.getElementById('ownerPan');
+            const ownerRelationshipTypeSelect = document.getElementById('ownerRelationshipType');
+            const ownerRelativeNameInput = document.getElementById('ownerRelativeName');
+            const ownerAgeInput = document.getElementById('ownerAge');
+            const ownerAddressInput = document.getElementById('ownerAddress');
+            const rentPerMonthInput = document.getElementById('rentPerMonth');
+            const securityDepositInput = document.getElementById('securityDeposit');
+            const rentalPropertyAddressInput = document.getElementById('rentalPropertyAddress');
+            const placeOfExecutionInput = document.getElementById('placeOfExecution');
+
+            const resetFormBtn = document.getElementById('resetFormBtn');
+            const downloadAgreementBtn = document.getElementById('downloadAgreementBtn');
+            const endDateError = document.getElementById('endDateError');
+            const rentError = document.getElementById('rentError');
+            const securityError = document.getElementById('securityError');
+
+            // Date Validation Function
+            function validateDates() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                if (startDateInput.value && endDateInput.value && endDate < startDate) {
+                    endDateError.classList.remove('hidden');
+                    return false;
+                } else {
+                    endDateError.classList.add('hidden');
+                    return true;
+                }
+            }
+
+            // Add event listeners for date validation
+            startDateInput.addEventListener('change', validateDates);
+            endDateInput.addEventListener('change', validateDates);
+
+            // Decimal Validation Function for Rent and Security Deposit
+            function validateAndRoundNumberInput(inputElement, errorElement) {
+                let value = inputElement.value;
+                if (value.includes('.')) {
+                    errorElement.classList.remove('hidden');
+                    inputElement.value = Math.floor(parseFloat(value)); // Round down to integer
+                } else {
+                    errorElement.classList.add('hidden');
+                }
+            }
+
+            // Add event listeners for decimal validation
+            rentPerMonthInput.addEventListener('input', () => validateAndRoundNumberInput(rentPerMonthInput, rentError));
+            securityDepositInput.addEventListener('input', () => validateAndRoundNumberInput(securityDepositInput, securityError));
+
+
+            // Helper function to format currency
+            function formatCurrency(amount) {
+                const formatter = new Intl.NumberFormat('en-IN', {
+                    style: 'currency',
+                    currency: 'INR',
+                    minimumFractionDigits: 2,
+                });
+                return formatter.format(amount);
+            }
+
+            // Helper function to convert number to words (simple implementation)
+            function numberToWords(num) {
+                const a = ['', 'one ', 'two ', 'three ', 'four ', 'five ', 'six ', 'seven ', 'eight ', 'nine ', 'ten ', 'eleven ', 'twelve ', 'thirteen ', 'fourteen ', 'fifteen ', 'sixteen ', 'seventeen ', 'eighteen ', 'nineteen '];
+                const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+                const n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+                if (!n) return '';
+                let str = '';
+                str += (Number(n[1]) != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'crore ' : '';
+                str += (Number(n[2]) != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'lakh ' : '';
+                str += (Number(n[3]) != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'thousand ' : '';
+                str += (Number(n[4]) != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'hundred ' : '';
+                str += (Number(n[5]) != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'only ' : '';
+                return str.replace(/\s+/g, ' ').trim();
+            }
+
+            // Helper to get text content from an element, returning empty string if null/empty
+            function getTextContent(elementId) {
+                const element = document.getElementById(elementId);
+                return element ? element.value.trim() : '';
+            }
+
+            // Function to calculate duration in months
+            function getDurationInMonths(start, end) {
+                if (!start || !end) return 'an unspecified';
+                const startDate = new Date(start);
+                const endDate = new Date(end);
+
+                let months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+                months -= startDate.getMonth();
+                months += endDate.getMonth();
+                
+                // Adjust for day of month to make it more accurate for full months
+                // If end day is before start day, a full month hasn't passed yet.
+                if (endDate.getDate() < startDate.getDate()) {
+                    months--;
+                }
+                
+                return Math.max(0, months); // Ensure non-negative
+            }
+
+            // Function to generate the HTML content for the Word document
+            function generateWordHtmlContent() {
+                const today = new Date();
+                const day = today.getDate();
+                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const month = monthNames[today.getMonth()];
+                const year = today.getFullYear();
+                
+                const agreementDate = `${day}th day of ${month}, ${year}`;
+                const agreementFullDate = `${day}th day of ${month}, ${year} year first above Mentioned`;
+                
+                const ownerName = getTextContent('ownerName');
+                const ownerRelationshipType = getTextContent('ownerRelationshipType');
+                const ownerRelativeName = getTextContent('ownerRelativeName');
+                const ownerAge = getTextContent('ownerAge');
+                const ownerAddress = getTextContent('ownerAddress');
+
+                const tenantName = getTextContent('tenantName');
+                const tenantRelationshipType = getTextContent('tenantRelationshipType');
+                const tenantRelativeName = getTextContent('tenantRelativeName');
+                const tenantAge = getTextContent('tenantAge');
+                const tenantAddress = getTextContent('tenantAddress');
+
+                const rentalPropertyAddress = getTextContent('rentalPropertyAddress');
+                const rent = parseFloat(getTextContent('rentPerMonth')) || 0;
+                const rentInWords = numberToWords(rent);
+                const rentText = `${formatCurrency(rent)} (${rentInWords.charAt(0).toUpperCase() + rentInWords.slice(1)})`;
+
+                const security = parseFloat(getTextContent('securityDeposit')) || 0;
+                const securityInWords = numberToWords(security);
+                
+                const startDateStr = getTextContent('startDate');
+                const endDateStr = getTextContent('endDate');
+                const startDate = startDateStr ? new Date(startDateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+                const endDate = endDateStr ? new Date(endDateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+                
+                const durationMonths = getDurationInMonths(startDateStr, endDateStr);
+                const durationText = durationMonths > 0 ? `${numberToWords(durationMonths).trim()} (${durationMonths}) months` : 'an unspecified period';
+
+                const placeOfExecution = getTextContent('placeOfExecution');
+
+                // Construct the HTML content for the Word document
+                const content = `
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <style>
+                            body { font-family: 'Calibri', sans-serif; margin: 2cm; line-height: 1.5; color: #000000; }
+                            h1 { font-size: 24pt; text-align: center; margin-bottom: 20pt; text-transform: uppercase; color: #000000; }
+                            .section-title { font-size: 16pt; font-weight: bold; margin-top: 15pt; margin-bottom: 10pt; border-bottom: 1px solid #000; padding-bottom: 5pt; color: #000000; }
+                            p { margin-bottom: 10pt; text-align: justify; }
+                            strong { font-weight: bold; }
+                            .clause { margin-bottom: 8pt; }
+                            .clause span { font-weight: bold; color: #000000; }
+                            .signature-section { margin-top: 30pt; display: flex; justify-content: space-between; flex-wrap: wrap; }
+                            .signature-block { width: 48%; text-align: right; margin-bottom: 20pt; }
+                            .signature-line { border-bottom: 1px solid #000; padding-bottom: 2pt; margin-bottom: 5pt; display: inline-block; width: 100%; }
+                            .signature-name { font-weight: bold; margin-top: 5pt; }
+                            .signature-role { font-size: 10pt; margin-top: 2pt; }
+                            .witnesses { margin-top: 30pt; clear: both; display: flex; justify-content: space-between; flex-wrap: wrap; }
+                            .witnesses div { width: 48%; margin-bottom: 10pt; }
+                            .witness-line { margin-top: 10mm; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>RENTAL AGREEMENT</h1>
+                        <p>This Rent Agreement is made on <strong>${agreementDate}</strong></p>
+
+                        <p class="section-title">BETWEEN</p>
+                        <p>
+                            <strong>${ownerName}</strong> ${ownerRelationshipType} <strong>${ownerRelativeName}</strong> , aged about <strong>${ownerAge}</strong> years, residing at <strong>${ownerAddress}</strong> hereinafter called the Lessor / Owner, Party Of the FIRST PART.
+                        </p>
+                        <p class="section-title">AND</p>
+                        <p>
+                            <strong>${tenantName}</strong> ${tenantRelationshipType} <strong>${tenantRelativeName}</strong> , aged about <strong>${tenantAge}</strong> years, residing at <strong>${tenantAddress}</strong> hereinafter called Lessee/Tenant, Party of the SECOND PART.
+                        </p>
+
+                        <p>
+                            That the expression of the term, Lessor/Owner and the mean and include their legal heir successors, assigns, representative etc. Whereas the Lessor /Owner is the owner and in possession of the property <strong>${rentalPropertyAddress}</strong> and has agreed to let out the said property for residential/commercial purpose to the Lessee/Tenant and the Lessee/Tenant has agreed to take the same on rent of <strong>${rentText}</strong> per month.
+                        </p>
+
+                        <p class="section-title">NOW THIS RENT AGREEMENT WITNESSETH AS UNDER: -</p>
+
+                        <div class="clause">
+                            <p><span>1.</span> That the Tenant/Lessee shall pay as the monthly rent of <strong>${rentText}</strong> per month, excluding electricity and water charges, which shall be borne by the Tenant/Lessee.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>2.</span> That the Tenant /Lessee shall not sub–let any part of the above said <strong>rented premises</strong> to anyone else under any circumstances without the prior written consent of the Owner.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>3.</span> That the Tenant / Lessee shall abide by all the bye-laws, rules and regulations of the local authorities in respect of the <strong>rented premises</strong> and shall not carry out any illegal activities in the said <strong>rented premises</strong>.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>4.</span> That this Lease is granted for a period of <strong>${durationText}</strong> only commencing from <strong>${startDate}</strong> and ending on <strong>${endDate}</strong>. This lease can be extended further by both the parties with their mutual written consent, based on the prevailing rental value in the market.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>5.</span> That the Lessee shall pay Electricity & Water charges as per the proportionate consumption of the meter to the Lessor /Owner.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>6.</span> That the Tenant/Lessee shall not be entitled to make any permanent structure in the rented premises except the installation of temporary decorations, wooden partitions/cabins, air-conditioners etc. without the prior written consent of the Owner.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>7.</span> That the Tenant/Lessee can neither make addition/alteration in the said premises without the written consent of the Owner, nor the Lessee can sublet part or entire premises to any person(s)/firm(s)/company(s).</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>8.</span> That the Tenant/Lessee shall permit the Lessor/Owner or his Authorized agent to enter into the said tenanted premises for inspection/general checking or to carry out repair work, at any reasonable time, with prior notice.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>9.</span> That the Tenant/Lessee shall keep the said premises in clean & hygienic condition and shall not do or cause to be done any act which may be a nuisance to others.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>10.</span> That the Tenant/Lessees shall carry out all day-to-day minor repairs at his/her own cost.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>11.</span> That this Agreement may be terminated before the expiry of this tenancy period by serving One-month prior written notice by either party for this intention.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>12.</span> That the Lessee shall use the above said premises for <strong>Official Purpose Only</strong>. (This can be changed to 'Residential Purpose Only' or 'Commercial Purpose Only' as applicable)</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>13.</span> That the Lessee/Tenant Shall not store/Keep any offensive, dangerous, explosive or highly Inflammable articles in the said premises and shall not use the same for any unlawful activities.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>14.</span> That the Lessee shall pay the security deposit of <strong>₹ ${security.toFixed(2)} (${securityInWords.charAt(0).toUpperCase() + securityInWords.slice(1)})</strong> to the Lessor, which shall be adjusted in the monthly rent towards the end of the tenancy period.</p>
+                        </div>
+                        <div class="clause">
+                            <p><span>15.</span> That both the parties have read over and understood all the contents of this agreement and have signed the same without any force or pressure from any side.</p>
+                        </div>
+                        <p style="margin-top: 15mm;">In WITNESS WHEREOF the Lessor/Owner and the Tenant/Lessee have hereunto subscribed their hand at <strong>${placeOfExecution}</strong> on <strong>${agreementFullDate}</strong> in the presence of the following Witnesses:</p>
+
+                        <p class="witnesses" style="margin-top: 15mm;">WITNESSES:</p>
+                        <div style="width: 48%;">
+                            <p class="witness-line">1)</p>
+                        </div>
+                        <div class="signature-block">
+                            <p class="signature-line"></p>
+                            <p class="signature-name">${ownerName}</p>
+                            <p class="signature-role">(Lessor)</p>
+                        </div>
+
+                        <div style="clear: both; margin-top: 20mm; width: 48%;">
+                            <p class="witness-line">2)</p>
+                        </div>
+                        <div class="signature-block">
+                            <p class="signature-line"></p>
+                            <p class="signature-name">${tenantName}</p>
+                            <p class="signature-role">(Lessee)</p>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </body>
+                    </html>
+                `;
+                return content;
+            }
+
+            // Function to download agreement as DOC
+            function downloadRentalAgreementDOC() {
+                // Validate dates and number inputs before generating and downloading
+                if (!validateDates() || rentError.classList.contains('hidden') === false || securityError.classList.contains('hidden') === false) {
+                    // Error message is already displayed by validateDates() or input validation
+                    const errorMessageDiv = document.createElement('div');
+                    errorMessageDiv.textContent = "Please correct the highlighted errors before downloading.";
+                    errorMessageDiv.style.cssText = "position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #e74c3c; color: white; padding: 10px 20px; border-radius: 8px; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.2);";
+                    document.body.appendChild(errorMessageDiv);
+                    setTimeout(() => errorMessageDiv.remove(), 5000); // Remove after 5 seconds
+                    return;
+                }
+
+                const content = generateWordHtmlContent();
+                const blob = new Blob([content], { type: 'application/msword' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const tenantName = getTextContent('tenantName') || 'Tenant';
+                const ownerName = getTextContent('ownerName') || 'Owner';
+                a.download = `RentalAgreement_${tenantName}_${ownerName}.doc`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            // Event Listeners
+            resetFormBtn.addEventListener('click', () => {
+                document.querySelectorAll('.agreement-form-section input, .agreement-form-section textarea, .agreement-form-section select').forEach(input => {
+                    if (input.type === 'number') input.value = '';
+                    else if (input.type === 'date') input.value = '';
+                    else if (input.tagName === 'SELECT') input.value = '';
+                    else input.value = '';
+                });
+                // Hide error messages on reset
+                endDateError.classList.add('hidden');
+                rentError.classList.add('hidden');
+                securityError.classList.add('hidden');
+            });
+
+            downloadAgreementBtn.addEventListener('click', downloadRentalAgreementDOC);
+
+            // CTA Form Animation
+            const ctaForm = document.getElementById('ctaForm');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            });
+            observer.observe(ctaForm);
+
+            // Initial date validation check on load
+            validateDates();
+        });
+    </script>
+</body>
+</html>
