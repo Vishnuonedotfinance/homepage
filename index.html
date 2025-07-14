@@ -234,6 +234,32 @@
             color: var(--text-dark); /* Hamburger icon is dark on white header */
         }
 
+        /* Mobile Dropdown Specifics */
+            .dropdown-menu {
+                position: static; /* Remove absolute positioning for mobile */
+                box-shadow: none;
+                border-radius: 0;
+                padding: 0;
+                min-width: unset;
+                transform: none;
+                opacity: 1;
+                visibility: visible; /* Always visible when parent is active */
+                display: none; /* Hidden by default on mobile, toggled by JS */
+                max-height: 0; /* Initial state for smooth collapse */
+                overflow: hidden;
+                transition: max-height 0.4s ease-in-out; /* Smooth transition for height */
+            }
+
+            .dropdown.dropdown-active .dropdown-menu {
+                display: block; /* Show when active class is present */
+                max-height: 200px; /* Adjust as needed to fit content */
+            }
+
+            .dropdown:hover .dropdown-menu {
+                display: none; /* Override hover for mobile, ensure JS controls */
+            }
+    
+
         /* --- Hero Section --- */
         .hero {
             background-image: url('hero-bg.jpg'); /* Backdrop image */
@@ -1101,7 +1127,7 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="about.html">About Us</a></li>
                     <li class="dropdown">
-                        <a href="#" onclick="return false;">Services <i class="fas fa-caret-down"></i></a>
+                        <a href="javascript:void(0);" class="dropdown-toggle">Services <i class="fas fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="cfo-service.html">CFO Service</a></li>
                             <li><a href="income-tax.html">Income Tax Consultation</a></li>
@@ -1110,7 +1136,7 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" onclick="return false;">Tools <i class="fas fa-caret-down"></i></a>
+                        <a href="javascript:void(0);" class="dropdown-toggle">Tools <i class="fas fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="income-tax-calculator.html">Income Tax Calculator</a></li>
                             <li><a href="invoice-generator.html">Invoice Generator</a></li>
@@ -1563,15 +1589,45 @@
                 navMenu.classList.toggle('active');
                 menuToggle.querySelector('i').classList.toggle('fa-bars');
                 menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+                // Close any open dropdowns when the main menu is toggled
+                dropdownToggles.forEach(toggle => {
+                    toggle.closest('.dropdown').classList.remove('dropdown-active');
+                });
             });
 
-            // Close mobile menu when a link is clicked
-            navMenu.querySelectorAll('a').forEach(link => {
+            // Close mobile menu when a link is clicked (excluding dropdown toggles)
+            navMenu.querySelectorAll('a:not(.dropdown-toggle)').forEach(link => {
                 link.addEventListener('click', () => {
                     if (navMenu.classList.contains('active')) {
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
                         menuToggle.querySelector('i').classList.add('fa-bars');
+                        // Also close any open dropdowns
+                        dropdownToggles.forEach(toggle => {
+                            toggle.closest('.dropdown').classList.remove('dropdown-active');
+                        });
+                    }
+                });
+            });
+
+            // Dropdown toggle logic for mobile (click event)
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', (e) => {
+                    // Only apply this logic on mobile view (based on media query breakpoint)
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault(); // Prevent default link behavior
+                        const parentDropdown = toggle.closest('.dropdown');
+
+                        // Close other open dropdowns
+                        dropdownToggles.forEach(otherToggle => {
+                            const otherParentDropdown = otherToggle.closest('.dropdown');
+                            if (otherParentDropdown !== parentDropdown) {
+                                otherParentDropdown.classList.remove('dropdown-active');
+                            }
+                        });
+
+                        // Toggle the clicked dropdown
+                        parentDropdown.classList.toggle('dropdown-active');
                     }
                 });
             });
