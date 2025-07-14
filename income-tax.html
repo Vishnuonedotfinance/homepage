@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Tax Services - One.Finance</title>
+    <!-- Favicon (optional, replace with your own) -->
+    <link rel="icon" href="icon.png" type="image/png">
+
+    <!-- Google Fonts: Inter for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- CSS Variables for consistent branding --- */
+        :root {
+            --primary-color: #1A8917; /* Original One.Finance Green */
+            --primary-dark: #167A14;  /* Darker shade of primary */
+            --text-dark: #333333; /* Dark text color, now used as main dark background */
+            --text-light: #666666; /* Lighter dark text color */
+            --bg-light: #F8F8F8; /* Light background for sections */
+            --bg-white: #FFFFFF; /* White background for sections */
+            --border-color: #E0E0E0;
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --font-family: 'Inter', sans-serif;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+        }
+
+        /* --- Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            line-height: 1.6;
+            background-color: var(--text-dark); /* Main website background is now dark */
+            color: var(--bg-white); /* Default text color for elements directly on body background */
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            color: var(--bg-white); /* Default heading color for dark backgrounds */
+            margin-bottom: 0.4em;
+        }
+
+        /* Override heading colors for sections with light backgrounds */
+        .section-white h2, .section-white h3, .section-white h4, .section-white h5, .section-white h6,
+        .section-light h2, .section-light h3, .section-light h4, .section-light h5, .section-light h6 {
+            color: var(--primary-color); /* Headings in light sections are green */
+        }
+        .section-white p, .section-light p {
+            color: var(--text-light); /* Paragraphs in light sections are light dark */
+        }
+
+        h1 { font-size: 3.2em; line-height: 1.1; }
+        h2 { font-size: 2.5em; }
+        h3 { font-size: 1.8em; }
+        p { margin-bottom: 0.6em; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* --- Header --- */
+        .header {
+            background-color: var(--bg-white); /* Header remains white for contrast */
+            padding: 0.7rem 0;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 38px;
+            margin-right: 0; /* Changed to 0 to remove space next to logo */
+            border-radius: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-dark); /* Nav links are dark on white header */
+            font-weight: 500;
+            font-size: 1em;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* Dropdown Menu for Services */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-light);
+            list-style: none;
+            min-width: 200px;
+            z-index: 10;
+            border-radius: var(--border-radius-sm);
+            padding: 0.4rem 0;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-menu li a {
+            padding: 8px 18px;
+            display: block;
+            white-space: nowrap;
+            font-size: 0.95em;
+            color: var(--text-dark); /* Dropdown links are dark on white background */
+        }
+
+        .dropdown-menu li a:hover {
+            background-color: var(--bg-light);
+            color: var(--primary-color);
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            font-size: 1.6em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-dark); /* Hamburger icon is dark on white header */
+        }
+
+        /* --- Page Specific Styles (Income Tax Service Page) --- */
+        .service-banner {
+            background-color: var(--text-dark); /* Changed to dark background */
+            color: var(--bg-white); /* Text color for dark background */
+            padding: 3rem 0; /* Adjusted padding */
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 350px; /* Adjusted height */
+            position: relative;
+            overflow: hidden; /* Ensure image doesn't spill */
+        }
+
+        /* Subtle background animation for the banner */
+        .service-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(26, 137, 23, 0.15) 0%, transparent 70%);
+            animation: banner-glow 15s infinite alternate ease-in-out;
+            z-index: 0;
+        }
+
+        @keyframes banner-glow {
+            0% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.2) rotate(10deg); opacity: 0.7; }
+            100% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
+        }
+
+
+        .service-banner .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+
+        .banner-content-left {
+            flex: 2;
+            text-align: left;
+            padding-right: 1rem;
+        }
+
+        .banner-content-left h1 {
+            font-size: 3.2em;
+            margin-bottom: 0.4em;
+            line-height: 1.1;
+            color: var(--bg-white); /* Changed to white for dark background */
+        }
+
+        .banner-content-left p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: var(--bg-white); /* Changed to white for dark background */
+            margin-bottom: 1.5em;
+        }
+
+        .banner-image-right {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* General section styling */
+        .section {
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .section-light {
+            background-color: var(--bg-light);
+        }
+
+        .section-white {
+            background-color: var(--bg-white);
+        }
+
+        .section-heading {
+            font-size: 2.2em;
+            margin-bottom: 0.8rem;
+        }
+
+        .section-subheading {
+            font-size: 1em;
+            max-width: 700px;
+            margin: 0 auto 1.8rem;
+        }
+
+        .content-block {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            text-align: left;
+        }
+
+        .content-block:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .content-block .text-content {
+            flex: 2;
+        }
+
+        .content-block .image-content {
+            flex: 1;
+            min-width: 300px;
+            display: flex; /* Added for centering image */
+            justify-content: center; /* Added for centering image */
+            align-items: center; /* Added for centering image */
+        }
+
+        .content-block img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .content-block h3 {
+            color: var(--primary-color);
+            font-size: 1.8em;
+            margin-bottom: 0.5em;
+        }
+
+        .content-block p {
+            color: var(--text-dark);
+            font-size: 1em;
+            margin-bottom: 1em;
+        }
+
+        /* Specific styling for the bullet points in the "Your Tax Journey, Reimagined" section */
+        .tax-journey-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 1em;
+        }
+
+        .tax-journey-list li {
+            color: var(--text-dark);
+            margin-bottom: 0.8em;
+            display: flex;
+            align-items: flex-start;
+            font-weight: 500;
+        }
+
+        .tax-journey-list li i.fa-check-circle {
+            margin-right: 0.8em;
+            color: var(--primary-color);
+            font-size: 1.2em;
+            flex-shrink: 0;
+            margin-top: 0.2em;
+        }
+
+
+        /* Key Aspects / Full Stack Services Grid */
+        .tax-services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.8rem;
+        }
+
+        .tax-service-card {
+            background-color: var(--bg-white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-light);
+            text-align: left;
+            position: relative; /* Needed for pseudo-element hover */
+            overflow: hidden; /* Ensures gradient doesn't spill */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; /* For aligning icon and text */
+            flex-direction: column;
+            align-items: flex-start; /* Align content to the left */
+        }
+
+        .tax-service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 137, 23, 0.05) 0%, rgba(26, 137, 23, 0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .tax-service-card:hover::before {
+            opacity: 1;
+        }
+
+        .tax-service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+        }
+
+        .tax-service-card .icon {
+            font-size: 2.2em; /* Slightly larger icon */
+            color: var(--primary-color);
+            background-color: var(--bg-light); /* Light background for icon */
+            border-radius: 50%; /* Circular background */
+            width: 60px; /* Fixed width */
+            height: 60px; /* Fixed height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.8em; /* Adjusted margin */
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); /* Subtle inner shadow */
+            position: relative; /* Ensure icon is above pseudo-element */
+            z-index: 1;
+        }
+
+        .tax-service-card h4 {
+            color: var(--text-dark);
+            font-size: 1.3em; /* Slightly larger heading */
+            margin-bottom: 0.4em;
+            position: relative; /* Ensure text is above pseudo-element */
+            z-index: 1;
+        }
+
+        .tax-service-card p {
+            color: var(--text-light);
+            font-size: 0.95em; /* Slightly larger paragraph */
+            position: relative; /* Ensure text is above pseudo-element */
+            z-index: 1;
+        }
+
+        /* --- New Section: Stats Counter --- */
+        .section-stats {
+            background-color: var(--primary-color); /* Green background for impact */
+            color: var(--bg-white);
+            padding: 3rem 0; /* Slightly reduced padding */
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .section-stats h2 {
+            color: var(--bg-white);
+            margin-bottom: 0.5em;
+        }
+
+        .stat-number {
+            font-size: 4em; /* Slightly smaller number */
+            font-weight: 800;
+            margin-bottom: 0.2em;
+            display: block;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .stat-text {
+            font-size: 1.3em; /* Slightly smaller text */
+            font-weight: 500;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- Generic CTA Form Section --- */
+        .cta-form-section {
+            background-color: var(--bg-white);
+            padding: 2.5rem 0;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        .cta-form-section h3 {
+            font-size: 1.6em;
+            margin-bottom: 0.8rem;
+            color: var(--primary-color);
+        }
+
+        .cta-form-section .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-medium);
+            text-align: left;
+        }
+
+        .cta-form-section .form-field {
+            margin-bottom: 0.8rem;
+        }
+
+        .cta-form-section label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.85em;
+        }
+
+        .cta-form-section input[type="text"],
+        .cta-form-section input[type="email"],
+        .cta-form-section input[type="tel"],
+        .cta-form-section select,
+        .cta-form-section textarea {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-family: var(--font-family);
+            font-size: 0.9em;
+            color: var(--text-dark);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-form-section input:focus,
+        .cta-form-section select:focus,
+        .cta-form-section textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 137, 23, 0.15);
+        }
+
+        .cta-form-section textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .cta-form-section .btn {
+            width: 100%;
+            margin-top: 1rem;
+            font-size: 1em;
+            padding: 0.8rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--text-dark);
+            color: var(--bg-white);
+            padding: 2rem 0;
+            font-size: 0.8em;
+        }
+
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .footer-col h4 {
+            color: var(--bg-white);
+            margin-bottom: 0.7rem;
+            font-size: 1em;
+        }
+
+        .footer-col p, .footer-col a {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .footer-col a:hover {
+            color: var(--bg-white);
+        }
+
+        .social-links {
+            margin-top: 0.7rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            color: var(--bg-white);
+            font-size: 1.3em;
+            margin-right: 0.7rem;
+            transition: transform 0.2s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- Animations --- */
+        .animated-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .animated-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered animation for list items */
+        .tax-journey-list li.animated-item {
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 1.8em; }
+            h3 { font-size: 1.4em; }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .service-banner .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .banner-content-left {
+                padding-right: 0;
+                text-align: center;
+            }
+            .banner-image-right {
+                margin-top: 1.5rem;
+            }
+
+            .content-block {
+                flex-direction: column;
+                text-align: center;
+            }
+            .content-block .image-content {
+                margin-top: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 3em; /* Adjusted for responsiveness */
+            }
+            .stat-text {
+                font-size: 1.1em; /* Adjusted for responsiveness */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .service-banner {
+                padding: 3rem 0;
+                min-height: 200px;
+            }
+            .service-banner h1 {
+                font-size: 2.2em;
+            }
+            .section {
+                padding: 2.5rem 0;
+            }
+            .section-heading {
+                font-size: 1.8em;
+            }
+            .section-subheading {
+                font-size: 0.9em;
+            }
+            .tax-services-grid {
+                grid-template-columns: 1fr; /* Stack cards on small screens */
+            }
+            .menu-toggle {
+                display: block; /* Show hamburger on smaller screens */
+            }
+            .nav-menu {
+                display: none; /* Hide nav menu by default on smaller screens */
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--bg-white);
+                position: absolute;
+                top: 60px; /* Adjust based on header height */
+                left: 0;
+                box-shadow: var(--shadow-medium);
+                padding: 1rem 0;
+                border-radius: var(--border-radius-sm);
+            }
+            .nav-menu.active {
+                display: flex; /* Show nav menu when active */
+            }
+            .nav-menu li {
+                width: 100%;
+                text-align: center;
+                padding: 0.8rem 1.5rem;
+                display: block;
+            }
+            .nav-menu a::after {
+                display: none; /* Hide underline on mobile menu */
+            }
+            .dropdown-menu {
+                position: static; /* Remove absolute positioning for mobile */
+                box-shadow: none;
+                border-radius: 0;
+                padding: 0;
+                min-width: unset;
+                transform: none;
+                opacity: 1;
+                visibility: visible;
+                display: none; /* Hidden by default, toggled by JS if needed */
+            }
+            .dropdown:hover .dropdown-menu {
+                display: none; /* Override hover for mobile */
+            }
+            /* You might need JS to toggle dropdown-menu visibility on click for mobile */
+
+            .stat-number {
+                font-size: 2.5em; /* Adjusted for responsiveness */
+            }
+            .stat-text {
+                font-size: 1em; /* Adjusted for responsiveness */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.8rem;
+            }
+            .service-banner h1 {
+                font-size: 1.8em;
+            }
+            .section-heading {
+                font-size: 1.6em;
+            }
+            .section-subheading {
+                font-size: 0.8em;
+            }
+            .stat-number {
+                font-size: 2em; /* Adjusted for responsiveness */
+            }
+            .stat-text {
+                font-size: 0.8em; /* Adjusted for responsiveness */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header" id="home">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="One.Finance Logo">
+            </a>
+            <nav>
+                <button class="menu-toggle" aria-label="Toggle navigation menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Services <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cfo-service.html">CFO Service</a></li>
+                            <li><a href="income-tax.html">Income Tax Consultation</a></li>
+                            <li><a href="gst-filing.html">GST Filing & Registration</a></li>
+                            <li><a href="other-service.html">Other Service</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Tools <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="income-tax-calculator.html">Income Tax Calculator</a></li>
+                            <li><a href="invoice-generator.html">Invoice Generator</a></li>
+                            <li><a href="rental-agreement-generator.html">Rental Agreement Generator</a></li>
+                            <li><a href="#" onclick="return false;">Loan Prepayment Planner (Coming Soon)</a></li>
+                            <li><a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai" target="_blank">One.finance AI</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="#cta-form">Talk to us</a></li> <!-- Changed text and linked to CTA -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Service Banner Section -->
+    <section class="service-banner">
+        <div class="container">
+            <div class="banner-content-left animated-item">
+                <h1>Stress-Free Tax Filing. Simplified for You.</h1>
+                <p>Navigate income tax with ease. Our experts ensure accurate filings, maximum savings, and full compliance for individuals and businesses.</p>
+                <a href="#cta-form" class="btn btn-primary">File your Income Tax Return</a>
+            </div>
+            <div class="banner-image-right animated-item">
+                <img src="it1.png" alt="Person working on tax documents with a calculator and computer" style="max-width: 100%; height: auto; border-radius: var(--border-radius-md); box-shadow: var(--shadow-medium);">
+            </div>
+        </div>
+    </section>
+
+    <!-- Your Tax Journey, Reimagined Section -->
+    <section class="section section-white">
+        <div class="container">
+            <h2 class="section-heading animated-item">Your Tax Journey, Reimagined</h2>
+            <div class="content-block">
+                <div class="text-content animated-item">
+                    <p class="section-subheading" style="text-align: left; margin: 0 0 1.5em 0;">
+                        We get it—you’re balancing a demanding job, family, goals, and everything in between. Tax filing? It often ends up last on the list — confusing, rushed, and stressful. That’s where One.Finance steps in. We’re not just here to crunch numbers. We’re here to listen, simplify, and make sure you never miss a deduction or deadline. You deserve more than just a tax service—you deserve someone who truly gets what’s at stake. With us, your taxes are handled with care, accuracy, and a little less worry.
+                    </p>
+                </div>
+                <div class="image-content animated-item" style="transition-delay: 0.2s;">
+                    <img src="it2.png" alt="Person looking relieved after dealing with taxes.">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Section: Our Impact (Moved and styled) -->
+    <section class="section-stats animated-item" id="impact-stats">
+        <div class="container">
+            <h2 class="section-heading">Our Impact, Quantified</h2>
+            <span class="stat-number" id="returnsFiledCounter">0+</span>
+            <p class="stat-text">Income Tax Returns Filed Till Now</p>
+        </div>
+    </section>
+
+    <!-- Our Income Tax Expertise Section -->
+    <section class="section section-light">
+        <div class="container">
+            <h2 class="section-heading animated-item">Our Income Tax Expertise: Tailored for You</h2>
+            <p class="section-subheading animated-item">
+                
+            </p>
+            <div class="content-block">
+                <div class="image-content animated-item" style="transition-delay: 0.2s;">
+                    <img src="it3.png" alt="Financial planning and tax optimization">
+                </div>
+                <div class="text-content">
+                    <h3 class="animated-item">Precision Tax Solutions for Every Need</h3>
+                    <p class="animated-item">
+                        <strong>For Individuals:</strong> Accurate personal ITR filings, maximizing refunds and minimizing liabilities.
+                    </p>
+                    <p class="animated-item" style="transition-delay: 0.1s;">
+                        <strong>For Businesses & Startups:</strong> End-to-end corporate tax compliance, advance tax, and strategic planning.
+                    </p>
+                    <p class="animated-item" style="transition-delay: 0.2s;">
+                        <strong>Expert Advisory:</strong> Forward-looking tax guidance for sustainable financial decisions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comprehensive Tax Services Section -->
+    <section class="section section-white">
+        <div class="container">
+            <h2 class="section-heading animated-item">Comprehensive Income Tax Services</h2>
+            <p class="section-subheading animated-item">
+                
+            </p>
+            <div class="tax-services-grid">
+                <div class="tax-service-card animated-item">
+                    <i class="fas fa-file-alt icon"></i>
+                    <h4>ITR Filing</h4>
+                    <p>Effortless and accurate Income Tax Return filing for individuals and businesses.</p>
+                </div>
+                <div class="tax-service-card animated-item" style="transition-delay: 0.1s;">
+                    <i class="fas fa-calculator icon"></i>
+                    <h4>Tax Planning</h4>
+                    <p>Strategic guidance to legally reduce your tax burden and optimize savings.</p>
+                </div>
+                <div class="tax-service-card animated-item" style="transition-delay: 0.2s;">
+                    <i class="fas fa-percentage icon"></i>
+                    <h4>TDS/TCS Compliance</h4>
+                    <p>Complete support for TDS/TCS calculations, deductions, payments, and returns.</p>
+                </div>
+                <div class="tax-service-card animated-item" style="transition-delay: 0.3s;">
+                    <i class="fas fa-calendar-alt icon"></i>
+                    <h4>Advance Tax</h4>
+                    <p>Timely, precise support on advance tax to help you avoid penalties and interest.</p>
+                </div>
+                <div class="tax-service-card animated-item" style="transition-delay: 0.4s;">
+                    <i class="fas fa-gavel icon"></i>
+                    <h4>Litigation Support</h4>
+                    <p>Expert representation and assistance during tax Litigation and assessments.</p>
+                </div>
+                <div class="tax-service-card animated-item" style="transition-delay: 0.5s;">
+                    <i class="fas fa-question-circle icon"></i>
+                    <h4>Tax Advisory</h4>
+                    <p>Personalized consultation for clear tax understanding and compliance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Generic CTA Form Section -->
+    <section class="cta-form-section" id="cta-form">
+        <div class="container animated-item">
+            <h3>Ready to Simplify Your Taxes?</h3>
+            <div class="form-container">
+                <form action="https://formspree.io/f/mkgberpq" method="post">
+                    <div class="form-field">
+                        <label for="cta-name">Your Name</label>
+                        <input type="text" id="cta-name" name="name" required placeholder="Name">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-email">Email</label>
+                        <input type="email" id="cta-email" name="email" required placeholder="Email">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-phone">Mobile Number</label>
+                        <input type="tel" id="cta-phone" name="phone" placeholder="+91 9876543210">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-service-interest">Service you're looking for</label>
+                        <select id="cta-service-interest" name="service_interest">
+                            <option value="">-- Select a Service --</option>
+                            <option value="Virtual CFO">Virtual CFO Services</option>
+                            <option value="Income Tax" selected>Income Tax Consultation</option>
+                            <option value="GST">GST Filing & Registration</option>
+                            <option value="Other">Company Incorporation</option>                            
+                            <option value="Bookkeeping Services">Bookkeeping Services</option>
+                            <option value="MIS Reports">MIS Reports</option>
+                            <option value="Accounting Advisory">Accounting Advisory</option>
+                            <option value="Other">Other Services</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-message">Tell us more about your needs</label>
+                        <textarea id="cta-message" name="message" rows="4" placeholder=" "></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </form>
+                <div id="form-message" class="form-message"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-col">
+                <h4>One.Finance</h4>
+                <p>Your dedicated CFO Buddy for startups, handling finances end-to-end so you can focus on building your dream.</p>
+                <div class="social-links">                    
+                    <a href="https://www.linkedin.com/company/onedotfinance/" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.instagram.com/one.finance_?igsh=MTNuemFrdnBkbGhkZg%3D%3D&utm_source=qr" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>                        
+                <a href="blog.html">Blog</a>
+                <a href="#cta-form">Talk to us</a> <!-- Linked to CTA -->
+            </div>
+            <div class="footer-col">
+                <h4>Our Services</h4>
+                <a href="cfo-service.html">Virtual CFO Services</a>
+                <a href="income-tax.html">Income Tax Consultation</a>
+                <a href="gst-filing.html">GST Filing & Registration</a>
+                <a href="other-service.html">Other Service</a>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <a href="income-tax-calculator.html">Income Tax Calculator</a>
+                <a href="invoice-generator.html">Invoice Generator</a>
+                <a href="rental-agreement-generator.html">Rental Agreement Generator</a>
+                <a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai">One.finance AI</a>                
+            </div>
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <p>Email: <a href="mailto:vishnu@onedotfinance.com">vishnu@onedotfinance.com</a></p>
+                <p>Phone: <a href="tel:+917373772883">+91 7373772883</p>
+                <p>Address: RR Tower 3, SIDCO, Guindy, Chennai - 600032</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 One.Finance. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('.header');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            // Sticky header functionality
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.style.padding = '0.6rem 0';
+                    header.style.boxShadow = 'var(--shadow-medium)';
+                } else {
+                    header.style.padding = '0.7rem 0';
+                    header.style.boxShadow = 'var(--shadow-light)';
+                }
+            });
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                menuToggle.querySelector('i').classList.toggle('fa-bars');
+                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+            });
+
+            // Close mobile menu when a link is clicked
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // Smooth scrolling for anchor links (only for current page anchors)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    // Only smooth scroll if the href is an internal anchor on the same page
+                    if (this.pathname === window.location.pathname) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Intersection Observer for animations
+            const animateOnScroll = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        // For staggered list items, apply animation to children
+                        if (entry.target.classList.contains('tax-journey-list')) {
+                            Array.from(entry.target.children).forEach((child, index) => {
+                                setTimeout(() => {
+                                    child.classList.add('is-visible');
+                                }, index * 100); // Stagger by 100ms
+                            });
+                        }
+                        // Trigger counter animation for the stats section
+                        if (entry.target.id === 'impact-stats') {
+                            animateCounter('returnsFiledCounter', 5000, 2000); // Target ID, final value, duration in ms
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            };
+
+            const options = {
+                threshold: 0.2 // Trigger when 20% of the element is visible
+            };
+
+            const observer = new IntersectionObserver(animateOnScroll, options);
+
+            // Observe elements for animation
+            document.querySelectorAll('.animated-item').forEach(el => {
+                // For list items, observe the parent ul, and apply staggered animation to children
+                if (!el.parentElement.classList.contains('tax-journey-list')) {
+                    observer.observe(el);
+                }
+            });
+            // Separately observe the tax-journey-list and impact-stats to trigger their children's/own animations
+            document.querySelectorAll('.tax-journey-list, #impact-stats').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Function to animate a counter
+            function animateCounter(id, targetValue, duration) {
+                const obj = document.getElementById(id);
+                if (!obj) return; // Exit if element not found
+
+                let startValue = 0;
+                let startTime = null;
+
+                function step(currentTime) {
+                    if (!startTime) startTime = currentTime;
+                    const progress = Math.min((currentTime - startTime) / duration, 1);
+                    const currentValue = Math.floor(progress * targetValue);
+                    obj.textContent = currentValue + '+';
+
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    }
+                }
+                requestAnimationFrame(step);
+            }
+        });
+    </script>
+</body>
+</html>
