@@ -1,135 +1,1783 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home — One.Finance</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-  <style>body { font-family: 'Inter', sans-serif; }</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One.Finance - Your CFO Buddy for Startups</title>
+    <!-- Favicon (optional, replace with your own) -->
+    <link rel="icon" href="icon.png" type="image/png">
+
+    <!-- Google Fonts: Inter for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- CSS Variables for consistent branding --- */
+        :root {
+            --primary-color: #1A8917; /* Original One.Finance Green */
+            --primary-dark: #167A14;  /* Darker shade of primary */
+            --text-dark: #333333; /* Dark text color, now used as main dark background */
+            --text-light: #666666; /* Lighter dark text color */
+            --bg-light: #F8F8F8; /* Light background for sections */
+            --bg-white: #FFFFFF; /* White background for sections */
+            --border-color: #E0E0E0;
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --font-family: 'Inter', sans-serif;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+        }
+
+        /* --- Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            line-height: 1.6;
+            background-color: var(--text-dark); /* Main website background is now dark */
+            color: var(--bg-white); /* Default text color for elements directly on body background */
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            color: var(--bg-white); /* Default heading color for dark backgrounds */
+            margin-bottom: 0.4em; /* Further reduced */
+        }
+
+        /* Override heading colors for sections with light backgrounds */
+        .section-white h2, .section-white h3, .section-white h4, .section-white h5, .section-white h6,
+        .section-light h2, .section-light h3, .section-light h4, .section-light h5, .section-light h6 {
+            color: var(--primary-color); /* Headings in light sections are green */
+        }
+        .section-white p, .section-light p {
+            color: var(--text-light); /* Paragraphs in light sections are light dark */
+        }
+
+
+        h1 { font-size: 3.2em; line-height: 1.1; }
+        h2 { font-size: 2.5em; }
+        h3 { font-size: 1.8em; }
+        p { margin-bottom: 0.6em; } /* Further reduced */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* --- Header --- */
+        .header {
+            background-color: var(--bg-white); /* Header remains white for contrast */
+            padding: 0.7rem 0;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 38px;
+            margin-right: 0; /* Changed to 0 to remove space next to logo */
+            border-radius: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-dark); /* Nav links are dark on white header */
+            font-weight: 500;
+            font-size: 1em;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* Dropdown Menu for Services */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-light);
+            list-style: none;
+            min-width: 200px;
+            z-index: 10;
+            border-radius: var(--border-radius-sm);
+            padding: 0.4rem 0;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-menu li a {
+            padding: 8px 18px;
+            display: block;
+            white-space: nowrap;
+            font-size: 0.95em;
+            color: var(--text-dark); /* Dropdown links are dark on white background */
+        }
+
+        .dropdown-menu li a:hover {
+            background-color: var(--bg-light);
+            color: var(--primary-color);
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            font-size: 1.6em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-dark); /* Hamburger icon is dark on white header */
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            background-image: url('hero-bg.jpg'); /* Backdrop image */
+            background-size: cover;
+            background-position: center;
+            color: var(--bg-white);
+            padding: 3rem 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column; /* Changed to column to stack items */
+            align-items: center;
+            justify-content: center;
+            min-height: 380px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55); /* Slightly darker overlay */
+            z-index: 0;
+        }
+
+        /* Tax Season Message (now subtle at the bottom of hero content) */
+        .tax-season-promo-box {
+            position: relative; /* Changed to relative */
+            margin-top: 2.5em; /* Increased space from main CTA */
+            background-color: var(--bg-white);
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.9em;
+            font-weight: 600;
+            z-index: 1; /* Within hero content */
+            box-shadow: var(--shadow-medium);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            text-align: center;
+            max-width: 350px; /* Increased max-width for better readability */
+            line-height: 1.2;
+            display: flex; /* For icon and text alignment */
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            animation: pulse 2s infinite ease-in-out; /* Added pulse animation */
+        }
+
+        .tax-season-promo-box:hover {
+            transform: translateY(-3px) scale(1.02);
+            background-color: var(--bg-light);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .hero-content {
+            max-width: 700px;
+            z-index: 1;
+            animation: fadeInScale 1s ease-out forwards;
+            display: flex; /* Use flex to stack elements within hero-content */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .hero h1 {
+            color: var(--bg-white);
+            font-size: 3.2em; /* Increased font size for impact */
+            margin-bottom: 0.3em;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .hero p {
+            font-size: 1.1em; /* Increased font size for impact */
+            margin-bottom: 1.5em;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero .btn {
+            font-size: 1em;
+            padding: 0.8rem 2rem;
+            border-radius: var(--border-radius-md);
+            background-color: var(--bg-white); /* Changed to white */
+            color: var(--primary-color); /* Changed to green */
+            font-weight: 700;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        .hero .btn:hover {
+            background-color: var(--bg-light); /* Slightly off-white on hover */
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Section Styling --- */
+        .section {
+            padding: 3rem 0; /* Further reduced padding */
+            text-align: center;
+        }
+
+        .section-light {
+            background-color: var(--bg-light); /* Light background for content blocks */
+        }
+
+        .section-white {
+            background-color: var(--bg-white); /* White background for content blocks */
+        }
+
+        .section-heading {
+            font-size: 2.2em;
+            margin-bottom: 0.8rem; /* Further reduced */
+        }
+
+        .section-subheading {
+            font-size: 1em;
+            max-width: 650px;
+            margin: 0 auto 1.8rem; /* Further reduced */
+        }
+
+        /* --- About Section --- */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 1.8rem; /* Further reduced */
+            text-align: left;
+        }
+
+        .about-text {
+            flex: 2;
+            opacity: 0; /* Hidden for animation */
+            transform: translateY(20px); /* Start position for animation */
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .about-text.animated-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-image {
+            flex: 1;
+            min-width: 200px;
+            opacity: 0; /* Hidden for animation */
+            transform: translateY(20px); /* Start position for animation */
+            transition: opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s; /* Delayed animation */
+        }
+        .about-image.animated-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* --- Our Impact Section (New) --- */
+        .impact-section {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%); /* Changed to green gradient */
+            color: var(--bg-white);
+            padding: 2.5rem 0; /* Further reduced padding */
+            text-align: center;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(140px, 1fr)); /* 3 columns for two rows, slightly smaller min width */
+            gap: 1rem; /* Further reduced gap */
+            margin-top: 1.2rem; /* Further reduced margin */
+            justify-content: center; /* Center the grid items */
+        }
+
+        .impact-card {
+            background-color: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+            padding: 0.8rem; /* Further reduced padding */
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-light);
+            backdrop-filter: blur(5px); /* Frosted glass effect */
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .impact-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .impact-card .icon {
+            font-size: 1.8em; /* Further reduced */
+            color: var(--bg-white);
+            margin-bottom: 0.2em; /* Further reduced */
+        }
+
+        .impact-card .number {
+            font-size: 2em; /* Further reduced */
+            font-weight: 800;
+            color: var(--bg-white);
+            line-height: 1;
+            margin-bottom: 0.1em;
+        }
+
+        .impact-card .label {
+            font-size: 0.85em; /* Further reduced */
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        /* --- Our Approach Section (Slider) --- */
+        .humanize-section-wrapper {
+            position: relative;
+            max-width: 950px; /* Made slider wider */
+            margin: 0 auto;
+            overflow: hidden; /* Hide overflowing slides */
+        }
+
+        .humanize-section-slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .humanize-card {
+            flex: 0 0 100%; /* Each card takes full width of the slider */
+            display: flex; /* Keep flex for content within the card */
+            align-items: center;
+            gap: 2rem; /* Increased gap */
+            background-color: var(--bg-white);
+            padding: 2.5rem; /* Increased padding */
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-light);
+            text-align: left; /* Ensure text alignment is consistent */
+        }
+
+        .humanize-card:nth-child(even) {
+            flex-direction: row-reverse; /* Alternate image and text */
+        }
+
+        .humanize-card img {
+            flex: 1;
+            max-width: 40%; /* Made image larger */
+            height: auto;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-medium);
+            object-fit: cover; /* Ensure image covers area */
+        }
+
+        .humanize-card .text-content {
+            flex: 2;
+        }
+
+        .humanize-card h3 {
+            color: var(--primary-color); /* Headings in this light section are green */
+            font-size: 1.6em; /* Slightly larger heading */
+        }
+
+        .humanize-card p {
+            color: var(--text-dark); /* Paragraphs in this light section are dark */
+            font-size: 1em; /* Slightly larger paragraph */
+        }
+
+        /* Removed slider-nav styles as buttons are removed */
+        /*
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: var(--bg-white);
+            border: none;
+            padding: 10px 16px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 1.5em;
+            z-index: 10;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .slider-nav:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .prev-btn {
+            left: -20px;
+        }
+
+        .next-btn {
+            right: -20px;
+        }
+        */
+
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .dot.active {
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        /* --- Services Section (Home Page Overview) --- */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.8rem;
+        }
+
+        .service-card {
+            background-color: var(--bg-white);
+            padding: 1.8rem;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.8s ease-out, transform 0.8s ease-out; /* Added animation properties */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Initial state for animation */
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        /* State when animated/visible */
+        .service-card.animated-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Crucial change: use opacity/visibility instead of display: none */
+        .service-card.hidden-service {
+            opacity: 0;
+            visibility: hidden;
+            /* Ensure it doesn't take up space when hidden, but allows transition */
+            position: absolute;
+            pointer-events: none;
+        }
+        /* When revealed, remove hidden-service and add animated-visible */
+        .service-card.revealed-service {
+            position: static; /* Restore normal positioning */
+            pointer-events: auto; /* Restore pointer events */
+            /* The animated-visible class will handle the opacity/transform */
+        }
+
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .service-card .icon {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 0.6em;
+        }
+
+        .service-card h3 {
+            color: var(--primary-color); /* Headings in this light section are green */
+            font-size: 1.3em;
+            margin-bottom: 0.4em;
+        }
+
+        .service-card p {
+            color: var(--text-light); /* Paragraphs in this light section are light dark */
+            font-size: 0.85em;
+            flex-grow: 1; /* Ensures cards with less text still align at bottom */
+        }
+        .service-card .btn-outline {
+            margin-top: 0.7rem;
+        }
+
+        /* --- Partners Section (New) --- */
+        .partners-section {
+            background-color: var(--bg-white); /* Light background for partners section */
+            padding: 3rem 0;
+            text-align: center;
+            overflow: hidden; /* Crucial for carousel */
+        }
+
+        .partners-carousel-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            margin-top: 1.8rem;
+        }
+
+        .partners-carousel-track {
+            display: flex;
+            width: fit-content; /* Allow content to dictate width */
+            animation: scroll-logos 30s linear infinite; /* Adjust duration as needed */
+        }
+
+        .partners-carousel-track:hover {
+            animation-play-state: paused;
+        }
+
+        .partner-logo {
+            flex-shrink: 0;
+            width: 140px;
+            height: 90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 12px;
+            transition: transform 0.3s ease;
+        }
+        .partner-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .partner-logo img {
+            max-width: 100%;
+            max-height: 70px;
+            object-fit: contain;
+            opacity: 1; /* Default to full opacity */
+            transition: opacity 0.3s ease; /* Keep opacity transition if needed for other effects */
+        }
+
+        @keyframes scroll-logos {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); } /* Scrolls half the width to loop seamlessly */
+        }
+
+
+        /* --- Testimonials Section --- */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.8rem;
+        }
+
+        .testimonial-card {
+            background-color: var(--bg-white); /* White background for testimonial cards */
+            padding: 1.5rem;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-light);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
+        }
+
+        .testimonial-card .quote {
+            font-style: italic;
+            color: var(--text-dark); /* Quote text is dark on white card */
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-card .author {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-top: auto; /* Pushes author to bottom */
+        }
+
+        .testimonial-card .author-title {
+            font-size: 0.8em;
+            color: var(--text-light);
+        }
+
+        /* --- Generic CTA Form Section --- */
+        .cta-form-section {
+            background-color: var(--bg-white); /* CTA form section background is white */
+            padding: 2.5rem 0;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        .cta-form-section h3 {
+            font-size: 1.6em;
+            margin-bottom: 0.8rem;
+            color: var(--primary-color); /* Heading is green */
+        }
+
+        .cta-form-section .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            background-color: var(--bg-light); /* Form container is light gray */
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-medium);
+            text-align: left;
+            position: relative; /* For loading overlay */
+        }
+
+        .cta-form-section .form-field {
+            margin-bottom: 0.8rem;
+        }
+
+        .cta-form-section label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            color: var(--text-dark); /* Label text is dark */
+            font-size: 0.85em;
+        }
+
+        .cta-form-section input[type="text"],
+        .cta-form-section input[type="email"],
+        .cta-form-section input[type="tel"],
+        .cta-form-section select,
+        .cta-form-section textarea {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-family: var(--font-family);
+            font-size: 0.9em;
+            color: var(--text-dark); /* Input text is dark */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-form-section input:focus,
+        .cta-form-section select:focus,
+        .cta-form-section textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 137, 23, 0.15);
+        }
+
+        .cta-form-section textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .cta-form-section .btn {
+            width: 100%;
+            margin-top: 1rem;
+            font-size: 1em;
+            padding: 0.8rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        /* Form feedback messages */
+        .form-message {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .form-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .form-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .form-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--border-radius-md);
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--text-dark); /* Footer remains dark */
+            color: var(--bg-white);
+            padding: 2rem 0;
+            font-size: 0.8em;
+            margin-top: auto; /* Pushes footer to the bottom */
+        }
+
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .footer-col h4 {
+            color: var(--bg-white); /* Changed to white */
+            margin-bottom: 0.7rem;
+            font-size: 1em;
+        }
+
+        .footer-col p, .footer-col a {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .footer-col a:hover {
+            color: var(--bg-white);
+        }
+
+        .social-links {
+            margin-top: 0.7rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            color: var(--bg-white);
+            font-size: 1.3em;
+            margin-right: 0.7rem;
+            transition: transform 0.2s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color); /* Changed to green */
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 1.8em; }
+            h3 { font-size: 1.4em; }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .about-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .about-text, .about-image {
+                flex: none;
+                width: 100%;
+            }
+            .about-image {
+                margin-top: 1.2rem;
+            }
+
+            .humanize-card {
+                flex-direction: column !important; /* Stack on smaller screens */
+                text-align: center;
+                gap: 1.2rem;
+                padding: 1.2rem;
+            }
+            .humanize-card img {
+                max-width: 70%; /* Adjust image size for stacked layout */
+                margin-bottom: 0.8rem;
+            }
+            .tax-season-promo-box {
+                margin-top: 1.5em; /* Adjust margin for smaller screens */
+            }
+            /* Removed slider-nav styles for smaller screens */
+            /*
+            .slider-nav {
+                padding: 8px 12px;
+                font-size: 1.2em;
+                left: -10px;
+                right: -10px;
+            }
+            */
+            .slider-dots {
+                margin-top: 0.8rem;
+            }
+            .impact-grid {
+                grid-template-columns: repeat(2, minmax(140px, 1fr)); /* 2 columns on tablets */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 2.5rem 0;
+                min-height: 300px;
+            }
+            .hero h1 {
+                font-size: 2em;
+            }
+            .hero p {
+                font-size: 0.9em;
+            }
+            .hero .btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9em;
+            }
+
+            .section {
+                padding: 2.5rem 0;
+            }
+            .section-heading {
+                font-size: 1.8em;
+            }
+            .section-subheading {
+                font-size: 0.9em;
+                margin-bottom: 1.5rem;
+            }
+
+            .header .nav-menu {
+                top: 55px; /* Below header */
+            }
+            .menu-toggle {
+                display: block; /* Show hamburger on smaller screens */
+                font-size: 1.5em;
+            }
+            .nav-menu {
+                display: none; /* Hide nav menu by default on smaller screens */
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--bg-white);
+                position: absolute;
+                top: 60px; /* Adjust based on header height */
+                left: 0;
+                box-shadow: var(--shadow-medium);
+                padding: 1rem 0;
+                border-radius: var(--border-radius-sm);
+            }
+            .nav-menu.active {
+                display: flex; /* Show nav menu when active */
+            }
+            .nav-menu li {
+                width: 100%;
+                text-align: center;
+                padding: 0.8rem 1.5rem;
+                display: block;
+            }
+            .nav-menu a::after {
+                display: none; /* Hide underline on mobile menu */
+            }            
+            .dropdown-menu {
+                position: static; /* Remove absolute positioning for mobile */
+                box-shadow: none;
+                border-radius: 0;
+                padding: 0;
+                min-width: unset;
+                transform: none;
+                opacity: 1;
+                visibility: visible;
+                display: none; /* Hidden by default, toggled by JS if needed */
+            }
+            .dropdown:hover .dropdown-menu {
+                display: none; /* Override hover for mobile */
+            }
+
+            .services-grid, .testimonials-grid, .approach-grid {
+                grid-template-columns: 1fr; /* Stack cards on small screens */
+            }
+            .partners-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns for logos on small mobile */
+            }
+            .impact-grid {
+                grid-template-columns: 1fr; /* 1 column on small mobile for impact charts */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.8rem;
+            }
+            .hero h1 {
+                font-size: 1.6em;
+            }
+            .hero p {
+                font-size: 0.8em;
+            }
+            .section-heading {
+                font-size: 1.4em;
+            }
+            .section-subheading {
+                font-size: 0.8em;
+            }
+            .service-card, .testimonial-card, .approach-card, .humanize-card, .impact-card {
+                padding: 1rem;
+            }
+            .partners-grid {
+                grid-template-columns: 1fr; /* Stack logos on very small screens */
+            }
+            .humanize-card img {
+                max-width: 100%; /* Full width for very small screens */
+            }
+            .tax-season-promo-box {
+                font-size: 0.8em;
+                margin-top: 1em;
+                padding: 8px 15px;
+            }
+            .impact-grid {
+                grid-template-columns: 1fr; /* Still 1 column on very small mobile */
+            }
+        }
+    </style>
 </head>
-<body class="bg-white text-gray-900">
+<body>
+    <!-- Header Section -->
+    <header class="header" id="home">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="One.Finance Logo">
+            </a>
+            <nav>
+                <button class="menu-toggle" aria-label="Toggle navigation menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Services <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cfo-service.html">CFO Service</a></li>
+                            <li><a href="income-tax.html">Income Tax Consultation</a></li>
+                            <li><a href="gst-filing.html">GST Filing & Registration</a></li>
+                            <li><a href="other-service.html">Other Service</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Tools <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="income-tax-calculator.html">Income Tax Calculator</a></li>
+                            <li><a href="invoice-generator.html">Invoice Generator</a></li>
+                            <li><a href="rental-agreement-generator.html">Rental Agreement Generator</a></li>
+                            <li><a href="#" onclick="return false;">Loan Prepayment Planner (Coming Soon)</a></li>
+                            <li><a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai" target="_blank">One.finance AI</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="#cta-form">Talk to us</a></li> <!-- Changed text and linked to CTA -->
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<!-- header -->
-<header class="bg-white shadow sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-    <img src="logo.png" alt="One.Finance Logo" class="h-10">
-    <nav class="hidden md:flex space-x-6">
-      <a href="index.html" class="text-sm font-semibold text-green-600">Home</a>
-      <a href="about.html" class="text-sm font-semibold hover:text-green-600">About</a>
-      <a href="services.html" class="text-sm font-semibold hover:text-green-600">Services</a>
-      <a href="tools.html" class="text-sm font-semibold hover:text-green-600">Tools</a>
-      <a href="resources.html" class="text-sm font-semibold hover:text-green-600">Resources</a>
-    </nav>
-    <a href="#contact" class="bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600">Book a Consultation</a>
-  </div>
-</header>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your CFO Buddy for Startup Success</h1>
+            <p>End-to-end financial management, so you can scale with confidence.</p>
+            <a href="#cta-form" class="btn btn-primary">Book a Consultation</a>
+            <div class="tax-season-promo-box" onclick="window.location.href='#cta-form'">
+                <i class="fas fa-calendar-alt"></i> Tax season is around the corner! Filing starts from ₹999/-
+            </div>
+        </div>
+    </section>
 
-<!-- hero -->
-<section class="bg-green-50 py-24 text-center" data-aos="fade-up">
-  <div class="max-w-4xl mx-auto px-4">
-    <h1 class="text-4xl font-extrabold text-green-700 mb-4 tracking-tight">We’re your CFO Buddy 🚀</h1>
-    <p class="text-lg text-gray-700">Scaling a startup? You focus on building. We’ll take care of your finances — end-to-end.</p>
-  </div>
-</section>
+    <!-- About Us Section (Overview) -->
+    <section class="section section-white" id="about">
+        <div class="container">
+            <h2 class="section-heading">Who We Are</h2>
+            <p class="section-subheading">
+                We're not consultants. We're your CFO Partner, focused on empowering startups with streamlined financial operations and sustainable growth.
+            </p>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>
+                        We simplify financial complexities, allowing founders to focus on innovation. From meticulous bookkeeping to strategic CFO decisions, we ensure your financial health is always in check.
+                    </p>
+                    <p>
+                        Our seasoned experts provide actionable insights, smart budgeting, and robust tax planning. Partner with us for clarity, control, and confidence in your financial future.
+                    </p>
+                    <a href="about.html" class="btn btn-outline">Learn More About Us</a>
+                </div>
+                <div class="about-image">
+                    <img src="whoweare.jpg" alt="Collaborative Professionals in a modern office">
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- how we operate -->
-<section class="py-20 bg-white" data-aos="fade-up">
-  <div class="max-w-6xl mx-auto px-6 text-center space-y-8">
-    <h2 class="text-3xl font-bold text-green-700">How We Work</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-      <div class="bg-green-50 p-6 rounded-xl shadow hover:shadow-md transition">
-        <h3 class="text-xl font-semibold mb-2">End-to-End Bookkeeping</h3>
-        <p>We manage your invoices, AR/AP, reconciliations, and filings — like clockwork.</p>
-      </div>
-      <div class="bg-green-50 p-6 rounded-xl shadow hover:shadow-md transition">
-        <h3 class="text-xl font-semibold mb-2">Insightful MIS Reports</h3>
-        <p>Monthly dashboards that give you clarity on cash, costs, and growth.</p>
-      </div>
-      <div class="bg-green-50 p-6 rounded-xl shadow hover:shadow-md transition">
-        <h3 class="text-xl font-semibold mb-2">Smart CFO Decisions</h3>
-        <p>From budgets to 3-year forecasts — we help you think ahead.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- Our Impact Section (New) -->
+    <section class="impact-section">
+        <div class="container">
+            <h2 class="section-heading" style="color: var(--bg-white);">Our Impact, Quantified</h2>
+            <p class="section-subheading" style="color: rgba(255, 255, 255, 0.9);">
+                Proudly supporting startups with tangible results.
+            </p>
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <i class="fas fa-rocket icon"></i>
+                    <div class="number" data-target="25">0</div>
+                    <div class="label">Startups Helped</div>
+                </div>
+                <div class="impact-card">
+                    <i class="fas fa-file-alt icon"></i>
+                    <div class="number" data-target="5000">0</div>
+                    <div class="label">Income Tax Returns Filed</div>
+                </div>
+                <div class="impact-card">
+                    <i class="fas fa-comments icon"></i>
+                    <div class="number" data-target="100">0</div>
+                    <div class="label">Companies Consulted</div>
+                </div>
+                <div class="impact-card">
+                    <i class="fas fa-building icon"></i>
+                    <div class="number" data-target="50">0</div>
+                    <div class="label">Companies Incorporated</div>
+                </div>
+                <div class="impact-card">
+                    <i class="fas fa-file-invoice icon"></i>
+                    <div class="number" data-target="60">0</div>
+                    <div class="label">GST Registrations</div>
+                </div>
+                <div class="impact-card">
+                    <i class="fas fa-calculator icon"></i>
+                    <div class="number" data-target="30">0</div>
+                    <div class="label">Bookkeeping Services</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- who we help -->
-<section class="py-20 bg-gradient-to-br from-white to-green-50" data-aos="fade-up">
-  <div class="text-center max-w-4xl mx-auto px-6">
-    <h2 class="text-3xl font-bold text-green-700 mb-4">We Help Startups Scale Up</h2>
-    <p class="text-gray-700 mb-8">Whether you're bootstrapped or backed, we’re the buddy you need in your financial journey.</p>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 items-center justify-center animate-pulse-slow">
-      <span class="font-semibold">Piperocket</span>
-      <span class="font-semibold">Vikrid</span>
-      <span class="font-semibold">Dolluz</span>
-      <span class="font-semibold">Sapienz</span>
-      <span class="font-semibold">Concise Engg</span>
-      <span class="font-semibold">Demand Gen</span>
-      <span class="font-semibold">Mispah</span>
-    </div>
-  </div>
-</section>
+    <!-- Our Approach / Why Choose Us Section (Humanized) -->
+    <section class="section section-light" id="approach">
+        <div class="container">
+            <h2 class="section-heading">Our Approach: Human-Focused, AI Driven</h2>
+            <p class="section-subheading">
+                We combine expert financial knowledge with a deep understanding of your startup's unique journey.
+            </p>
+            <div class="humanize-section-wrapper">
+                <div class="humanize-section-slider">
+                    <div class="humanize-card">
+                        <img src="H1.png" alt="Team members collaborating on a project with laptops">
+                        <div class="text-content">
+                            <h3>Collaborative Strategy Sessions</h3>
+                            <p>We partner closely with your team to translate complex financial data into clear, actionable strategies, aligning perfectly with your business goals.</p>
+                        </div>
+                    </div>
+                    <div class="humanize-card">
+                        <img src="H2.png" alt="A person analyzing financial charts on a screen">
+                        <div class="text-content">
+                            <h3>Data-Driven Insights.</h3>
+                            <p>Beyond the numbers, we deliver intuitive dashboards and reports, offering a clear, quick overview of your financial health for empowering smarter and faster decision making.</p>
+                        </div>
+                    </div>
+                    <div class="humanize-card">
+                        <img src="H3.png" alt="A financial advisor discussing with a client">
+                        <div class="text-content">
+                            <h3>Dedicated Expert Guidance</h3>
+                            <p>Your own dedicated finance expert offering personalised advise, timely support with a deep business understanding.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Removed navigation buttons -->
+                <!-- <button class="slider-nav prev-btn">❮</button> -->
+                <!-- <button class="slider-nav next-btn">❯</button> -->
+                <div class="slider-dots"></div>
+            </div>
+        </div>
+    </section>
 
-<!-- services preview -->
-<section class="py-20" data-aos="fade-up">
-  <div class="max-w-5xl mx-auto text-center px-6">
-    <h2 class="text-3xl font-bold text-green-700 mb-4">What We Do</h2>
-    <p class="text-lg text-gray-700 mb-8">We’re not consultants. We’re your CFO partner. Everything you need — none of the fluff.</p>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
-      <div class="p-6 bg-green-50 rounded-xl shadow hover:shadow-md transition">
-        <h3 class="text-xl font-semibold mb-2">Virtual CFO</h3>
-        <p>From client onboarding to strategy — one team, all through.</p>
-      </div>
-      <div class="p-6 bg-green-50 rounded-xl shadow hover:shadow-md transition">
-        <h3 class="text-xl font-semibold mb-2">GST Services</h3>
-        <p>Registrations, filings, compliance — we simplify the maze.</p>
-      </div>
-      <div class="p-6 bg-green-50 rounded-xl shadow hover:shadow-md transition">
-        <h3 class="text-xl font-semibold mb-2">Income Tax</h3>
-        <p>From planning to filing, we help founders save more.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- Services Section (Home Page Overview) -->
+    <section class="section section-white" id="services-overview">
+        <div class="container">
+            <h2 class="section-heading">Our Core Services</h2>
+            <p class="section-subheading">
+                We handle your finances end-to-end, providing clarity, compliance, and strategic insights.
+            </p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-handshake icon"></i>
+                    <h3>Virtual CFO Services</h3>
+                    <p>Strategic financial guidance, budgeting, forecasting, and financial modeling.</p>
+                    <a href="cfo-service.html" class="btn btn-outline">Learn More</a>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-file-invoice-dollar icon"></i>
+                    <h3>Income Tax Consultation</h3>
+                    <p>Optimize tax liabilities with expert planning and accurate filing.</p>
+                    <a href="income-tax.html" class="btn btn-outline">Learn More</a>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-file-invoice icon"></i>
+                    <h3>GST Filing & Registration</h3>
+                    <p>Hassle-free GST registration, accurate filings, and comprehensive compliance.</p>
+                    <a href="gst-filing.html" class="btn btn-outline">Learn More</a>
+                </div>
+                <div class="service-card hidden-service">
+                    <i class="fas fa-chart-line icon"></i>
+                    <h3>Accounting Advisory</h3>
+                    <p>Expert advice on accounting standards, financial reporting, and internal controls.</p>
+                    <a href="other-service.html" class="btn btn-outline">Learn More</a>
+                </div>
+                <div class="service-card hidden-service">
+                    <i class="fas fa-calculator icon"></i>
+                    <h3>Bookkeeping Services</h3>
+                    <p>Comprehensive and accurate recording of all financial transactions.</p>
+                    <a href="other-service.html" class="btn btn-outline">Learn More</a>
+                </div>
+                <div class="service-card hidden-service">
+                    <i class="fas fa-building icon"></i>
+                    <h3>Other Service</h3>
+                    <p>Expert assistance with various other financial and legal setups like Incorporations etc.</p>
+                    <a href="other-service.html" class="btn btn-outline">Learn More</a>
+                </div>
+            </div>
+            <div style="margin-top: 2rem;">
+                <button id="view-all-services-btn" class="btn btn-primary">View All Services</button>
+            </div>
+        </div>
+    </section>
 
-<!-- testimonials -->
-<section class="py-20 bg-green-50" data-aos="fade-up">
-  <div class="max-w-6xl mx-auto px-6 text-center">
-    <h2 class="text-2xl font-bold text-green-700 mb-8">What Founders Say</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div class="bg-white p-6 rounded-lg shadow">
-        <p class="text-gray-800 italic">“With One.Finance, we don’t worry about compliance or financial chaos. Their team acts like our in-house finance crew.”</p>
-        <p class="mt-4 font-semibold">— Founder, Piperocket</p>
-      </div>
-      <div class="bg-white p-6 rounded-lg shadow">
-        <p class="text-gray-800 italic">“They helped us clean up our books, make sense of our runway, and prep for growth. Total game-changer.”</p>
-        <p class="mt-4 font-semibold">— Co-founder, Demand Gen</p>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- Partners Section (New) -->
+    <section class="partners-section section-light">
+        <div class="container">
+            <h2 class="section-heading">Our Valued Partners</h2>
+            <p class="section-subheading">
+                Proud to have supported these innovative startups on their journey to financial success.
+            </p>
+            <div class="partners-carousel-container">
+                <div class="partners-carousel-track">
+                    <!-- Duplicate logos for seamless loop -->
+                    <div class="partner-logo"><img src="partner-a-logo.png" alt="Partner A Logo" title="Partner A"></div>
+                    <div class="partner-logo"><img src="partner-b-logo.png" alt="Partner B Logo" title="Partner B"></div>
+                    <div class="partner-logo"><img src="partner-c-logo.png" alt="Partner C Logo" title="Partner C"></div>
+                    <div class="partner-logo"><img src="partner-d-logo.png" alt="Partner D Logo" title="Partner D"></div>
+                    <div class="partner-logo"><img src="partner-e-logo.png" alt="Partner E Logo" title="Partner E"></div>
+                    <div class="partner-logo"><img src="partner-f-logo.png" alt="Partner F Logo" title="Partner F"></div>
+                    <div class="partner-logo"><img src="partner-g-logo.png" alt="Partner G Logo" title="Partner G"></div>
+                    <div class="partner-logo"><img src="partner-h-logo.png" alt="Partner H Logo" title="Partner H"></div>
+                    <div class="partner-logo"><img src="partner-i-logo.png" alt="Partner I Logo" title="Partner I"></div>
+                    <div class="partner-logo"><img src="partner-j-logo.png" alt="Partner J Logo" title="Partner J"></div>
+                    <!-- Duplicated set for seamless loop -->
+                    <div class="partner-logo"><img src="partner-a-logo.png" alt="Partner A Logo" title="Partner A"></div>
+                    <div class="partner-logo"><img src="partner-b-logo.png" alt="Partner B Logo" title="Partner B"></div>
+                    <div class="partner-logo"><img src="partner-c-logo.png" alt="Partner C Logo" title="Partner C"></div>
+                    <div class="partner-logo"><img src="partner-d-logo.png" alt="Partner D Logo" title="Partner D"></div>
+                    <div class="partner-logo"><img src="partner-e-logo.png" alt="Partner E Logo" title="Partner E"></div>
+                    <div class="partner-logo"><img src="partner-f-logo.png" alt="Partner F Logo" title="Partner F"></div>
+                    <div class="partner-logo"><img src="partner-g-logo.png" alt="Partner G Logo" title="Partner G"></div>
+                    <div class="partner-logo"><img src="partner-h-logo.png" alt="Partner H Logo" title="Partner H"></div>
+                    <div class="partner-logo"><img src="partner-i-logo.png" alt="Partner I Logo" title="Partner I"></div>
+                    <div class="partner-logo"><img src="partner-j-logo.png" alt="Partner J Logo" title="Partner J"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- contact form -->
-<section id="contact" class="bg-green-100 py-20 text-center" data-aos="fade-up">
-  <h2 class="text-2xl font-bold mb-4">Book a Consultation</h2>
-  <p class="mb-6">Drop your details below — we’ll reach out to help you right away.</p>
-  <form action="https://formspree.io/f/mkgberpq" method="POST" class="max-w-md mx-auto text-left space-y-4">
-    <input type="text" name="name" placeholder="Your Name" required class="w-full px-4 py-3 border rounded-md">
-    <input type="email" name="email" placeholder="Email Address" required class="w-full px-4 py-3 border rounded-md">
-    <input type="tel" name="mobile" placeholder="Mobile Number" pattern="[+]?[0-9]{10,15}" required class="w-full px-4 py-3 border rounded-md">
-    <button type="submit" class="w-full bg-green-600 text-white font-semibold py-3 rounded-md hover:bg-green-700">Submit</button>
-  </form>
-</section>
+    <!-- Testimonials Section (Home Page Overview) -->
+    <section class="section section-white" id="testimonials-overview">
+        <div class="container">
+            <h2 class="section-heading">Voices of Trust</h2>
+            <p class="section-subheading">
+                Hear directly from the startups thriving with One.Finance as their financial partner.
+            </p>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="quote">"With One.Finance, We don't worry about compliance or financial chaos. Their team acts like in-house finance team."</p>
+                    <div class="author">
+                        Cofounder, PipeRocket.
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="quote">"They helped us clean up our books, make sense of our runway, and prep for growth. Total game changer."</p>
+                    <div class="author">
+                        Founder, Vikird.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- footer -->
-<footer class="bg-gray-800 text-white py-6 text-center">
-  <p>&copy; 2025 One.Finance. All rights reserved.</p>
-</footer>
+    <!-- Generic CTA Form Section (for all pages) -->
+    <section class="cta-form-section" id="cta-form">
+        <div class="container">
+            <h3>Talk to your CFO Buddy!</h3>
+            <div class="form-container">
+                <form action="https://formspree.io/f/mkgberpq" method="post">
+                    <div class="form-field">
+                        <label for="cta-name">Your Name</label>
+                        <input type="text" id="cta-name" name="name" required placeholder="Name">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-email">Email</label>
+                        <input type="email" id="cta-email" name="email" required placeholder="Email">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-phone">Mobile Number</label>
+                        <input type="tel" id="cta-phone" name="phone" placeholder="+91 9876543210">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-service-interest">Service you're looking for</label>
+                        <select id="cta-service-interest" name="service_interest">
+                            <option value="">-- Select a Service --</option>
+                            <option value="Virtual CFO">Virtual CFO Services</option>
+                            <option value="Income Tax">Income Tax Consultation</option>
+                            <option value="GST">GST Filing & Registration</option>
+                            <option value="Other">Company Incorporation</option>                            
+                            <option value="Bookkeeping Services">Bookkeeping Services</option>
+                            <option value="MIS Reports">MIS Reports</option>
+                            <option value="Accounting Advisory">Accounting Advisory</option>
+                            <option value="Other">Other Services</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-message">Tell us more about your needs</label>
+                        <textarea id="cta-message" name="message" rows="4" placeholder=" "></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </form>
+                <div id="form-message" class="form-message"></div>
+            </div>
+        </div>
+    </section>
 
-<script>AOS.init({ duration: 800, once: true });</script>
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-col">
+                <h4>One.Finance</h4>
+                <p>Your dedicated CFO Buddy for startups, handling finances end-to-end so you can focus on building your dream.</p>
+                <div class="social-links">                    
+                    <a href="https://www.linkedin.com/company/onedotfinance/" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.instagram.com/one.finance_?igsh=MTNuemFrdnBkbGhkZg%3D%3D&utm_source=qr" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>                        
+                <a href="blog.html">Blog</a>
+                <a href="#cta-form">Talk to us</a> <!-- Linked to CTA -->
+            </div>
+            <div class="footer-col">
+                <h4>Our Services</h4>
+                <a href="cfo-service.html">Virtual CFO Services</a>
+                <a href="income-tax.html">Income Tax Consultation</a>
+                <a href="gst-filing.html">GST Filing & Registration</a>
+                <a href="other-service.html">Other Service</a>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <a href="income-tax-calculator.html">Income Tax Calculator</a>
+                <a href="invoice-generator.html">Invoice Generator</a>
+                <a href="rental-agreement-generator.html">Rental Agreement Generator</a>
+                <a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai">One.finance AI</a>                
+            </div>
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <p>Email: <a href="mailto:vishnu@onedotfinance.com">vishnu@onedotfinance.com</a></p>
+                <p>Phone: <a href="tel:+917373772883">+91 7373772883</p>
+                <p>Address: RR Tower 3, SIDCO, Guindy, Chennai - 600032</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 One.Finance. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for Firebase config and app ID
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+
+        // Initialize Firebase and authenticate
+        const initializeFirebase = async () => {
+            try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is empty. Cannot initialize Firebase.");
+                    // Fallback for local development if firebaseConfig is not provided
+                    // You might want to display a message to the user here.
+                    return;
+                }
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                    console.log("Signed in with custom token.");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("Signed in anonymously.");
+                }
+            } catch (error) {
+                console.error("Error initializing Firebase or signing in:", error);
+                // Display an error message on the page if Firebase fails to initialize
+                displayFormMessage("Error initializing services. Please try again later.", "error");
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initializeFirebase();
+
+            const header = document.querySelector('.header');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            const contactForm = document.getElementById('contact-form');
+            const formMessage = document.getElementById('form-message');
+            const formLoadingOverlay = document.getElementById('form-loading-overlay');
+
+            // Function to display form messages
+            const displayFormMessage = (message, type) => {
+                formMessage.textContent = message;
+                formMessage.className = `form-message show ${type}`;
+                setTimeout(() => {
+                    formMessage.classList.remove('show');
+                }, 5000); // Message disappears after 5 seconds
+            };
+
+            // Function to show/hide loading overlay
+            const showLoading = (show) => {
+                if (show) {
+                    formLoadingOverlay.classList.add('show');
+                } else {
+                    formLoadingOverlay.classList.remove('show');
+                }
+            };
+
+            // Handle contact form submission
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    showLoading(true); // Show loading spinner
+
+                    if (!db || !auth || !auth.currentUser) {
+                        displayFormMessage("Service not ready. Please try again in a moment.", "error");
+                        showLoading(false);
+                        return;
+                    }
+
+                    const formData = {
+                        name: contactForm.elements['cta-name'].value,
+                        email: contactForm.elements['cta-email'].value,
+                        phone: contactForm.elements['cta-phone'].value,
+                        serviceInterest: contactForm.elements['cta-service-interest'].value,
+                        message: contactForm.elements['cta-message'].value,
+                        timestamp: serverTimestamp(), // Firestore server timestamp
+                        userId: auth.currentUser.uid // Store the user ID
+                    };
+
+                    try {
+                        // Store in a 'public' collection under the app ID
+                        const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/contact_submissions`), formData);
+                        console.log("Document written with ID: ", docRef.id);
+                        displayFormMessage("Your message has been sent successfully! We will get back to you soon.", "success");
+                        contactForm.reset(); // Clear the form
+                    } catch (e) {
+                        console.error("Error adding document: ", e);
+                        displayFormMessage("Failed to send your message. Please try again.", "error");
+                    } finally {
+                        showLoading(false); // Hide loading spinner
+                    }
+                });
+            }
+
+
+            // Sticky header functionality
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.style.padding = '0.6rem 0';
+                    header.style.boxShadow = 'var(--shadow-medium)';
+                } else {
+                    header.style.padding = '0.7rem 0';
+                    header.style.boxShadow = 'var(--shadow-light)';
+                }
+            });
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                menuToggle.querySelector('i').classList.toggle('fa-bars');
+                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+            });
+
+            // Close mobile menu when a link is clicked
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // Smooth scrolling for anchor links (only for current page anchors)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    // Only smooth scroll if the href is an internal anchor on the same page
+                    if (this.pathname === window.location.pathname) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                    // For mobile menu, close it after clicking an anchor
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // Number counting animation (Impact Section)
+            const impactSection = document.querySelector('.impact-section');
+            const counters = document.querySelectorAll('.impact-card .number');
+            const speed = 200; // The lower the speed, the faster the count
+
+            const animateCount = (counter) => {
+                const target = +counter.dataset.target;
+                let current = 0;
+                const increment = target / speed;
+
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.ceil(current) + '+'; // Added '+'
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target + '+'; // Ensure final value is exact and has '+'
+                    }
+                };
+                updateCounter();
+            };
+
+            const impactObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        counters.forEach(counter => {
+                            if (!counter.classList.contains('animated')) { // Prevent re-animation
+                                animateCount(counter);
+                                counter.classList.add('animated');
+                            }
+                        });
+                        observer.unobserve(entry.target); // Stop observing once animated
+                    }
+                });
+            }, { threshold: 0.5 }); // Trigger when 50% of the section is visible
+
+            if (impactSection) {
+                impactObserver.observe(impactSection);
+            }
+
+            // Our Approach Slider functionality
+            const slider = document.querySelector('.humanize-section-slider');
+            const slides = document.querySelectorAll('.humanize-card');
+            // Removed prevBtn and nextBtn as they are no longer needed
+            // const prevBtn = document.querySelector('.prev-btn');
+            // const nextBtn = document.querySelector('.next-btn');
+            const dotsContainer = document.querySelector('.slider-dots');
+            let currentSlide = 0;
+            let autoSlideInterval;
+
+            // Function to start auto-sliding
+            const startAutoSlide = () => {
+                autoSlideInterval = setInterval(() => {
+                    showSlide(currentSlide + 1);
+                }, 5000); // Change slide every 3 seconds
+            };
+
+            // Function to stop auto-sliding
+            const stopAutoSlide = () => {
+                clearInterval(autoSlideInterval);
+            };
+
+            // Create only 3 dots, and map slide index to dot index
+            for (let i = 0; i < 3; i++) { // Loop only 3 times for 3 dots
+                const dot = document.createElement('span');
+                dot.classList.add('dot');
+                if (i === 0) {
+                    dot.classList.add('active');
+                }
+                dot.dataset.dotIndex = i; // Store the dot's index
+                dot.addEventListener('click', (event) => {
+                    stopAutoSlide(); // Stop auto-slide on manual click
+                    // Calculate which slide to show based on the clicked dot and current slide
+                    // This logic ensures clicking a dot jumps to the closest relevant slide
+                    const clickedDotIndex = parseInt(event.target.dataset.dotIndex);
+                    let targetSlide = currentSlide;
+
+                    // If current slide is 0, 1, 2, and dot 0 is clicked, stay at 0.
+                    // If current slide is 3, 4, 5, and dot 0 is clicked, go to 3.
+                    // This ensures the dot reflects the *current group* of slides.
+                    const currentGroupStart = Math.floor(currentSlide / 3) * 3;
+                    targetSlide = currentGroupStart + clickedDotIndex;
+
+                    showSlide(targetSlide);
+                    startAutoSlide(); // Restart auto-slide after manual navigation
+                });
+                dotsContainer.appendChild(dot);
+            }
+
+            const dots = document.querySelectorAll('.dot'); // Re-query after creating them
+
+            const showSlide = (index) => {
+                if (slides.length === 0) return; // Prevent errors if no slides
+
+                if (index >= slides.length) {
+                    currentSlide = 0; // Loop back to the first slide
+                } else if (index < 0) {
+                    currentSlide = slides.length - 1; // Loop to the last slide
+                } else {
+                    currentSlide = index;
+                }
+
+                const offset = -currentSlide * 100;
+                slider.style.transform = `translateX(${offset}%)`;
+
+                // Update active dot based on current slide's position within the 3-dot cycle
+                const activeDotIndex = currentSlide % 3;
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === activeDotIndex);
+                });
+            };
+
+            // Removed event listeners for prevBtn and nextBtn
+
+            // Pause auto-slide on hover over the slider wrapper
+            const humanizeSectionWrapper = document.querySelector('.humanize-section-wrapper');
+            if (humanizeSectionWrapper) {
+                humanizeSectionWrapper.addEventListener('mouseenter', stopAutoSlide);
+                humanizeSectionWrapper.addEventListener('mouseleave', startAutoSlide);
+            }
+
+            // Initialize slider and start auto-slide
+            showSlide(currentSlide);
+            startAutoSlide();
+
+
+            // Services "View All" functionality
+            const viewAllServicesBtn = document.getElementById('view-all-services-btn');
+            const serviceCards = document.querySelectorAll('.services-grid .service-card');
+            const initialVisibleCount = 3;
+
+            // Initialize visibility for service cards
+            serviceCards.forEach((card, index) => {
+                if (index >= initialVisibleCount) {
+                    // Initially hide cards beyond the first three using opacity/visibility
+                    card.classList.add('hidden-service');
+                } else {
+                    // Ensure the initially visible cards have their animation class
+                    card.classList.add('animated-visible');
+                }
+            });
+
+            if (viewAllServicesBtn) {
+                viewAllServicesBtn.addEventListener('click', () => {
+                    serviceCards.forEach((card, index) => {
+                        // Remove the 'hidden-service' class to make them visible and allow animation
+                        card.classList.remove('hidden-service');
+                        // Add 'animated-visible' class after a short delay to trigger the animation
+                        setTimeout(() => {
+                            card.classList.add('animated-visible');
+                        }, 50 * (index - initialVisibleCount)); // Stagger animation for revealed cards
+                    });
+                    viewAllServicesBtn.style.display = 'none'; // Hide the button after showing all
+                });
+            }
+
+
+            // Intersection Observer for general entrance animations
+            const animateOnScroll = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            };
+
+            const options = {
+                threshold: 0.2 // Trigger when 20% of the element is visible
+            };
+
+            const observer = new IntersectionObserver(animateOnScroll, options);
+
+            // Observe elements for animation (only for initially visible elements)
+            document.querySelectorAll('.about-text, .about-image').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Do NOT observe service cards here, as their animation is controlled by the button click
+            // The initial state for service cards is set above, and the 'animated-visible' class
+            // is added either on load (for first 3) or on button click (for the rest).
+        });
+    </script>
 </body>
 </html>
+
