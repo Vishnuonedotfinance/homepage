@@ -234,32 +234,6 @@
             color: var(--text-dark); /* Hamburger icon is dark on white header */
         }
 
-        /* Mobile Dropdown Specifics */
-            .dropdown-menu {
-                position: static; /* Remove absolute positioning for mobile */
-                box-shadow: none;
-                border-radius: 0;
-                padding: 0;
-                min-width: unset;
-                transform: none;
-                opacity: 1;
-                visibility: visible; /* Always visible when parent is active */
-                display: none; /* Hidden by default on mobile, toggled by JS */
-                max-height: 0; /* Initial state for smooth collapse */
-                overflow: hidden;
-                transition: max-height 0.4s ease-in-out; /* Smooth transition for height */
-            }
-
-            .dropdown.dropdown-active .dropdown-menu {
-                display: block; /* Show when active class is present */
-                max-height: 200px; /* Adjust as needed to fit content */
-            }
-
-            .dropdown:hover .dropdown-menu {
-                display: none; /* Override hover for mobile, ensure JS controls */
-            }
-    
-
         /* --- Hero Section --- */
         .hero {
             background-image: url('hero-bg.jpg'); /* Backdrop image */
@@ -1049,7 +1023,8 @@
             }
             .nav-menu a::after {
                 display: none; /* Hide underline on mobile menu */
-            }            
+            }
+            /* Mobile Dropdown Specifics */
             .dropdown-menu {
                 position: static; /* Remove absolute positioning for mobile */
                 box-shadow: none;
@@ -1058,11 +1033,20 @@
                 min-width: unset;
                 transform: none;
                 opacity: 1;
-                visibility: visible;
-                display: none; /* Hidden by default, toggled by JS if needed */
+                visibility: visible; /* Always visible when parent is active */
+                display: none; /* Hidden by default on mobile, toggled by JS */
+                max-height: 0; /* Initial state for smooth collapse */
+                overflow: hidden;
+                transition: max-height 0.4s ease-in-out; /* Smooth transition for height */
             }
+
+            .dropdown.dropdown-active .dropdown-menu {
+                display: block; /* Show when active class is present */
+                max-height: 200px; /* Adjust as needed to fit content */
+            }
+
             .dropdown:hover .dropdown-menu {
-                display: none; /* Override hover for mobile */
+                display: none; /* Override hover for mobile, ensure JS controls */
             }
 
             .services-grid, .testimonials-grid, .approach-grid {
@@ -1385,7 +1369,7 @@
         <div class="container">
             <h3>Talk to your CFO Buddy!</h3>
             <div class="form-container">
-                <form action="https://formspree.io/f/mkgberpq" method="post">
+                <form action="https://formspree.io/f/mkgberpq" method="post" id="contact-form">
                     <div class="form-field">
                         <label for="cta-name">Your Name</label>
                         <input type="text" id="cta-name" name="name" required placeholder="Name">
@@ -1405,7 +1389,7 @@
                             <option value="Virtual CFO">Virtual CFO Services</option>
                             <option value="Income Tax">Income Tax Consultation</option>
                             <option value="GST">GST Filing & Registration</option>
-                            <option value="Other">Company Incorporation</option>                            
+                            <option value="Company Incorporation">Company Incorporation</option>
                             <option value="Bookkeeping Services">Bookkeeping Services</option>
                             <option value="MIS Reports">MIS Reports</option>
                             <option value="Accounting Advisory">Accounting Advisory</option>
@@ -1419,6 +1403,9 @@
                     <button type="submit" class="btn btn-primary">Submit Request</button>
                 </form>
                 <div id="form-message" class="form-message"></div>
+                <div id="form-loading-overlay" class="loading-overlay">
+                    <div class="loading-spinner"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -1513,6 +1500,7 @@
             const header = document.querySelector('.header');
             const menuToggle = document.querySelector('.menu-toggle');
             const navMenu = document.querySelector('.nav-menu');
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle'); // Select all dropdown toggles
             const contactForm = document.getElementById('contact-form');
             const formMessage = document.getElementById('form-message');
             const formLoadingOverlay = document.getElementById('form-loading-overlay');
@@ -1632,6 +1620,7 @@
                 });
             });
 
+
             // Smooth scrolling for anchor links (only for current page anchors)
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -1641,12 +1630,6 @@
                         document.querySelector(this.getAttribute('href')).scrollIntoView({
                             behavior: 'smooth'
                         });
-                    }
-                    // For mobile menu, close it after clicking an anchor
-                    if (navMenu.classList.contains('active')) {
-                        navMenu.classList.remove('active');
-                        menuToggle.querySelector('i').classList.remove('fa-times');
-                        menuToggle.querySelector('i').classList.add('fa-bars');
                     }
                 });
             });
@@ -1694,9 +1677,6 @@
             // Our Approach Slider functionality
             const slider = document.querySelector('.humanize-section-slider');
             const slides = document.querySelectorAll('.humanize-card');
-            // Removed prevBtn and nextBtn as they are no longer needed
-            // const prevBtn = document.querySelector('.prev-btn');
-            // const nextBtn = document.querySelector('.next-btn');
             const dotsContainer = document.querySelector('.slider-dots');
             let currentSlide = 0;
             let autoSlideInterval;
@@ -1762,8 +1742,6 @@
                     dot.classList.toggle('active', i === activeDotIndex);
                 });
             };
-
-            // Removed event listeners for prevBtn and nextBtn
 
             // Pause auto-slide on hover over the slider wrapper
             const humanizeSectionWrapper = document.querySelector('.humanize-section-wrapper');
@@ -1836,4 +1814,3 @@
     </script>
 </body>
 </html>
-
