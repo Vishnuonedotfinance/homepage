@@ -1,81 +1,998 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About — One.Finance</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>body { font-family: 'Inter', sans-serif; }</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About One.Finance - Your CFO Buddy for Startups</title>
+    <!-- Favicon (optional, replace with your own) -->
+    <link rel="icon" href="icon.png" type="image/png">
+
+    <!-- Google Fonts: Inter for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- CSS Variables for consistent branding --- */
+        :root {
+            --primary-color: #1A8917; /* Original One.Finance Green */
+            --primary-dark: #167A14;  /* Darker shade of primary */
+            --text-dark: #333333; /* Dark text color, now used as main dark background */
+            --text-light: #666666; /* Lighter dark text color */
+            --bg-light: #F8F8F8; /* Light background for sections */
+            --bg-white: #FFFFFF; /* White background for sections */
+            --border-color: #E0E0E0;
+            --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --font-family: 'Inter', sans-serif;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+        }
+
+        /* --- Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            line-height: 1.6;
+            background-color: var(--text-dark); /* Main website background is now dark */
+            color: var(--bg-white); /* Default text color for elements directly on body background */
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            color: var(--bg-white); /* Default heading color for dark backgrounds */
+            margin-bottom: 0.4em;
+        }
+
+        /* Override heading colors for sections with light backgrounds */
+        .section-white h2, .section-white h3, .section-white h4, .section-white h5, .section-white h6,
+        .section-light h2, .section-light h3, .section-light h4, .section-light h5, .section-light h6 {
+            color: var(--primary-color); /* Headings in light sections are green */
+        }
+        .section-white p, .section-light p {
+            color: var(--text-light); /* Paragraphs in light sections are light dark */
+        }
+
+        h1 { font-size: 3.2em; line-height: 1.1; }
+        h2 { font-size: 2.5em; }
+        h3 { font-size: 1.8em; }
+        p { margin-bottom: 0.6em; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* --- Header --- */
+        .header {
+            background-color: var(--bg-white); /* Header remains white for contrast */
+            padding: 0.7rem 0;
+            box-shadow: var(--shadow-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 38px;
+            margin-right: 0; /* Changed to 0 to remove space next to logo */
+            border-radius: 5px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-dark); /* Nav links are dark on white header */
+            font-weight: 500;
+            font-size: 1em;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* Dropdown Menu for Services */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: var(--bg-white);
+            box-shadow: var(--shadow-light);
+            list-style: none;
+            min-width: 200px;
+            z-index: 10;
+            border-radius: var(--border-radius-sm);
+            padding: 0.4rem 0;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-menu li a {
+            padding: 8px 18px;
+            display: block;
+            white-space: nowrap;
+            font-size: 0.95em;
+            color: var(--text-dark); /* Dropdown links are dark on white background */
+        }
+
+        .dropdown-menu li a:hover {
+            background-color: var(--bg-light);
+            color: var(--primary-color);
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            font-size: 1.6em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-dark); /* Hamburger icon is dark on white header */
+        }
+
+        /* --- Page Specific Styles (About Page) --- */
+        .about-banner {
+            background-image: url('aboutus.png'); /* Placeholder for About Us banner */
+            background-size: cover;
+            background-position: center;
+            color: var(--bg-white);
+            padding: 4rem 0;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 350px; /* Increased height for impact */
+            position: relative;
+        }
+
+        .about-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55); /* Slightly darker overlay */
+            z-index: 0;
+        }
+
+        .about-banner-content {
+            max-width: 800px;
+            z-index: 1;
+            animation: fadeInScale 1s ease-out forwards;
+        }
+
+        .about-banner h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .about-banner p {
+            font-size: 1.2em;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .section {
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .section-light {
+            background-color: var(--bg-light);
+        }
+
+        .section-white {
+            background-color: var(--bg-white);
+        }
+
+        .section-heading {
+            font-size: 2.2em;
+            margin-bottom: 0.8rem;
+        }
+
+        .section-subheading {
+            font-size: 1em;
+            max-width: 700px;
+            margin: 0 auto 1.8rem;
+        }
+
+        /* Founders Section Specific Styles */
+        .founders-section-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem; /* Increased gap for better separation */
+            text-align: left;
+            padding-top: 2rem; /* Space below section heading */
+        }
+
+        .founders-text-column {
+            flex: 2;
+            max-width: 60%; /* Control width of text column */
+        }
+
+        .founders-text-column h3 {
+            color: var(--primary-color);
+            font-size: 2em; /* Larger heading for founders */
+            margin-bottom: 0.6em;
+        }
+
+        .founders-text-column p {
+            color: var(--text-dark);
+            font-size: 1.1em;
+            margin-bottom: 1.5em; /* Space before founder list */
+        }
+
+        .founders-photo-column {
+            flex: 1;
+            min-width: 300px; /* Ensure image has a decent size */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .founders-photo-column img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-md); /* Rounded corners for the photo */
+            box-shadow: var(--shadow-medium);
+        }
+
+        .founder-details {
+            margin-top: 1.5em; /* Space between main text and founder list */
+            text-align: left;
+        }
+
+        .founder-details h4 {
+            color: var(--text-dark);
+            font-size: 1.3em;
+            margin-bottom: 0.2em;
+        }
+
+        .founder-details p {
+            color: var(--text-light);
+            font-size: 1em;
+            margin-bottom: 0.5em;
+        }
+
+        .founder-details a {
+            font-size: 0.95em;
+            margin-right: 0.8em;
+        }
+
+        /* --- Generic CTA Form Section (from home page) --- */
+        .cta-form-section {
+            background-color: var(--bg-white); /* CTA form section background is white */
+            padding: 2.5rem 0;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        .cta-form-section h3 {
+            font-size: 1.6em;
+            margin-bottom: 0.8rem;
+            color: var(--primary-color); /* Heading is green */
+        }
+
+        .cta-form-section .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            background-color: var(--bg-light); /* Form container is light gray */
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-medium);
+            text-align: left;
+            position: relative; /* For loading overlay */
+        }
+
+        .cta-form-section .form-field {
+            margin-bottom: 0.8rem;
+        }
+
+        .cta-form-section label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            color: var(--text-dark); /* Label text is dark */
+            font-size: 0.85em;
+        }
+
+        .cta-form-section input[type="text"],
+        .cta-form-section input[type="email"],
+        .cta-form-section input[type="tel"],
+        .cta-form-section select,
+        .cta-form-section textarea {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-family: var(--font-family);
+            font-size: 0.9em;
+            color: var(--text-dark); /* Input text is dark */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-form-section input:focus,
+        .cta-form-section select:focus,
+        .cta-form-section textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 137, 23, 0.15);
+        }
+
+        .cta-form-section textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .cta-form-section .btn {
+            width: 100%;
+            margin-top: 1rem;
+            font-size: 1em;
+            padding: 0.8rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        /* Form feedback messages */
+        .form-message {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .form-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .form-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .form-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--border-radius-md);
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--text-dark); /* Footer remains dark */
+            color: var(--bg-white);
+            padding: 2rem 0;
+            font-size: 0.8em;
+            margin-top: auto; /* Pushes footer to the bottom */
+        }
+
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .footer-col h4 {
+            color: var(--bg-white); /* Changed to white */
+            margin-bottom: 0.7rem;
+            font-size: 1em;
+        }
+
+        .footer-col p, .footer-col a {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .footer-col a:hover {
+            color: var(--bg-white);
+        }
+
+        .social-links {
+            margin-top: 0.7rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            color: var(--bg-white);
+            font-size: 1.3em;
+            margin-right: 0.7rem;
+            transition: transform 0.2s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color); /* Changed to green */
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 1.8em; }
+            h3 { font-size: 1.4em; }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .founders-section-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .founders-text-column {
+                max-width: 100%;
+                text-align: center;
+            }
+            .founders-photo-column {
+                min-width: unset;
+                margin-top: 1.5rem;
+            }
+            .founder-details {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-banner {
+                padding: 3rem 0;
+                min-height: 250px;
+            }
+            .about-banner h1 {
+                font-size: 2.2em;
+            }
+            .about-banner p {
+                font-size: 1em;
+            }
+            .section {
+                padding: 2.5rem 0;
+            }
+            .section-heading {
+                font-size: 1.8em;
+            }
+            .section-subheading {
+                font-size: 0.9em;
+            }
+            .menu-toggle {
+                display: block; /* Show hamburger on smaller screens */
+            }
+            .nav-menu {
+                display: none; /* Hide nav menu by default on smaller screens */
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--bg-white);
+                position: absolute;
+                top: 60px; /* Adjust based on header height */
+                left: 0;
+                box-shadow: var(--shadow-medium);
+                padding: 1rem 0;
+                border-radius: var(--border-radius-sm);
+            }
+            .nav-menu.active {
+                display: flex; /* Show nav menu when active */
+            }
+            .nav-menu li {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+            .nav-menu a {
+                color: var(--text-dark);
+                padding: 0.8rem 1.5rem;
+                display: block;
+            }
+            .nav-menu a::after {
+                display: none; /* Hide underline on mobile menu */
+            }
+            .dropdown-menu {
+                position: static; /* Remove absolute positioning for mobile */
+                box-shadow: none;
+                border-radius: 0;
+                padding: 0;
+                min-width: unset;
+                transform: none;
+                opacity: 1;
+                visibility: visible;
+                display: none; /* Hidden by default, toggled by JS if needed */
+            }
+            .dropdown:hover .dropdown-menu {
+                display: none; /* Override hover for mobile */
+            }
+            /* You might need JS to toggle dropdown-menu visibility on click for mobile */
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.8rem;
+            }
+            .about-banner h1 {
+                font-size: 1.8em;
+            }
+            .about-banner p {
+                font-size: 0.9em;
+            }
+            .section-heading {
+                font-size: 1.6em;
+            }
+            .section-subheading {
+                font-size: 0.8em;
+            }
+        }
+    </style>
 </head>
-<body class="bg-white text-gray-800">
-  <!-- Header -->
-  <header class="bg-white shadow-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
-      <img src="logo.png" alt="One.Finance Logo" class="h-10">
-      <nav class="hidden md:flex gap-6">
-        <a href="index.html" class="text-sm font-semibold hover:text-green-600">Home</a>
-        <a href="about.html" class="text-sm font-semibold text-green-600">About</a>
-        <a href="services.html" class="text-sm font-semibold hover:text-green-600">Services</a>
-        <a href="tools.html" class="text-sm font-semibold hover:text-green-600">Tools</a>
-        <a href="resources.html" class="text-sm font-semibold hover:text-green-600">Resources</a>
-      </nav>
-      <a href="#contact" class="bg-green-500 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-600">Book a Consultation</a>
-    </div>
-  </header>
-
-  <!-- About Section -->
-  <section class="py-20 bg-green-50" data-aos="fade-up">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-      <h1 class="text-4xl font-extrabold text-green-700 mb-4">Your CFO Buddy for the Journey Ahead</h1>
-      <p class="text-lg text-gray-700">We’re not just consultants — we’re the financial co-pilots for your startup. From day one to Series A and beyond, we help you manage numbers with clarity, speed, and swag.</p>
-    </div>
-  </section>
-
-  <!-- Founders Section -->
-  <section class="py-16 bg-white" data-aos="fade-up">
-    <div class="max-w-5xl mx-auto px-6">
-      <div class="grid md:grid-cols-2 gap-10 items-center">
-        <div class="space-y-6">
-          <h2 class="text-2xl font-bold text-green-700">Say Hello to Our Founders</h2>
-          <p class="text-gray-700">Our leadership brings deep expertise in finance, taxation, and growth strategy. But more than that — they care about helping founders win.</p>
-          <ul class="space-y-4">
-            <li>
-              <strong>Vishnu Varthan</strong><br/>
-              Co-founder, One.Finance<br/>
-              <a href="https://www.linkedin.com/in/vishnuvarthan" class="text-green-600 underline" target="_blank">LinkedIn</a>
-            </li>
-            <li>
-              <strong>Hariharan</strong><br/>
-              Co-founder, One.Finance<br/>
-              <a href="https://www.linkedin.com/in/hariharan" class="text-green-600 underline" target="_blank">LinkedIn</a>
-            </li>
-          </ul>
+<body>
+    <!-- Header Section -->
+    <header class="header" id="home">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="One.Finance Logo">
+            </a>
+            <nav>
+                <button class="menu-toggle" aria-label="Toggle navigation menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Services <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="cfo-service.html">CFO Service</a></li>
+                            <li><a href="income-tax.html">Income Tax Consultation</a></li>
+                            <li><a href="gst-filing.html">GST Filing & Registration</a></li>
+                            <li><a href="other-service.html">Other Service</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" onclick="return false;">Tools <i class="fas fa-caret-down"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="income-tax-calculator.html">Income Tax Calculator</a></li>
+                            <li><a href="invoice-generator.html">Invoice Generator</a></li>
+                            <li><a href="rental-agreement-generator.html">Rental Agreement Generator</a></li>
+                            <li><a href="#" onclick="return false;">Loan Prepayment Planner (Coming Soon)</a></li>
+                            <li><a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai" target="_blank">One.finance AI</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="#cta-form">Talk to us</a></li>
+                </ul>
+            </nav>
         </div>
-        <img src="founders.jpg" alt="Founders" class="rounded-xl shadow-xl">
-      </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- Contact Form CTA -->
-  <section id="contact" class="bg-green-100 py-20 text-center" data-aos="fade-up">
-    <h2 class="text-2xl font-bold mb-4">Book a Consultation </h2>
-    <p class="mb-6">Drop your details below — we’ll reach out to help you right away.</p>
-    <form action="https://formspree.io/f/mkgberpq" method="POST" class="max-w-md mx-auto text-left space-y-4">
-      <input type="text" name="name" placeholder="Your Name" required class="w-full px-4 py-3 border rounded-md">
-      <input type="email" name="email" placeholder="Email Address" required class="w-full px-4 py-3 border rounded-md">
-      <input type="tel" name="mobile" placeholder="Mobile Number" pattern="[+]?[0-9]{10,15}" required class="w-full px-4 py-3 border rounded-md">
-      <button type="submit" class="w-full bg-green-600 text-white font-semibold py-3 rounded-md hover:bg-green-700">Submit</button>
-    </form>
-  </section>
+    <!-- About Us Banner -->
+    <section class="about-banner">
+        <div class="container about-banner-content">
+            <h1>Your CFO Buddy for the Journey Ahead</h1>            
+        </div>
+    </section>
 
-  <!-- Footer -->
-  <footer class="bg-gray-800 text-white py-6 text-center">
-    <p>&copy; 2025 One.Finance. All rights reserved.</p>
-  </footer>
+    <!-- Core Team Section -->
+    <section class="section section-white">
+        <div class="container">
+            <h2 class="section-heading">Say Hello to Our Core Team</h2>
+            <div class="founders-section-content">
+                <div class="founders-text-column">
+                    <p>Our leadership brings deep expertise in finance, taxation, and growth strategy. But more than that they care about helping founders win.</p>
+                    <div class="founder-details">
+                        <h4>Vishnu Varthan</h4>
+                        <p>Co-founder, One.Finance</p>
+                        <p>Expertised in startup-focused financial planing and strategy.</p>
+                        <a href="https://www.linkedin.com/in/vishnu-varthan-b19689177/" target="_blank" aria-label="Vishnu Varthan LinkedIn"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+                    </div>
+                    <div class="founder-details" style="margin-top: 1.5em;">
+                        <h4>Hariharan</h4>
+                        <p>Co-founder, One.Finance</p>
+                        <p>Specialized in accounting advisory and taxation.</p>
+                        <a href="https://www.linkedin.com/in/hariharan-ravi-a882a1202/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_apphttps://www.linkedin.com/in/hariharan-ravi-a882a1202/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app/" target="_blank" aria-label="Hariharan LinkedIn"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+                    </div>
+                    <div class="founder-details" style="margin-top: 1.5em;">
+                        <h4>Karthik Balaji</h4>
+                        <p>Advisor, One.Finance</p>
+                        <p>Experienced in taxation and audit compliances.</p>                        
+                    </div>
+                </div>
+                <div class="founders-photo-column">
+                    <img src="https://placehold.co/600x400/d4edda/1a8917?text=Core%20Team%20Photo" alt="Photo of One.Finance Core Team">
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <script>AOS.init({ duration: 800, once: true });</script>
+    <!-- Generic CTA Form Section -->
+    <section class="cta-form-section" id="cta-form">
+        <div class="container">
+            <h3>Book a call with the Founders!</h3>
+            <div class="form-container">
+                <form action="https://formspree.io/f/mkgberpq" method="post">
+                    <div class="form-field">
+                        <label for="cta-name">Your Name</label>
+                        <input type="text" id="cta-name" name="name" required placeholder="Name">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-email">Email</label>
+                        <input type="email" id="cta-email" name="email" required placeholder="Email">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-phone">Mobile Number</label>
+                        <input type="tel" id="cta-phone" name="phone" placeholder="+91 9876543210">
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-service-interest">Service you're looking for</label>
+                        <select id="cta-service-interest" name="service_interest">
+                            <option value="">-- Select a Service --</option>
+                            <option value="Virtual CFO">Virtual CFO Services</option>
+                            <option value="Income Tax">Income Tax Consultation</option>
+                            <option value="GST">GST Filing & Registration</option>
+                            <option value="Other">Company Incorporation</option>                            
+                            <option value="Bookkeeping Services">Bookkeeping Services</option>
+                            <option value="MIS Reports">MIS Reports</option>
+                            <option value="Accounting Advisory">Accounting Advisory</option>
+                            <option value="Other">Other Services</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="cta-message">Tell us more about your needs</label>
+                        <textarea id="cta-message" name="message" rows="4" placeholder=" "></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </form>
+                <div id="form-message" class="form-message"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-col">
+                <h4>One.Finance</h4>
+                <p>Your dedicated CFO Buddy for startups, handling finances end-to-end so you can focus on building your dream.</p>
+                <div class="social-links">                    
+                    <a href="https://www.linkedin.com/company/onedotfinance/" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.instagram.com/one.finance_?igsh=MTNuemFrdnBkbGhkZg%3D%3D&utm_source=qr" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>                        
+                <a href="blog.html">Blog</a>
+                <a href="#cta-form">Talk to us</a> <!-- Linked to CTA -->
+            </div>
+            <div class="footer-col">
+                <h4>Our Services</h4>
+                <a href="cfo-service.html">Virtual CFO Services</a>
+                <a href="income-tax.html">Income Tax Consultation</a>
+                <a href="gst-filing.html">GST Filing & Registration</a>
+                <a href="other-service.html">Other Service</a>
+            </div>
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <a href="income-tax-calculator.html">Income Tax Calculator</a>
+                <a href="invoice-generator.html">Invoice Generator</a>
+                <a href="rental-agreement-generator.html">Rental Agreement Generator</a>
+                <a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai">One.finance AI</a>                
+            </div>
+            <div class="footer-col">
+                <h4>Contact Us</h4>
+                <p>Email: <a href="mailto:vishnu@onedotfinance.com">vishnu@onedotfinance.com</a></p>
+                <p>Phone: <a href="tel:+917373772883">+91 7373772883</p>
+                <p>Address: RR Tower 3, SIDCO, Guindy, Chennai - 600032</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 One.Finance. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs and Page-Specific JavaScript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for Firebase config and app ID
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+
+        // Initialize Firebase and authenticate
+        const initializeFirebase = async () => {
+            try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is empty. Cannot initialize Firebase.");
+                    return;
+                }
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                    console.log("Signed in with custom token for About Us page.");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("Signed in anonymously for About Us page.");
+                }
+            } catch (error) {
+                console.error("Error initializing Firebase or signing in on About Us page:", error);
+                // Display an error message on the page if Firebase fails to initialize
+                displayFormMessage("Error initializing services. Please try again later.", "error");
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initializeFirebase(); // Initialize Firebase as soon as the DOM is ready
+
+            const header = document.querySelector('.header');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            const contactForm = document.getElementById('contact-form');
+            const formMessage = document.getElementById('form-message');
+            const formLoadingOverlay = document.getElementById('form-loading-overlay');
+
+            // Function to display form messages
+            const displayFormMessage = (message, type) => {
+                formMessage.textContent = message;
+                formMessage.className = `form-message show ${type}`;
+                setTimeout(() => {
+                    formMessage.classList.remove('show');
+                }, 5000); // Message disappears after 5 seconds
+            };
+
+            // Function to show/hide loading overlay
+            const showLoading = (show) => {
+                if (show) {
+                    formLoadingOverlay.classList.add('show');
+                } else {
+                    formLoadingOverlay.classList.remove('show');
+                }
+            };
+
+            // Handle contact form submission
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    showLoading(true); // Show loading spinner
+
+                    if (!db || !auth || !auth.currentUser) {
+                        displayFormMessage("Service not ready. Please try again in a moment.", "error");
+                        showLoading(false);
+                        return;
+                    }
+
+                    const formData = {
+                        name: contactForm.elements['cta-name'].value,
+                        email: contactForm.elements['cta-email'].value,
+                        phone: contactForm.elements['cta-phone'].value,
+                        serviceInterest: contactForm.elements['cta-service-interest'].value,
+                        message: contactForm.elements['cta-message'].value,
+                        timestamp: serverTimestamp(), // Firestore server timestamp
+                        userId: auth.currentUser.uid // Store the user ID
+                    };
+
+                    try {
+                        // Store in a 'public' collection under the app ID
+                        const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/contact_submissions`), formData);
+                        console.log("Document written with ID: ", docRef.id);
+                        displayFormMessage("Your message has been sent successfully! We will get back to you soon.", "success");
+                        contactForm.reset(); // Clear the form
+                    } catch (e) {
+                        console.error("Error adding document: ", e);
+                        displayFormMessage("Failed to send your message. Please try again.", "error");
+                    } finally {
+                        showLoading(false); // Hide loading spinner
+                    }
+                });
+            }
+
+            // Sticky header functionality
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.style.padding = '0.6rem 0';
+                    header.style.boxShadow = 'var(--shadow-medium)';
+                } else {
+                    header.style.padding = '0.7rem 0';
+                    header.style.boxShadow = 'var(--shadow-light)';
+                }
+            });
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                menuToggle.querySelector('i').classList.toggle('fa-bars');
+                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+            });
+
+            // Close mobile menu when a link is clicked
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // Smooth scrolling for anchor links (only for current page anchors)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    // Only smooth scroll if the href is an internal anchor on the same page
+                    if (this.pathname === window.location.pathname) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                    // For mobile menu, close it after clicking an anchor
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
