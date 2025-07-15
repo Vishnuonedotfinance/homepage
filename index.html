@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,12 +12,12 @@
     <style>
         /* --- CSS Variables for consistent branding --- */
         :root {
-            --primary-color: #1A8917; /* Original One.Finance Green */
-            --primary-dark: #167A14;  /* Darker shade of primary */
-            --text-dark: #333333; /* Dark text color, now used as main dark background */
-            --text-light: #666666; /* Lighter dark text color */
-            --bg-light: #F8F8F8; /* Light background for sections */
-            --bg-white: #FFFFFF; /* White background for sections */
+            --primary-color: #1A8917;
+            --primary-dark: #167A14;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --bg-light: #F8F8F8;
+            --bg-white: #FFFFFF;
             --border-color: #E0E0E0;
             --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
             --shadow-medium: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -26,164 +25,43 @@
             --border-radius-sm: 8px;
             --border-radius-md: 12px;
         }
-
         /* --- Base Styles --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: var(--font-family);
             line-height: 1.6;
-            background-color: var(--text-dark); /* Main website background is now dark */
-            color: var(--bg-white); /* Default text color for elements directly on body background */
-            -webkit-font-smoothing: antialiased;
-            scroll-behavior: smooth;
+            background-color: var(--text-dark);
+            color: var(--bg-white);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
-
-        a {
-            text-decoration: none;
-            color: var(--primary-color);
-            transition: color 0.3s ease;
-        }
-
-        a:hover {
-            color: var(--primary-dark);
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 700;
-            color: var(--bg-white); /* Default heading color for dark backgrounds */
-            margin-bottom: 0.4em; /* Further reduced */
-        }
-
-        /* Override heading colors for sections with light backgrounds */
-        .section-white h2, .section-white h3, .section-white h4, .section-white h5, .section-white h6,
-        .section-light h2, .section-light h3, .section-light h4, .section-light h5, .section-light h6 {
-            color: var(--primary-color); /* Headings in light sections are green */
-        }
-        .section-white p, .section-light p {
-            color: var(--text-light); /* Paragraphs in light sections are light dark */
-        }
-
-
+        a { text-decoration: none; color: var(--primary-color); transition: color 0.3s ease; }
+        a:hover { color: var(--primary-dark); }
+        h1,h2,h3,h4,h5,h6 { font-weight: 700; color: var(--bg-white); margin-bottom: 0.4em; }
+        .section-white h2, .section-white h3, .section-white h4,
+        .section-light h2, .section-light h3, .section-light h4 { color: var(--primary-color); }
+        .section-white p, .section-light p { color: var(--text-light); }
         h1 { font-size: 3.2em; line-height: 1.1; }
         h2 { font-size: 2.5em; }
         h3 { font-size: 1.8em; }
-        p { margin-bottom: 0.6em; } /* Further reduced */
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            border-radius: var(--border-radius-sm);
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: var(--bg-white);
-            box-shadow: var(--shadow-light);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--primary-color);
-            color: var(--bg-white);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-light);
-        }
-
+        p { margin-bottom: 0.6em; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        .btn { display: inline-block; padding: 0.8rem 2rem; border-radius: var(--border-radius-sm); font-weight: 600; transition: all 0.3s ease; text-align: center; cursor: pointer; border: none; }
+        .btn-primary { background-color: var(--primary-color); color: var(--bg-white); box-shadow: var(--shadow-light); }
+        .btn-primary:hover { background-color: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-medium); }
+        .btn-outline { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); }
+        .btn-outline:hover { background-color: var(--primary-color); color: var(--bg-white); transform: translateY(-2px); box-shadow: var(--shadow-light); }
         /* --- Header --- */
-        .header {
-            background-color: var(--bg-white); /* Header remains white for contrast */
-            padding: 0.7rem 0;
-            box-shadow: var(--shadow-light);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8em;
-            font-weight: 800;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 38px;
-            margin-right: 0; /* Changed to 0 to remove space next to logo */
-            border-radius: 5px;
-        }
-
-        .nav-menu {
-            list-style: none;
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .nav-menu a {
-            color: var(--text-dark); /* Nav links are dark on white header */
-            font-weight: 500;
-            font-size: 1em;
-            padding: 0.5rem 0;
-            position: relative;
-        }
-
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--primary-color);
-            transition: width 0.3s ease;
-        }
-
-        .nav-menu a:hover::after {
-            width: 100%;
-        }
-
-        /* Dropdown Menu for Services */
-        .dropdown {
-            position: relative;
-        }
-
+        .header { background-color: var(--bg-white); padding: 0.7rem 0; box-shadow: var(--shadow-light); position: sticky; top: 0; z-index: 1000; transition: all 0.3s ease; }
+        .header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8em; font-weight: 800; color: var(--primary-color); display: flex; align-items: center; }
+        .logo img { height: 38px; border-radius: 5px; }
+        .nav-menu { list-style: none; display: flex; gap: 1.5rem; }
+        .nav-menu a { color: var(--text-dark); font-weight: 500; font-size: 1em; padding: 0.5rem 0; position: relative; }
+        .nav-menu a::after { content: ''; position: absolute; left: 0; bottom: 0; width: 0; height: 2px; background-color: var(--primary-color); transition: width 0.3s ease; }
+        .nav-menu a:hover::after { width: 100%; }
+        .dropdown { position: relative; }
         .dropdown-menu {
             display: none;
             position: absolute;
@@ -201,35 +79,59 @@
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
         }
-
-        .dropdown:hover .dropdown-menu {
-            display: block;
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .dropdown-menu li a {
-            padding: 8px 18px;
-            display: block;
-            white-space: nowrap;
-            font-size: 0.95em;
-            color: var(--text-dark); /* Dropdown links are dark on white background */
-        }
-
-        .dropdown-menu li a:hover {
-            background-color: var(--bg-light);
-            color: var(--primary-color);
-        }
-
-        /* Mobile Menu */
-        .menu-toggle {
-            display: none;
-            font-size: 1.6em;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-dark); /* Hamburger icon is dark on white header */
+        .dropdown:hover .dropdown-menu { display: block; opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .dropdown-menu li a { padding: 8px 18px; display: block; white-space: nowrap; font-size: 0.95em; color: var(--text-dark); }
+        .dropdown-menu li a:hover { background-color: var(--bg-light); color: var(--primary-color); }
+        /* Mobile Menu Toggle */
+        .menu-toggle { display: none; font-size: 1.6em; background: none; border: none; cursor: pointer; color: var(--text-dark); }
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 1.8em; }
+            h3 { font-size: 1.4em; }
+            .nav-menu { gap: 1rem; }
+            .about-content { flex-direction: column; text-align: center; }
+            .about-text, .about-image { flex: none; width: 100%; }
+            .about-image { margin-top: 1.2rem; }
+            /* Show hamburger and hide desktop menu */
+            .menu-toggle { display: block; font-size: 1.5em; }
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--bg-white);
+                position: absolute;
+                top: 60px;
+                left: 0;
+                box-shadow: var(--shadow-medium);
+                padding: 1rem 0;
+                border-radius: var(--border-radius-sm);
+            }
+            .nav-menu.active { display: flex; }
+            .nav-menu li { width: 100%; text-align: center; padding: 0.8rem 1.5rem; display: block; }
+            .nav-menu a::after { display: none; }
+            /* Full-width flex dropdown toggle */
+            .nav-menu .dropdown > .dropdown-toggle {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                padding: 0.8rem 1.5rem;
+            }
+            /* Indented background submenu */
+            .dropdown-menu {
+                position: static;
+                background-color: var(--bg-light);
+                padding-left: 1.5rem;
+                margin: 5px 0 0;
+                display: none;
+                visibility: visible;
+                opacity: 1;
+                box-shadow: none;
+                transform: none;
+            }
+            .dropdown-menu.active { display: block; }
+            .dropdown:hover .dropdown-menu { display: none !important; }
         }
 
         /* --- Hero Section --- */
@@ -1522,77 +1424,34 @@
                 }
             });
 
-            // Mobile menu toggle
+             // Mobile menu toggle
             menuToggle.addEventListener('click', () => {
                 navMenu.classList.toggle('active');
                 menuToggle.querySelector('i').classList.toggle('fa-bars');
-                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
-                // Close any open dropdowns when main menu is toggled
+                menuToggle.querySelector('i').classList.toggle('fa-times');
                 document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
                     dropdown.classList.remove('active');
                     dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
-                    // Reset caret icon
-                    dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
-                    dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                    dropdown.previousElementSibling.querySelector('i').classList.replace('fa-caret-up','fa-caret-down');
                 });
             });
 
-            // Mobile menu toggle
-            menuToggle.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-                menuToggle.querySelector('i').classList.toggle('fa-bars');
-                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
-                // Close any open dropdowns when main menu is toggled
-                document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
-                    dropdown.classList.remove('active');
-                    dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
-                    // Reset caret icon
-                    dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
-                    dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
-                });
-            });
-
-            // Handle dropdown toggling for both desktop (hover) and mobile (click)
-            document.querySelectorAll('.nav-menu .dropdown').forEach(dropdownParent => {
-                const dropdownToggle = dropdownParent.querySelector('.dropdown-toggle');
-                const dropdownMenu = dropdownParent.querySelector('.dropdown-menu');
-
-                // Desktop hover behavior (retained)
-                dropdownParent.addEventListener('mouseenter', () => {
-                    if (window.matchMedia('(min-width: 769px)').matches) { // Only on desktop
-                        dropdownMenu.style.display = 'block'; // Temporarily set display to block for hover
-                        dropdownToggle.setAttribute('aria-expanded', 'true');
-                        // No need to toggle caret on desktop hover, it looks weird
-                    }
-                });
-
-                dropdownParent.addEventListener('mouseleave', () => {
-                    if (window.matchMedia('(min-width: 769px)').matches) { // Only on desktop
-                        dropdownMenu.style.display = 'none'; // Temporarily set display to none for hover
-                        dropdownToggle.setAttribute('aria-expanded', 'false');
-                    }
-                });
-
-                // Mobile click behavior
-                dropdownToggle.addEventListener('click', (e) => {
-                    if (window.matchMedia('(max-width: 768px)').matches) { // Only on mobile
-                        e.preventDefault(); // Prevent default link behavior for dropdown parent
-                        
-                        // Close other active dropdowns in the mobile menu
+            // Handle dropdown toggling for mobile/tablet up to 992px
+            document.querySelectorAll('.nav-menu .dropdown > .dropdown-toggle').forEach(dropdownToggle => {
+                dropdownToggle.addEventListener('click', e => {
+                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 992px)').matches) {
+                        e.preventDefault();
+                        const dropdownMenu = dropdownToggle.nextElementSibling;
                         navMenu.querySelectorAll('.dropdown-menu.active').forEach(openDropdown => {
                             if (openDropdown !== dropdownMenu) {
                                 openDropdown.classList.remove('active');
                                 openDropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
-                                openDropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
-                                openDropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                                openDropdown.previousElementSibling.querySelector('i').classList.replace('fa-caret-up','fa-caret-down');
                             }
                         });
-
-                        // Toggle the clicked dropdown
                         dropdownMenu.classList.toggle('active');
                         const isExpanded = dropdownMenu.classList.contains('active');
                         dropdownToggle.setAttribute('aria-expanded', isExpanded);
-                        // Toggle caret icon
                         dropdownToggle.querySelector('i').classList.toggle('fa-caret-down', !isExpanded);
                         dropdownToggle.querySelector('i').classList.toggle('fa-caret-up', isExpanded);
                     }
@@ -1600,21 +1459,15 @@
             });
 
 
-            // Close mobile menu when any link is clicked (including dropdown items)
+            // Close mobile menu when a link is clicked
             navMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', function() {
-                    // Only close if it's the mobile menu and the menu is currently active
-                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
-                        // If it's a dropdown toggle, don't close the main menu immediately, let the dropdown logic handle it
-                        if (this.classList.contains('dropdown-toggle')) {
-                            // Do nothing here, the specific dropdown toggle logic above will handle the dropdown
-                            return;
-                        }
-                        
-                        // For all other links, close the main menu and all dropdowns
+                link.addEventListener('click', () => {
+                    // Only close if it's not a dropdown toggle itself AND we are on mobile view
+                    if (!link.classList.contains('dropdown-toggle') && navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
                         menuToggle.querySelector('i').classList.add('fa-bars');
+                         // Close any open dropdowns
                         document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
                             dropdown.classList.remove('active');
                             dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
@@ -1635,8 +1488,19 @@
                             behavior: 'smooth'
                         });
                     }
-                    // The general `navMenu.querySelectorAll('a').forEach` listener above
-                    // will handle closing the mobile menu if this is an internal link.
+                    // For mobile menu, close it after clicking an anchor (if it's not a dropdown toggle)
+                    if (navMenu.classList.contains('active') && !this.classList.contains('dropdown-toggle')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                        // Close any open dropdowns
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                        });
+                    }
                 });
             });
 
