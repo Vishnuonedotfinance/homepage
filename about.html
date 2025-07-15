@@ -649,38 +649,35 @@
             }
             /* IMPORTANT: Mobile dropdown menu styling */
             .dropdown-menu {
-                position: static; /* Remove absolute positioning for mobile */
-                box-shadow: none;
-                border-radius: 0;
-                padding: 0; /* No vertical padding for the dropdown menu itself */
-                min-width: unset;
-                transform: none;
-                opacity: 0; /* Start hidden */
-                visibility: hidden; /* Start hidden */
-                max-height: 0; /* Collapsed height */
-                overflow: hidden; /* Hide overflow */
-                transition: max-height 0.3s ease-out, opacity 0.3s ease-out; /* Smooth transition */
-                background-color: var(--bg-light); /* Slight background for mobile dropdown */
-                margin-top: 5px;
-                width: 50%; /* Set width to 50% of parent */
-                margin-left: auto; /* Center the dropdown */
-                margin-right: auto; /* Center the dropdown */
-                display: block; /* Ensure it's a block element for mobile layout */
+                position: fixed; /* Changed to fixed to appear outside the menu bar flow */
+                background-color: var(--bg-white);
+                box-shadow: var(--shadow-medium); /* Add shadow for visual separation */
+                list-style: none;
+                z-index: 100; /* Higher z-index to be above other content */
+                border-radius: var(--border-radius-sm);
+                padding: 0.8rem 0; /* Increased padding */
+                left: 50%; /* Center horizontally */
+                transform: translateX(-50%); /* Adjust for horizontal centering */
+                width: calc(100% - 2rem); /* Full width of container minus padding */
+                max-width: 400px; /* Max width to prevent it from being too wide on tablets */
+                opacity: 0; /* Start hidden for animation */
+                visibility: hidden; /* Start hidden for animation */
+                pointer-events: none; /* Prevent interaction when collapsed */
+                transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition, removed transform from here */
                 text-align: left; /* Ensure content within dropdown aligns left */
+                top: var(--mobile-dropdown-top, 70px); /* Dynamic top, default value */
             }
             .dropdown-menu.active { /* New class for mobile dropdown active state */
-                max-height: fit-content; /* Allow content to dictate height to show all items */
                 opacity: 1;
                 visibility: visible;
+                pointer-events: auto;
             }
             .dropdown:hover .dropdown-menu {
                 /* This rule is for desktop. On mobile, hover doesn't apply. */
-                /* No need for display: none here, as visibility/opacity handles it */
             }
             .dropdown-menu li a {
-                padding: 0 18px; /* Removed vertical padding entirely for list items */
-                line-height: 1; /* Ensure minimal line height */
-                text-align: left; /* Ensure text is left-aligned within dropdown items */
+                padding: 8px 18px; /* Restore some padding for readability */
+                line-height: 1.5; /* Better line height */
                 display: block;
                 white-space: nowrap;
                 font-size: 0.95em;
@@ -1035,6 +1032,12 @@
                         // Toggle caret icon
                         dropdownToggle.querySelector('i').classList.toggle('fa-caret-down', !isExpanded);
                         dropdownToggle.querySelector('i').classList.toggle('fa-caret-up', isExpanded);
+
+                        // Set dynamic top position for the dropdown menu
+                        if (isExpanded) {
+                            const headerHeight = header.offsetHeight;
+                            dropdownMenu.style.setProperty('--mobile-dropdown-top', `${headerHeight + 10}px`); // 10px buffer
+                        }
                     }
                 });
             });
