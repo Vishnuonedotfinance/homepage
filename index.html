@@ -264,7 +264,7 @@
                 display: none; /* Hide underline on mobile menu */
             }
 
-            /* Mobile Dropdown Specifics */
+            /* Mobile Dropdown Specifics - SIMPLIFIED */
             .dropdown-menu {
                 position: static; /* Remove absolute positioning for mobile */
                 box-shadow: none;
@@ -272,16 +272,16 @@
                 padding: 0;
                 min-width: unset;
                 transform: none;
-                opacity: 1; /* Always visible for smooth max-height transition */
-                visibility: visible; /* Always visible for smooth max-height transition */
-                max-height: 0; /* Initial state for smooth collapse */
-                overflow: hidden;
-                transition: max-height 0.4s ease-in-out; /* Smooth transition for height */
-                display: block; /* Ensure it's block so max-height can animate */
+                opacity: 1; /* Always visible for simple display toggle */
+                visibility: visible; /* Always visible for simple display toggle */
+                display: none; /* Hidden by default on mobile, shown by JS */
+                transition: none; /* No transition for simple display toggle */
+                max-height: none; /* Remove max-height constraint */
+                overflow: visible; /* Allow content to be visible */
             }
 
             .dropdown.dropdown-active .dropdown-menu {
-                max-height: 200px; /* Adjust as needed to fit content */
+                display: block; /* Show menu when active */
             }
 
             .dropdown:hover .dropdown-menu {
@@ -541,8 +541,8 @@
         }
 
         .humanize-card img {
-            flex: 1;
-            max-width: 40%; /* Made image larger */
+            flex: 1; /* Allow image to take available flex space */
+            max-width: 30%; /* Reduced image size on desktop */
             height: auto;
             border-radius: var(--border-radius-md);
             box-shadow: var(--shadow-medium);
@@ -1087,16 +1087,16 @@
                 padding: 0;
                 min-width: unset;
                 transform: none;
-                opacity: 1; /* Always visible for smooth max-height transition */
-                visibility: visible; /* Always visible for smooth max-height transition */
-                max-height: 0; /* Initial state for smooth collapse */
-                overflow: hidden;
-                transition: max-height 0.4s ease-in-out; /* Smooth transition for height */
-                /* Important: Do NOT set display: none here, let max-height handle it */
+                opacity: 1; /* Always visible for simple display toggle */
+                visibility: visible; /* Always visible for simple display toggle */
+                display: none; /* Hidden by default on mobile, shown by JS */
+                transition: none; /* No transition for simple display toggle */
+                max-height: none; /* Remove max-height constraint */
+                overflow: visible; /* Allow content to be visible */
             }
 
             .dropdown.dropdown-active .dropdown-menu {
-                max-height: 200px; /* Adjust as needed to fit content */
+                display: block; /* Show menu when active */
             }
 
             .dropdown:hover .dropdown-menu {
@@ -1634,10 +1634,10 @@
                 // Close any open dropdowns when the main menu is toggled
                 dropdownToggles.forEach(toggle => {
                     toggle.closest('.dropdown').classList.remove('dropdown-active');
-                    // Reset max-height on dropdown menu when main menu is closed
+                    // Directly hide dropdown menu on main menu close
                     const dropdownMenu = toggle.closest('.dropdown').querySelector('.dropdown-menu');
                     if (dropdownMenu) {
-                        dropdownMenu.style.maxHeight = '0px';
+                        dropdownMenu.style.display = 'none';
                     }
                 });
             });
@@ -1652,10 +1652,10 @@
                         // Also close any open dropdowns
                         dropdownToggles.forEach(toggle => {
                             toggle.closest('.dropdown').classList.remove('dropdown-active');
-                            // Reset max-height on dropdown menu
+                            // Directly hide dropdown menu
                             const dropdownMenu = toggle.closest('.dropdown').querySelector('.dropdown-menu');
                             if (dropdownMenu) {
-                                dropdownMenu.style.maxHeight = '0px';
+                                dropdownMenu.style.display = 'none';
                             }
                         });
                     }
@@ -1678,7 +1678,7 @@
                             if (otherParentDropdown !== parentDropdown && otherParentDropdown.classList.contains('dropdown-active')) {
                                 otherParentDropdown.classList.remove('dropdown-active');
                                 if (otherDropdownMenu) {
-                                    otherDropdownMenu.style.maxHeight = '0px';
+                                    otherDropdownMenu.style.display = 'none'; // Directly hide
                                 }
                             }
                         });
@@ -1686,14 +1686,12 @@
                         // Toggle the clicked dropdown
                         parentDropdown.classList.toggle('dropdown-active');
                         if (parentDropdown.classList.contains('dropdown-active')) {
-                            // Set max-height to scrollHeight to animate open
                             if (dropdownMenu) {
-                                dropdownMenu.style.maxHeight = dropdownMenu.scrollHeight + 'px';
+                                dropdownMenu.style.display = 'block'; // Directly show
                             }
                         } else {
-                            // Collapse by setting max-height to 0
                             if (dropdownMenu) {
-                                dropdownMenu.style.maxHeight = '0px';
+                                dropdownMenu.style.display = 'none'; // Directly hide
                             }
                         }
                     }
