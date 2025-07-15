@@ -799,7 +799,6 @@
 
             .content-block {
                 flex-direction: column;
-                text-align: center;
             }
             .content-block .image-content {
                 margin-top: 1.5rem;
@@ -868,7 +867,6 @@
             }
             .nav-menu a {
                 color: var(--text-dark);
-                /* Padding handled by li, but keeping this for consistency if needed */
                 display: block;
             }
             .nav-menu a::after {
@@ -902,7 +900,6 @@
             }
             .dropdown:hover .dropdown-menu {
                 /* This rule is for desktop. On mobile, hover doesn't apply. */
-                /* No need for display: none here, as visibility/opacity handles it */
             }
             .dropdown-menu li a {
                 padding: 0 18px; /* Removed vertical padding entirely for list items */
@@ -914,19 +911,43 @@
                 color: var(--text-dark);
             }
 
+            /* Make container padding smaller for sections on mobile */
+            .section .container {
+                padding: 0; /* Removed padding from container to allow content-block to control it */
+            }
+
             /* Specific mobile adjustments for content-block */
-            .content-block {
-                text-align: left; /* Ensure the entire block aligns left on mobile */
+            .content-block { /* Target the image directly */
+                width: 100%; /* Make the image itself take 100% of its container */
+                height: auto; /* Maintain aspect ratio */
+                display: block; /* Ensure it behaves as a block for full width */
             }
             .content-block .image-content {
                 margin-top: 0; /* Remove top margin from the block itself */
                 margin-bottom: 1.5rem; /* Add space below the image */
+                width: 100%; /* Ensure image container takes full width for centering */
+                min-width: unset; /* Remove min-width for mobile flexibility */
+                margin-left: auto; /* Explicitly center image container */
+                margin-right: auto; /* Explicitly center image container */
+            }
+            .content-block .image-content img { /* Target the image directly */
+                width: 100%; /* Make the image itself take 100% of its container */
+                height: auto; /* Maintain aspect ratio */
+                display: block; /* Ensure it behaves as a block for full width */
+            }
+            .content-block .text-content {
+                width: 100%; /* Ensure text content takes full width */
+                text-align: bottom; /* Explicitly ensure text is centered */
+            }
+            .content-block .text-content h3,
+            .content-block .text-content p {
+                text-align: center; /* Ensure headings and paragraphs are centered */
             }
         }
 
         @media (max-width: 480px) {
-            .container {
-                padding: 0 0.8rem;
+            .content-block {
+                padding: 0 0.1rem; /* Further reduced padding for very small screens */
             }
             .service-banner h1 {
                 font-size: 1.8em;
@@ -1004,7 +1025,7 @@
     <section class="section section-white">
         <div class="container">
             <h2 class="section-heading animated-item">Why a Virtual CFO?</h2>
-            <div class="content-block">
+            <div class="content-block" id="why-cfo-content-block"> <!-- Added unique ID here -->
                 <!-- Image content is now first for mobile stacking consistency -->
                 <div class="image-content animated-item" style="transition-delay: 0.2s;">
                     <img src="cfo2.png" alt="Team collaborating on financial strategy.">
