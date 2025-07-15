@@ -1456,7 +1456,6 @@
             const header = document.querySelector('.header');
             const menuToggle = document.querySelector('.menu-toggle');
             const navMenu = document.querySelector('.nav-menu');
-            // Changed from 'contact-form' to 'cta-contact-form' to match HTML
             const contactForm = document.getElementById('cta-contact-form');
             const formMessage = document.getElementById('form-message');
             const formLoadingOverlay = document.getElementById('form-loading-overlay');
@@ -1528,12 +1527,8 @@
                 }
             });
 
-            // Mobile menu toggle
-            menuToggle.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-                menuToggle.querySelector('i').classList.toggle('fa-bars');
-                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
-                // Close any open dropdowns when main menu is toggled
+            // Function to close all dropdowns
+            const closeAllDropdowns = () => {
                 document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
                     dropdown.classList.remove('active');
                     dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
@@ -1541,19 +1536,26 @@
                     dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
                     dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
                 });
+            };
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                menuToggle.querySelector('i').classList.toggle('fa-bars');
+                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+                closeAllDropdowns(); // Close any open dropdowns when main menu is toggled
             });
 
             // Handle dropdown toggling for mobile
             document.querySelectorAll('.nav-menu .dropdown > .dropdown-toggle').forEach(dropdownToggle => {
                 dropdownToggle.addEventListener('click', (e) => {
-                    // Only apply dropdown toggle logic if the main nav menu is open (i.e., on mobile)
-                    // and if the viewport matches mobile criteria
-                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                    // Only apply dropdown toggle logic if on mobile
+                    if (window.matchMedia('(max-width: 768px)').matches) {
                         e.preventDefault(); // Prevent default link behavior for dropdown parent
                         const dropdownMenu = dropdownToggle.nextElementSibling;
 
-                        // Close other active dropdowns if any
-                        navMenu.querySelectorAll('.dropdown-menu.active').forEach(openDropdown => {
+                        // Close other active dropdowns if any, but not the one being toggled
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(openDropdown => {
                             if (openDropdown !== dropdownMenu) {
                                 openDropdown.classList.remove('active');
                                 openDropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
@@ -1573,24 +1575,36 @@
             });
 
 
-            // Close mobile menu when a link is clicked
+            // Close mobile menu and dropdowns when a link *within* the menu is clicked
             navMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
-                    // Only close if it's not a dropdown toggle itself AND we are on mobile view
-                    if (!link.classList.contains('dropdown-toggle') && navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                    // If it's a dropdown toggle, let its own listener handle it.
+                    // Otherwise, close the main menu and all dropdowns.
+                    if (!link.classList.contains('dropdown-toggle') && window.matchMedia('(max-width: 768px)').matches) {
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
                         menuToggle.querySelector('i').classList.add('fa-bars');
-                         // Close any open dropdowns
-                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
-                            dropdown.classList.remove('active');
-                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
-                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
-                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
-                        });
+                        closeAllDropdowns();
                     }
                 });
             });
+
+            // Close dropdowns when clicking anywhere outside the nav menu on mobile
+            document.addEventListener('click', (event) => {
+                if (window.matchMedia('(max-width: 768px)').matches) {
+                    const isClickInsideNav = navMenu.contains(event.target) || menuToggle.contains(event.target);
+                    if (!isClickInsideNav) {
+                        closeAllDropdowns();
+                        // Optionally, also close the main nav menu if it's open and click is outside
+                        if (navMenu.classList.contains('active')) {
+                            navMenu.classList.remove('active');
+                            menuToggle.querySelector('i').classList.remove('fa-times');
+                            menuToggle.querySelector('i').classList.add('fa-bars');
+                        }
+                    }
+                }
+            });
+
 
             // Smooth scrolling for anchor links (only for current page anchors)
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1607,13 +1621,7 @@
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
                         menuToggle.querySelector('i').classList.add('fa-bars');
-                        // Close any open dropdowns
-                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
-                            dropdown.classList.remove('active');
-                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
-                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
-                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
-                        });
+                        closeAllDropdowns();
                     }
                 });
             });
