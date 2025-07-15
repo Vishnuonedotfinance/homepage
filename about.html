@@ -186,7 +186,7 @@
         }
 
         .dropdown-menu {
-            display: none;
+            /* Default hidden state for desktop before activation */
             position: absolute;
             background-color: var(--bg-white);
             box-shadow: var(--shadow-light);
@@ -200,14 +200,16 @@
             transform: translateX(-50%);
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
             transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
         }
 
         .dropdown:hover .dropdown-menu {
-            display: block;
+            display: block; /* This rule is for desktop hover */
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
         }
 
         .dropdown-menu li a {
@@ -611,9 +613,9 @@
             }
             .menu-toggle {
                 display: block; /* Show hamburger on smaller screens */
+                font-size: 1.5em;
             }
             .nav-menu {
-                display: none; /* Hide nav menu by default on smaller screens */
                 flex-direction: column;
                 width: 100%;
                 background-color: var(--bg-white);
@@ -623,38 +625,67 @@
                 box-shadow: var(--shadow-medium);
                 padding: 1rem 0;
                 border-radius: var(--border-radius-sm);
+                transition: all 0.3s ease-out;
+                max-height: 0; /* Hidden by default */
+                overflow: hidden; /* Hide overflow when collapsed */
+                opacity: 0;
+                visibility: hidden; /* Crucial: Hide from screen readers and prevent interaction */
+                pointer-events: none; /* Crucial: Prevent interaction when collapsed */
             }
             .nav-menu.active {
-                display: flex; /* Show nav menu when active */
+                max-height: 500px; /* Sufficient height to show all items */
+                opacity: 1;
+                visibility: visible; /* Crucial: Make visible and interactive */
+                pointer-events: auto; /* Crucial: Allow interaction when active */
             }
             .nav-menu li {
                 width: 100%;
                 text-align: center;
-                padding: 0.5rem 0;
-            }
-            .nav-menu a {
-                color: var(--text-dark);
-                padding: 0.8rem 1.5rem;
+                padding: 0.8rem 1.5rem; /* Consistent padding for main nav items */
                 display: block;
             }
             .nav-menu a::after {
                 display: none; /* Hide underline on mobile menu */
             }
+            /* IMPORTANT: Mobile dropdown menu styling */
             .dropdown-menu {
                 position: static; /* Remove absolute positioning for mobile */
                 box-shadow: none;
                 border-radius: 0;
-                padding: 0;
+                padding: 0; /* No vertical padding for the dropdown menu itself */
                 min-width: unset;
                 transform: none;
+                opacity: 0; /* Start hidden */
+                visibility: hidden; /* Start hidden */
+                max-height: 0; /* Collapsed height */
+                overflow: hidden; /* Hide overflow */
+                transition: max-height 0.3s ease-out, opacity 0.3s ease-out; /* Smooth transition */
+                background-color: var(--bg-light); /* Slight background for mobile dropdown */
+                margin-top: 5px;
+                width: 50%; /* Set width to 50% of parent */
+                margin-left: auto; /* Center the dropdown */
+                margin-right: auto; /* Center the dropdown */
+                display: block; /* Ensure it's a block element for mobile layout */
+                text-align: left; /* Ensure content within dropdown aligns left */
+            }
+            .dropdown-menu.active { /* New class for mobile dropdown active state */
+                max-height: fit-content; /* Allow content to dictate height to show all items */
                 opacity: 1;
                 visibility: visible;
-                display: none; /* Hidden by default, toggled by JS if needed */
             }
             .dropdown:hover .dropdown-menu {
-                display: none; /* Override hover for mobile */
+                /* This rule is for desktop. On mobile, hover doesn't apply. */
+                /* No need for display: none here, as visibility/opacity handles it */
             }
-            /* You might need JS to toggle dropdown-menu visibility on click for mobile */
+            .dropdown-menu li a {
+                padding: 0 18px; /* Removed vertical padding entirely for list items */
+                line-height: 1; /* Ensure minimal line height */
+                text-align: left; /* Ensure text is left-aligned within dropdown items */
+                display: block;
+                white-space: nowrap;
+                font-size: 0.95em;
+                color: var(--text-dark);
+            }
         }
 
         @media (max-width: 480px) {
@@ -691,7 +722,7 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="about.html">About Us</a></li>
                     <li class="dropdown">
-                        <a href="#" onclick="return false;">Services <i class="fas fa-caret-down"></i></a>
+                        <a href="#" class="dropdown-toggle" aria-expanded="false">Services <i class="fas fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="cfo-service.html">CFO Service</a></li>
                             <li><a href="income-tax.html">Income Tax Consultation</a></li>
@@ -700,7 +731,7 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" onclick="return false;">Tools <i class="fas fa-caret-down"></i></a>
+                        <a href="#" class="dropdown-toggle" aria-expanded="false">Tools <i class="fas fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="income-tax-calculator.html">Income Tax Calculator</a></li>
                             <li><a href="invoice-generator.html">Invoice Generator</a></li>
@@ -760,7 +791,7 @@
         <div class="container">
             <h3>Book a call with the Founders!</h3>
             <div class="form-container">
-                <form action="https://formspree.io/f/mkgberpq" method="post">
+                <form action="https://formspree.io/f/mkgberpq" method="post" id="cta-contact-form">
                     <div class="form-field">
                         <label for="cta-name">Your Name</label>
                         <input type="text" id="cta-name" name="name" required placeholder="Name">
@@ -794,6 +825,9 @@
                     <button type="submit" class="btn btn-primary">Submit Request</button>
                 </form>
                 <div id="form-message" class="form-message"></div>
+                <div id="form-loading-overlay" class="loading-overlay">
+                    <div class="loading-spinner"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -855,6 +889,30 @@
 
         let app, db, auth;
 
+        // Function to display form messages (re-used from home page)
+        const displayFormMessage = (message, type) => {
+            const formMessageElement = document.getElementById('form-message');
+            if (formMessageElement) {
+                formMessageElement.textContent = message;
+                formMessageElement.className = `form-message show ${type}`;
+                setTimeout(() => {
+                    formMessageElement.classList.remove('show');
+                }, 5000); // Message disappears after 5 seconds
+            }
+        };
+
+        // Function to show/hide loading overlay (re-used from home page)
+        const showLoading = (show) => {
+            const formLoadingOverlay = document.getElementById('form-loading-overlay');
+            if (formLoadingOverlay) {
+                if (show) {
+                    formLoadingOverlay.classList.add('show');
+                } else {
+                    formLoadingOverlay.classList.remove('show');
+                }
+            }
+        };
+
         // Initialize Firebase and authenticate
         const initializeFirebase = async () => {
             try {
@@ -875,7 +933,6 @@
                 }
             } catch (error) {
                 console.error("Error initializing Firebase or signing in on About Us page:", error);
-                // Display an error message on the page if Firebase fails to initialize
                 displayFormMessage("Error initializing services. Please try again later.", "error");
             }
         };
@@ -886,27 +943,9 @@
             const header = document.querySelector('.header');
             const menuToggle = document.querySelector('.menu-toggle');
             const navMenu = document.querySelector('.nav-menu');
-            const contactForm = document.getElementById('contact-form');
-            const formMessage = document.getElementById('form-message');
-            const formLoadingOverlay = document.getElementById('form-loading-overlay');
-
-            // Function to display form messages
-            const displayFormMessage = (message, type) => {
-                formMessage.textContent = message;
-                formMessage.className = `form-message show ${type}`;
-                setTimeout(() => {
-                    formMessage.classList.remove('show');
-                }, 5000); // Message disappears after 5 seconds
-            };
-
-            // Function to show/hide loading overlay
-            const showLoading = (show) => {
-                if (show) {
-                    formLoadingOverlay.classList.add('show');
-                } else {
-                    formLoadingOverlay.classList.remove('show');
-                }
-            };
+            // Corrected ID to match HTML for the contact form
+            const contactForm = document.getElementById('cta-contact-form');
+            // formMessage and formLoadingOverlay are now handled by the global functions
 
             // Handle contact form submission
             if (contactForm) {
@@ -961,15 +1000,60 @@
                 navMenu.classList.toggle('active');
                 menuToggle.querySelector('i').classList.toggle('fa-bars');
                 menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+                // Close any open dropdowns when main menu is toggled
+                document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                    dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                    // Reset caret icon
+                    dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                    dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                });
+            });
+
+            // Handle dropdown toggling for mobile
+            document.querySelectorAll('.nav-menu .dropdown > .dropdown-toggle').forEach(dropdownToggle => {
+                dropdownToggle.addEventListener('click', (e) => {
+                    // Only apply dropdown toggle logic if the main nav menu is open (i.e., on mobile)
+                    // and if the viewport matches mobile criteria
+                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                        e.preventDefault(); // Prevent default link behavior for dropdown parent
+                        const dropdownMenu = dropdownToggle.nextElementSibling;
+
+                        // Close other active dropdowns if any
+                        navMenu.querySelectorAll('.dropdown-menu.active').forEach(openDropdown => {
+                            if (openDropdown !== dropdownMenu) {
+                                openDropdown.classList.remove('active');
+                                openDropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                                openDropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                                openDropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                            }
+                        });
+
+                        dropdownMenu.classList.toggle('active');
+                        const isExpanded = dropdownMenu.classList.contains('active');
+                        dropdownToggle.setAttribute('aria-expanded', isExpanded);
+                        // Toggle caret icon
+                        dropdownToggle.querySelector('i').classList.toggle('fa-caret-down', !isExpanded);
+                        dropdownToggle.querySelector('i').classList.toggle('fa-caret-up', isExpanded);
+                    }
+                });
             });
 
             // Close mobile menu when a link is clicked
             navMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
-                    if (navMenu.classList.contains('active')) {
+                    // Only close if it's not a dropdown toggle itself AND we are on mobile view
+                    if (!link.classList.contains('dropdown-toggle') && navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
                         menuToggle.querySelector('i').classList.add('fa-bars');
+                        // Close any open dropdowns
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                        });
                     }
                 });
             });
@@ -984,11 +1068,18 @@
                             behavior: 'smooth'
                         });
                     }
-                    // For mobile menu, close it after clicking an anchor
-                    if (navMenu.classList.contains('active')) {
+                    // For mobile menu, close it after clicking an anchor (if it's not a dropdown toggle)
+                    if (navMenu.classList.contains('active') && !this.classList.contains('dropdown-toggle')) {
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
                         menuToggle.querySelector('i').classList.add('fa-bars');
+                        // Close any open dropdowns
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                        });
                     }
                 });
             });
