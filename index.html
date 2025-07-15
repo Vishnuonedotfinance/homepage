@@ -1539,7 +1539,8 @@
             };
 
             // Mobile menu toggle
-            menuToggle.addEventListener('click', () => {
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent this click from bubbling up and triggering document click
                 navMenu.classList.toggle('active');
                 menuToggle.querySelector('i').classList.toggle('fa-bars');
                 menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
@@ -1552,6 +1553,8 @@
                     // Only apply dropdown toggle logic if on mobile
                     if (window.matchMedia('(max-width: 768px)').matches) {
                         e.preventDefault(); // Prevent default link behavior for dropdown parent
+                        e.stopPropagation(); // Prevent event from bubbling up to document or parent li
+
                         const dropdownMenu = dropdownToggle.nextElementSibling;
 
                         // Close other active dropdowns if any, but not the one being toggled
@@ -1575,27 +1578,39 @@
             });
 
 
-            // Close mobile menu and dropdowns when a link *within* the menu is clicked
-            navMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    // If it's a dropdown toggle, let its own listener handle it.
-                    // Otherwise, close the main menu and all dropdowns.
-                    if (!link.classList.contains('dropdown-toggle') && window.matchMedia('(max-width: 768px)').matches) {
-                        navMenu.classList.remove('active');
-                        menuToggle.querySelector('i').classList.remove('fa-times');
-                        menuToggle.querySelector('i').classList.add('fa-bars');
-                        closeAllDropdowns();
+            // Handle clicks on actual navigation links (both main menu and dropdown items)
+            navMenu.querySelectorAll('a:not(.dropdown-toggle)').forEach(link => { // Select all 'a' tags EXCEPT dropdown-toggle
+                link.addEventListener('click', (e) => {
+                    if (window.matchMedia('(max-width: 768px)').matches) {
+                        // If it's an internal anchor link on the same page, smooth scroll
+                        if (link.href.startsWith(window.location.origin + window.location.pathname + '#')) {
+                            e.preventDefault(); // Prevent default navigation
+                            document.querySelector(link.getAttribute('href')).scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                            // Close menu and dropdowns after smooth scroll
+                            navMenu.classList.remove('active');
+                            menuToggle.querySelector('i').classList.remove('fa-times');
+                            menuToggle.querySelector('i').classList.add('fa-bars');
+                            closeAllDropdowns();
+                        } else {
+                            // For external links or links to different pages, let default navigation happen.
+                            // Close the menu immediately. The page will reload/navigate anyway.
+                            navMenu.classList.remove('active');
+                            menuToggle.querySelector('i').classList.remove('fa-times');
+                            menuToggle.querySelector('i').classList.add('fa-bars');
+                            closeAllDropdowns();
+                        }
                     }
                 });
             });
 
-            // Close dropdowns when clicking anywhere outside the nav menu on mobile
+            // Close dropdowns and main menu when clicking anywhere outside the nav menu on mobile
             document.addEventListener('click', (event) => {
                 if (window.matchMedia('(max-width: 768px)').matches) {
                     const isClickInsideNav = navMenu.contains(event.target) || menuToggle.contains(event.target);
                     if (!isClickInsideNav) {
                         closeAllDropdowns();
-                        // Optionally, also close the main nav menu if it's open and click is outside
                         if (navMenu.classList.contains('active')) {
                             navMenu.classList.remove('active');
                             menuToggle.querySelector('i').classList.remove('fa-times');
@@ -1607,24 +1622,9 @@
 
 
             // Smooth scrolling for anchor links (only for current page anchors)
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    // Only smooth scroll if the href is an internal anchor on the same page
-                    if (this.pathname === window.location.pathname) {
-                        e.preventDefault();
-                        document.querySelector(this.getAttribute('href')).scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                    // For mobile menu, close it after clicking an anchor (if it's not a dropdown toggle)
-                    if (navMenu.classList.contains('active') && !this.classList.contains('dropdown-toggle')) {
-                        navMenu.classList.remove('active');
-                        menuToggle.querySelector('i').classList.remove('fa-times');
-                        menuToggle.querySelector('i').classList.add('fa-bars');
-                        closeAllDropdowns();
-                    }
-                });
-            });
+            // This block is now integrated into the 'navMenu.querySelectorAll('a:not(.dropdown-toggle)')' listener
+            // to avoid conflicts and ensure consistent behavior. The original separate smooth scroll
+            // listener for all 'a[href^="#"]' was removed to prevent conflicts.
 
             // Number counting animation (Impact Section)
             const impactSection = document.querySelector('.impact-section');
