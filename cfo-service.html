@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual CFO Services - One.Finance</title>
+    <title>CFO Service - One.Finance</title>
     <!-- Favicon (optional, replace with your own) -->
     <link rel="icon" href="icon.png" type="image/png">
 
@@ -374,7 +374,6 @@
             100% { transform: translateY(0) rotate(0deg); }
         }
 
-
         .section-heading {
             font-size: 2.2em;
             margin-bottom: 0.8rem;
@@ -450,18 +449,12 @@
             border-radius: var(--border-radius-md);
             box-shadow: var(--shadow-light);
             text-align: left;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease, scale 0.3s ease; /* Added scale */
-            display: flex;
+            position: relative; /* Needed for pseudo-element hover */
+            overflow: hidden; /* Ensures gradient doesn't spill */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; /* For aligning icon and text */
             flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .cfo-service-card.hidden {
-            display: none;
-            opacity: 0;
-            transform: translateY(20px) scale(0.95); /* Animate out effect */
+            align-items: flex-start; /* Align content to the left */
         }
 
         .cfo-service-card::before {
@@ -482,38 +475,38 @@
         }
 
         .cfo-service-card:hover {
-            transform: translateY(-8px) scale(1.02); /* Slightly larger scale on hover */
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
         }
 
         .cfo-service-card .icon {
-            font-size: 2.2em;
+            font-size: 2.2em; /* Slightly larger icon */
             color: var(--primary-color);
-            background-color: var(--bg-light);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            background-color: var(--bg-light); /* Light background for icon */
+            border-radius: 50%; /* Circular background */
+            width: 60px; /* Fixed width */
+            height: 60px; /* Fixed height */
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 0.8em;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-            position: relative;
+            margin-bottom: 0.8em; /* Adjusted margin */
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); /* Subtle inner shadow */
+            position: relative; /* Ensure icon is above pseudo-element */
             z-index: 1;
         }
 
         .cfo-service-card h4 {
             color: var(--text-dark);
-            font-size: 1.3em;
+            font-size: 1.3em; /* Slightly larger heading */
             margin-bottom: 0.4em;
-            position: relative;
+            position: relative; /* Ensure text is above pseudo-element */
             z-index: 1;
         }
 
         .cfo-service-card p {
             color: var(--text-light);
-            font-size: 0.95em;
-            position: relative;
+            font-size: 0.95em; /* Slightly larger paragraph */
+            position: relative; /* Ensure text is above pseudo-element */
             z-index: 1;
         }
 
@@ -545,29 +538,6 @@
             font-weight: 500;
             max-width: 600px;
             margin: 0 auto;
-        }
-
-        /* Service Toggle Buttons */
-        .service-toggle-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .service-toggle-buttons .btn {
-            padding: 0.6rem 1.5rem;
-            font-size: 0.9em;
-            border-radius: 50px; /* Pill shape */
-            border: 2px solid var(--primary-color);
-            background-color: transparent;
-            color: var(--primary-color);
-        }
-
-        .service-toggle-buttons .btn.active {
-            background-color: var(--primary-color);
-            color: var(--bg-white);
-            box-shadow: var(--shadow-medium);
         }
 
         /* --- Generic CTA Form Section --- */
@@ -766,7 +736,7 @@
         /* --- Animations --- */
         .animated-item {
             opacity: 0;
-            transform: translateY(20px) scale(0.95); /* Added scale */
+            transform: translateY(20px) scale(0.95);
             transition: opacity 0.8s ease-out, transform 0.8s ease-out;
         }
 
@@ -874,46 +844,50 @@
             }
             /* IMPORTANT: Mobile dropdown menu styling */
             .dropdown-menu {
-                position: static; /* Remove absolute positioning for mobile */
-                box-shadow: none;
-                border-radius: 0;
-                padding: 0; /* No vertical padding for the dropdown menu itself */
-                min-width: unset;
-                transform: none;
+                position: fixed; /* Changed to fixed to appear outside the menu bar flow */
+                background-color: var(--bg-white);
+                box-shadow: var(--shadow-medium); /* Add shadow for visual separation */
+                list-style: none;
+                z-index: 100; /* Higher z-index to be above other content */
+                border-radius: var(--border-radius-sm);
+                padding: 0.8rem 0; /* Increased padding */
+                left: 50%; /* Center horizontally */
+                transform: translateX(-50%); /* Adjust for horizontal centering */
+                width: calc(100% - 2rem); /* Full width of container minus padding */
+                max-width: 400px; /* Max width to prevent it from being too wide on tablets */
                 opacity: 0; /* Start hidden for animation */
                 visibility: hidden; /* Start hidden for animation */
-                max-height: 0; /* Collapsed height for animation */
-                overflow: hidden; /* Hide overflow for animation */
-                transition: max-height 0.3s ease-out, opacity 0.3s ease-out; /* Smooth transition */
-                background-color: var(--bg-light); /* Slight background for mobile dropdown */
-                margin-top: 5px;
-                width: 50%; /* Set width to 50% of parent */
-                margin-left: auto; /* Center the dropdown */
-                margin-right: auto; /* Center the dropdown */
-                display: block; /* Ensure it's a block element for mobile layout */
+                pointer-events: none; /* Prevent interaction when collapsed */
+                transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition, removed transform from here */
                 text-align: left; /* Ensure content within dropdown aligns left */
+                top: var(--mobile-dropdown-top, 70px); /* Dynamic top, default value */
             }
             .dropdown-menu.active { /* New class for mobile dropdown active state */
-                max-height: fit-content; /* Allow content to dictate height to show all items */
                 opacity: 1;
                 visibility: visible;
+                pointer-events: auto;
             }
             .dropdown:hover .dropdown-menu {
                 /* This rule is for desktop. On mobile, hover doesn't apply. */
             }
             .dropdown-menu li a {
-                padding: 0 18px; /* Removed vertical padding entirely for list items */
-                line-height: 1; /* Ensure minimal line height */
-                text-align: left; /* Ensure text is left-aligned within dropdown items */
+                padding: 8px 18px; /* Restore some padding for readability */
+                line-height: 1.5; /* Better line height */
                 display: block;
                 white-space: nowrap;
                 font-size: 0.95em;
                 color: var(--text-dark);
             }
 
+            .stat-number {
+                font-size: 2.5em; /* Adjusted for responsiveness */
+            }
+            .stat-text {
+                font-size: 1em; /* Adjusted for responsiveness */
+            }
             /* Make container padding smaller for sections on mobile */
             .section .container {
-                padding: 0; /* Removed padding from container to allow content-block to control it */
+                padding: 1.5; /* Removed padding from container to allow content-block to control it */
             }
 
             /* Specific mobile adjustments for content-block */
@@ -925,7 +899,7 @@
             .content-block .image-content {
                 margin-top: 0; /* Remove top margin from the block itself */
                 margin-bottom: 1.5rem; /* Add space below the image */
-                width: 100%; /* Ensure image container takes full width for centering */
+                width: auto; /* Ensure image container takes full width for centering */
                 min-width: unset; /* Remove min-width for mobile flexibility */
                 margin-left: auto; /* Explicitly center image container */
                 margin-right: auto; /* Explicitly center image container */
@@ -946,8 +920,8 @@
         }
 
         @media (max-width: 480px) {
-            .content-block {
-                padding: 0 0.1rem; /* Further reduced padding for very small screens */
+            .container {
+                padding: 0 0.8rem;
             }
             .service-banner h1 {
                 font-size: 1.8em;
@@ -1011,29 +985,28 @@
     <section class="service-banner">
         <div class="container">
             <div class="banner-content-left animated-item">
-                <h1>Unlock Growth with Your Virtual CFO.</h1>
-                <p>Gain strategic financial leadership without the overhead. Our Virtual CFO services empower your business with expert insights, robust planning, and scalable support.</p>
-                <a href="#cta-form" class="btn btn-primary">Get  a CFO for your Startup</a>
+                <h1>Your Business, Elevated. Your Virtual CFO.</h1>
+                <p>Unlock strategic financial insights and robust management without the overhead of a full-time CFO. We're your dedicated financial partner.</p>
+                <a href="#cta-form" class="btn btn-primary">Discover CFO Services</a>
             </div>
             <div class="banner-image-right animated-item">
-                <img src="cfo1.png" alt="Business professionals analyzing financial data on a dashboard" style="max-width: 100%; height: auto; border-radius: var(--border-radius-md); box-shadow: var(--shadow-medium);">
+                <img src="cfo1.png" alt="Business professionals discussing financial reports and strategy" style="max-width: 100%; height: auto; border-radius: var(--border-radius-md); box-shadow: var(--shadow-medium);">
             </div>
         </div>
     </section>
 
-    <!-- Why Choose a Virtual CFO Section -->
+    <!-- Why Choose Us Section -->
     <section class="section section-white">
         <div class="container">
             <h2 class="section-heading animated-item">Why a Virtual CFO?</h2>
-            <div class="content-block" id="why-cfo-content-block"> <!-- Added unique ID here -->
-                <!-- Image content is now first for mobile stacking consistency -->
+            <div class="content-block">
+                <div class="text-content animated-item">
+                    <p style="text-align: left; margin: 0 0 1.5em 0;">
+                        As a startup or growing business, you face unique financial challenges. You need strategic financial guidance, but a full-time CFO might be out of reach. Our Virtual CFO services bridge this gap, providing high-level financial expertise on demand. We help you optimize cash flow, forecast growth, manage risks, and make informed decisions, all without the overhead of an in-house executive. Partner with us to gain clarity, control, and a clear path to sustainable growth.
+                    </p>
+                </div>
                 <div class="image-content animated-item" style="transition-delay: 0.2s;">
                     <img src="cfo2.png" alt="Team collaborating on financial strategy.">
-                </div>
-                <div class="text-content animated-item">
-                    <p>
-                        As a founder, you're juggling product, sales, team, and vision. Financial strategy often becomes an afterthought, especially for bootstrapped startups. And for venture-backed companies, a full-time CFO can be a significant early expense. That's where One.Finance steps in. We provide dynamic Virtual CFO services tailored to your unique stage and needs. Whether you're building from the ground up or scaling rapidly, our approach adapts. We leverage AI-driven insights to give you cutting-edge financial intelligence, ensuring you make informed decisions, optimize cash flow, and achieve sustainable growth without the traditional overhead. You get more than just numbers; you get a strategic financial partner who truly understands your journey.
-                    </p>
                 </div>
             </div>
         </div>
@@ -1043,17 +1016,17 @@
     <section class="section-stats animated-item" id="cfo-impact-stats">
         <div class="container">
             <h2 class="section-heading">Our Impact, Quantified</h2>
-            <span class="stat-number" id="startupsHelpedCounter">0+</span>
-            <p class="stat-text">Startups Empowered Globally</p>
+            <span class="stat-number" id="clientsServedCounter">0+</span>
+            <p class="stat-text">Clients Empowered with Strategic Financial Guidance</p>
         </div>
     </section>
 
-    <!-- Our Virtual CFO Expertise Section -->
+    <!-- Key Aspects of Our CFO Service Section -->
     <section class="section section-light">
         <div class="container">
-            <h2 class="section-heading animated-item">Our Virtual CFO Expertise: Driving Your Success</h2>
+            <h2 class="section-heading animated-item">Key Aspects of Our Virtual CFO Service</h2>
             <p class="section-subheading animated-item">
-                We provide comprehensive financial leadership tailored to your business.
+                We provide comprehensive financial leadership tailored to your business needs.
             </p>
             <div class="content-block">
                 <div class="image-content animated-item" style="transition-delay: 0.2s;">
@@ -1062,75 +1035,59 @@
                 <div class="text-content">
                     <h3 class="animated-item">Strategic Financial Partnership</h3>
                     <p class="animated-item">
-                        We act as your trusted financial advisor, offering insights that go beyond basic accounting. From budgeting and forecasting to risk management and investment analysis, we guide your financial decisions.
+                        <strong>Financial Planning & Analysis:</strong> Budgeting, forecasting, and variance analysis to guide your financial decisions.
                     </p>
                     <p class="animated-item" style="transition-delay: 0.1s;">
-                        Our expertise helps you navigate complex financial landscapes, ensuring compliance and identifying opportunities for efficiency and growth.
+                        <strong>Cash Flow Optimization:</strong> Strategies to improve liquidity and ensure sustainable operations.
                     </p>
                     <p class="animated-item" style="transition-delay: 0.2s;">
-                        Focus on your core business while we handle the intricate financial details, providing clarity and direction for your future.
+                        <strong>Risk Management:</strong> Identifying and mitigating financial risks to protect your assets.
+                    </p>
+                    <p class="animated-item" style="transition-delay: 0.3s;">
+                        <strong>Fundraising Support:</strong> Assistance in preparing financial models and investor decks.
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Core Virtual CFO Services Section -->
+    <!-- Full Stack CFO Services Grid Section -->
     <section class="section section-white">
         <div class="container">
-            <h2 class="section-heading animated-item">Core Virtual CFO Services</h2>
+            <h2 class="section-heading animated-item">Full-Stack Virtual CFO Services</h2>
             <p class="section-subheading animated-item">
-        
+                From daily accounting oversight to high-level strategic planning, we cover all your financial needs.
             </p>
-            <div class="service-toggle-buttons">
-                <button class="btn btn-primary active" id="showAllServices">Full Stack Service</button>
-                <button class="btn btn-outline" id="showReportingServices">Reporting Services</button>
-            </div>
-            <div class="cfo-services-grid" id="cfo-services-grid">
-                <div class="cfo-service-card animated-item" data-category="full-stack">
-                    <div class="icon"><i class="fas fa-book"></i></div>
-                    <h4>Dashboards & Analytics</h4>
-                    <p>Interactive dashboards providing real-time insights into key financial metrics.</p>
+            <div class="cfo-services-grid">
+                <div class="cfo-service-card animated-item">
+                    <div class="icon"><i class="fas fa-chart-line"></i></div>
+                    <h4>Financial Strategy & Planning</h4>
+                    <p>Developing robust financial plans, budgets, and forecasts for sustainable growth.</p>
                 </div>
-                <div class="cfo-service-card animated-item" data-category="full-stack" style="transition-delay: 0.1s;">
-                    <div class="icon"><i class="fas fa-user-plus"></i></div>
+                <div class="cfo-service-card animated-item" style="transition-delay: 0.1s;">
+                    <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
                     <h4>Cash Flow Management</h4>
-                    <p>Monitoring and managing cash flow to ensure liquidity and financial stability. Our proactive approach helps you plan ahead, meet obligations, and seize growth opportunities with confidence.</p>
+                    <p>Optimizing liquidity, managing working capital, and ensuring healthy cash flow.</p>
                 </div>
-                <div class="cfo-service-card animated-item" data-category="full-stack" style="transition-delay: 0.2s;">
-                    <div class="icon"><i class="fas fa-exchange-alt"></i></div>
-                    <h4>Client Onboardingt</h4>
-                    <p>Streamlined process to efficiently integrate new clients into your financial systems.</p>
+                <div class="cfo-service-card animated-item" style="transition-delay: 0.2s;">
+                    <div class="icon"><i class="fas fa-hand-holding-usd"></i></div>
+                    <h4>Fundraising & Investor Relations</h4>
+                    <p>Preparing financial models, investor decks, and supporting fundraising efforts.</p>
                 </div>
-                <div class="cfo-service-card animated-item" data-category="full-stack reporting" style="transition-delay: 0.3s;">
-                    <div class="icon"><i class="fas fa-dollar-sign"></i></div>
-                    <h4>Process Automation</h4>
-                    <p>Automating repetitive financial processes for increased efficiency and accuracy.</p>
+                <div class="cfo-service-card animated-item" style="transition-delay: 0.3s;">
+                    <div class="icon"><i class="fas fa-balance-scale"></i></div>
+                    <h4>Risk Management & Compliance</h4>
+                    <p>Identifying financial risks, ensuring regulatory compliance, and internal controls.</p>
                 </div>
-                <div class="cfo-service-card animated-item" data-category="full-stack reporting" style="transition-delay: 0.4s;">
-                    <div class="icon"><i class="fas fa-chart-pie"></i></div>
-                    <h4>MIS Reporting</h4>
-                    <p>Customized Management Information System reports for informed decision-making.</p>
+                <div class="cfo-service-card animated-item" style="transition-delay: 0.4s;">
+                    <div class="icon"><i class="fas fa-book"></i></div>
+                    <h4>Accounting & Reporting Oversight</h4>
+                    <p>Supervising accounting functions, ensuring accurate financial statements and MIS reports.</p>
                 </div>
-                <div class="cfo-service-card animated-item" data-category="full-stack reporting" style="transition-delay: 0.5s;">
-                    <div class="icon"><i class="fas fa-chart-bar"></i></div>
-                    <h4>Payroll Management</h4>
-                    <p>End-to-end payroll processing with accuracy, timeliness, and compliance.</p>
-                </div>
-                <div class="cfo-service-card animated-item" data-category="full-stack" style="transition-delay: 0.6s;">
-                    <div class="icon"><i class="fas fa-users"></i></div>
-                    <h4>Risk Management</h4>
-                    <p>Identify, assess, and mitigate financial risks to ensure business continuity and stability.</p>
-                </div>
-                <div class="cfo-service-card animated-item" data-category="full-stack" style="transition-delay: 0.7s;">
-                    <div class="icon"><i class="fas fa-shield-alt"></i></div>
-                    <h4>Bookkeeping</h4>
-                    <p>Ensuring accurate and timely bookkeeping to maintain the integrity of your financial records.</p>
-                </div>
-                <div class="cfo-service-card animated-item" data-category="full-stack" style="transition-delay: 0.8s;">
-                    <div class="icon"><i class="fas fa-robot"></i></div>
-                    <h4>AR & AP Management</h4>
-                    <p>Efficient management of accounts receivable and payable for optimized cash flow.</p>
+                <div class="cfo-service-card animated-item" style="transition-delay: 0.5s;">
+                    <div class="icon"><i class="fas fa-users-cog"></i></div>
+                    <h4>Performance Analysis</h4>
+                    <p>Analyzing key performance indicators (KPIs) to drive operational efficiency.</p>
                 </div>
             </div>
         </div>
@@ -1226,7 +1183,6 @@
         </div>
     </footer>
 
-    <!-- Firebase SDKs and Page-Specific JavaScript -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -1276,13 +1232,13 @@
 
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
-                    console.log("Signed in with custom token for Virtual CFO page.");
+                    console.log("Signed in with custom token for CFO Service page.");
                 } else {
                     await signInAnonymously(auth);
-                    console.log("Signed in anonymously for Virtual CFO page.");
+                    console.log("Signed in anonymously for CFO Service page.");
                 }
             } catch (error) {
-                console.error("Error initializing Firebase or signing in on Virtual CFO page:", error);
+                console.error("Error initializing Firebase or signing in on CFO Service page:", error);
                 displayFormMessage("Error initializing services. Please try again later.", "error");
             }
         };
@@ -1293,9 +1249,7 @@
             const header = document.querySelector('.header');
             const menuToggle = document.querySelector('.menu-toggle');
             const navMenu = document.querySelector('.nav-menu');
-            // Corrected ID to match HTML for the contact form
             const contactForm = document.getElementById('cta-contact-form');
-            // formMessage and formLoadingOverlay are now handled by the global functions
 
             // Handle contact form submission
             if (contactForm) {
@@ -1385,6 +1339,12 @@
                         // Toggle caret icon
                         dropdownToggle.querySelector('i').classList.toggle('fa-caret-down', !isExpanded);
                         dropdownToggle.querySelector('i').classList.toggle('fa-caret-up', isExpanded);
+
+                        // Set dynamic top position for the dropdown menu
+                        if (isExpanded) {
+                            const headerHeight = header.offsetHeight;
+                            dropdownMenu.style.setProperty('--mobile-dropdown-top', `${headerHeight + 10}px`); // 10px buffer
+                        }
                     }
                 });
             });
@@ -1422,7 +1382,7 @@
                     if (navMenu.classList.contains('active') && !this.classList.contains('dropdown-toggle')) {
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
-                        menuToggle.querySelector('i').classList.add('fa-bars');
+                        menuToggle.querySelector('i').classList.classList.add('fa-bars');
                         // Close any open dropdowns
                         document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
                             dropdown.classList.remove('active');
@@ -1441,7 +1401,7 @@
                         entry.target.classList.add('is-visible');
                         // Trigger counter animation for the CFO stats section
                         if (entry.target.id === 'cfo-impact-stats') {
-                            animateCounter('startupsHelpedCounter', 25, 1500); // Target ID, final value, duration in ms
+                            animateCounter('clientsServedCounter', 250, 1500); // Example: 250 clients served
                         }
                         observer.unobserve(entry.target);
                     }
@@ -1455,7 +1415,11 @@
             const observer = new IntersectionObserver(animateOnScroll, options);
 
             // Observe elements for animation
-            document.querySelectorAll('.animated-item, .section-white, .section-light').forEach(el => {
+            document.querySelectorAll('.animated-item').forEach(el => {
+                observer.observe(el);
+            });
+            // Separately observe the cfo-impact-stats to trigger its own animation
+            document.querySelectorAll('#cfo-impact-stats').forEach(el => {
                 observer.observe(el);
             });
 
@@ -1481,42 +1445,6 @@
                 }
                 requestAnimationFrame(step);
             }
-
-            // Service Toggle Logic
-            const showAllServicesBtn = document.getElementById('showAllServices');
-            const showReportingServicesBtn = document.getElementById('showReportingServices');
-            const cfoServiceCards = document.querySelectorAll('.cfo-service-card');
-
-            function filterServices(category) {
-                cfoServiceCards.forEach(card => {
-                    if (category === 'full-stack' && card.dataset.category.includes('full-stack')) {
-                        card.classList.remove('hidden');
-                    } else if (category === 'reporting' && card.dataset.category.includes('reporting')) {
-                        card.classList.remove('hidden');
-                    } else {
-                        card.classList.add('hidden');
-                    }
-                });
-            }
-
-            if (showAllServicesBtn) {
-                showAllServicesBtn.addEventListener('click', () => {
-                    showAllServicesBtn.classList.add('active');
-                    showReportingServicesBtn.classList.remove('active');
-                    filterServices('full-stack');
-                });
-            }
-
-            if (showReportingServicesBtn) {
-                showReportingServicesBtn.addEventListener('click', () => {
-                    showReportingServicesBtn.classList.add('active');
-                    showAllServicesBtn.classList.remove('active');
-                    filterServices('reporting');
-                });
-            }
-
-            // Initial filter to show all services by default
-            filterServices('full-stack');
         });
     </script>
 </body>
