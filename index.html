@@ -942,6 +942,11 @@
             .section {
                 padding: 2.5rem 0;
             }
+            /* Reduce padding-bottom for the "Our Approach" section specifically on mobile */
+            .section-light#approach {
+                padding-bottom: 1.5rem; /* Reduced padding for the section itself */
+            }
+
             .section-heading {
                 font-size: 1.8em;
             }
@@ -1002,6 +1007,13 @@
                 display: none; /* Override hover for mobile */
             }
 
+            /* Fix: Reduce height of "Our Approach" images on mobile */
+            .humanize-card img {
+                max-height: 180px; /* Adjust as needed */
+                object-fit: contain; /* Ensures image fits within the max-height without cropping */
+            }
+
+
             .services-grid, .testimonials-grid, .approach-grid {
                 grid-template-columns: 1fr; /* Stack cards on small screens */
             }
@@ -1037,6 +1049,7 @@
             }
             .humanize-card img {
                 max-width: 100%; /* Full width for very small screens */
+                max-height: 150px; /* Further reduce height for very small screens */
             }
             .tax-season-promo-box {
                 font-size: 0.8em;
@@ -1517,20 +1530,35 @@
                 document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
                     dropdown.classList.remove('active');
                     dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                    // Reset caret icon
+                    dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                    dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
                 });
             });
 
             // Handle dropdown toggling for mobile
             document.querySelectorAll('.nav-menu .dropdown > .dropdown-toggle').forEach(dropdownToggle => {
                 dropdownToggle.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevent default link behavior
-                    // Check if we are on a small screen (mobile menu is active)
-                    if (window.matchMedia('(max-width: 768px)').matches) {
+                    // Only apply dropdown toggle logic if the main nav menu is open (i.e., on mobile)
+                    // and if the viewport matches mobile criteria
+                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                        e.preventDefault(); // Prevent default link behavior for dropdown parent
                         const dropdownMenu = dropdownToggle.nextElementSibling;
+
+                        // Close other active dropdowns if any
+                        navMenu.querySelectorAll('.dropdown-menu.active').forEach(openDropdown => {
+                            if (openDropdown !== dropdownMenu) {
+                                openDropdown.classList.remove('active');
+                                openDropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                                openDropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                                openDropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                            }
+                        });
+
                         dropdownMenu.classList.toggle('active');
                         const isExpanded = dropdownMenu.classList.contains('active');
                         dropdownToggle.setAttribute('aria-expanded', isExpanded);
-                        // Optional: Rotate caret icon
+                        // Toggle caret icon
                         dropdownToggle.querySelector('i').classList.toggle('fa-caret-down', !isExpanded);
                         dropdownToggle.querySelector('i').classList.toggle('fa-caret-up', isExpanded);
                     }
@@ -1541,20 +1569,18 @@
             // Close mobile menu when a link is clicked
             navMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
-                    // Check if it's not a dropdown toggle itself
-                    if (!link.classList.contains('dropdown-toggle')) {
-                        if (navMenu.classList.contains('active')) {
-                            navMenu.classList.remove('active');
-                            menuToggle.querySelector('i').classList.remove('fa-times');
-                            menuToggle.querySelector('i').classList.add('fa-bars');
-                             // Close any open dropdowns
-                            document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
-                                dropdown.classList.remove('active');
-                                dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
-                                dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
-                                dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
-                            });
-                        }
+                    // Only close if it's not a dropdown toggle itself AND we are on mobile view
+                    if (!link.classList.contains('dropdown-toggle') && navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                         // Close any open dropdowns
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                        });
                     }
                 });
             });
