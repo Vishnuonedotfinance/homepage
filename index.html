@@ -1027,8 +1027,7 @@ p { margin-bottom: 0.6em; } /* Further reduced */
         /* No need for display: none here, as visibility/opacity handles it */
     }
     .dropdown-menu li a {
-        padding: 0 18px; /* Removed vertical padding entirely */
-        line-height: 1; /* Ensure minimal line height */
+        padding: 0px 18px; /* Reduced vertical padding for less spacing (0px) */
         text-align: left; /* Ensure text is left-aligned within dropdown items */
         display: block;
         white-space: nowrap;
@@ -1440,9 +1439,6 @@ import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.g
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // Global variables for Firebase config and app ID
-// If you continue to see "SyntaxError: Invalid left-hand side in assignment",
-// it might be related to how the Canvas environment provides these global variables.
-// The current usage follows the provided guidelines for accessing them.
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
