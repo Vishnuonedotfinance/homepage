@@ -1537,20 +1537,51 @@
                 });
             });
 
-            // Mobile menu toggle
-            menuToggle.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-                menuToggle.querySelector('i').classList.toggle('fa-bars');
-                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+            // Handle dropdown toggling for mobile
+            document.querySelectorAll('.nav-menu .dropdown > .dropdown-toggle').forEach(dropdownToggle => {
+                dropdownToggle.addEventListener('click', (e) => {
+                    // Only apply dropdown toggle logic if the main nav menu is open (i.e., on mobile)
+                    // and if the viewport matches mobile criteria
+                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                        e.preventDefault(); // Prevent default link behavior for dropdown parent
+                        const dropdownMenu = dropdownToggle.nextElementSibling;
+
+                        // Close other active dropdowns if any
+                        navMenu.querySelectorAll('.dropdown-menu.active').forEach(openDropdown => {
+                            if (openDropdown !== dropdownMenu) {
+                                openDropdown.classList.remove('active');
+                                openDropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                                openDropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                                openDropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                            }
+                        });
+
+                        dropdownMenu.classList.toggle('active');
+                        const isExpanded = dropdownMenu.classList.contains('active');
+                        dropdownToggle.setAttribute('aria-expanded', isExpanded);
+                        // Toggle caret icon
+                        dropdownToggle.querySelector('i').classList.toggle('fa-caret-down', !isExpanded);
+                        dropdownToggle.querySelector('i').classList.toggle('fa-caret-up', isExpanded);
+                    }
+                });
             });
+
 
             // Close mobile menu when a link is clicked
             navMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
-                    if (navMenu.classList.contains('active')) {
+                    // Only close if it's not a dropdown toggle itself AND we are on mobile view
+                    if (!link.classList.contains('dropdown-toggle') && navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
                         menuToggle.querySelector('i').classList.add('fa-bars');
+                         // Close any open dropdowns
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                        });
                     }
                 });
             });
