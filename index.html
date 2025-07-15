@@ -1092,7 +1092,7 @@
                 max-height: 0; /* Initial state for smooth collapse */
                 overflow: hidden;
                 transition: max-height 0.4s ease-in-out; /* Smooth transition for height */
-                display: block; /* Ensure it's block so max-height can animate */
+                /* Important: Do NOT set display: none here, let max-height handle it */
             }
 
             .dropdown.dropdown-active .dropdown-menu {
