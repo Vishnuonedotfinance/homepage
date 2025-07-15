@@ -981,13 +981,19 @@
             .nav-menu li {
                 width: 100%;
                 text-align: center;
-                padding: 0.8rem 1.5rem;
+                padding: 0.8rem 1.5rem; /* Ensure sufficient padding for list items */
                 display: block;
             }
             .nav-menu a::after {
                 display: none; /* Hide underline on mobile menu */
             }
+
             /* IMPORTANT: Mobile dropdown menu styling */
+            .dropdown > .dropdown-toggle { /* Target the dropdown toggle link */
+                padding: 0.8rem 1.5rem; /* Increased padding for better tap target */
+                display: block; /* Ensure it takes full width of its li */
+                cursor: pointer; /* Indicate it's clickable */
+            }
             .dropdown-menu {
                 position: static; /* Remove absolute positioning for mobile */
                 box-shadow: none;
