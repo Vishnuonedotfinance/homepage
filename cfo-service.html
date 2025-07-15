@@ -43,6 +43,9 @@
             color: var(--bg-white); /* Default text color for elements directly on body background */
             -webkit-font-smoothing: antialiased;
             scroll-behavior: smooth;
+            display: flex; /* Added for sticky footer */
+            flex-direction: column; /* Added for sticky footer */
+            min-height: 100vh; /* Added for sticky footer */
         }
 
         a {
@@ -183,7 +186,7 @@
         }
 
         .dropdown-menu {
-            display: none;
+            /* Default hidden state for desktop before activation */
             position: absolute;
             background-color: var(--bg-white);
             box-shadow: var(--shadow-light);
@@ -197,14 +200,16 @@
             transform: translateX(-50%);
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
             transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
         }
 
         .dropdown:hover .dropdown-menu {
-            display: block;
+            display: block; /* This rule is for desktop hover */
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
         }
 
         .dropdown-menu li a {
@@ -587,6 +592,7 @@
             border-radius: var(--border-radius-md);
             box-shadow: var(--shadow-medium);
             text-align: left;
+            position: relative; /* For loading overlay */
         }
 
         .cta-form-section .form-field {
@@ -637,12 +643,71 @@
             border-radius: var(--border-radius-sm);
         }
 
+        /* Form feedback messages */
+        .form-message {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .form-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .form-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .form-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--border-radius-md);
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* --- Footer --- */
         .footer {
             background-color: var(--text-dark);
             color: var(--bg-white);
             padding: 2rem 0;
             font-size: 0.8em;
+            margin-top: auto; /* Pushes footer to the bottom */
         }
 
         .footer .container {
@@ -770,9 +835,9 @@
             }
             .menu-toggle {
                 display: block; /* Show hamburger on smaller screens */
+                font-size: 1.5em; /* Consistent font size */
             }
             .nav-menu {
-                display: none; /* Hide nav menu by default on smaller screens */
                 flex-direction: column;
                 width: 100%;
                 background-color: var(--bg-white);
@@ -782,40 +847,80 @@
                 box-shadow: var(--shadow-medium);
                 padding: 1rem 0;
                 border-radius: var(--border-radius-sm);
+                transition: all 0.3s ease-out;
+                max-height: 0; /* Hidden by default for animation */
+                overflow: hidden; /* Hide overflow when collapsed */
+                opacity: 0;
+                visibility: hidden; /* Crucial: Hide from screen readers and prevent interaction */
+                pointer-events: none; /* Crucial: Prevent interaction when collapsed */
             }
             .nav-menu.active {
-                display: flex; /* Show nav menu when active */
+                max-height: 500px; /* Sufficient height to show all items */
+                opacity: 1;
+                visibility: visible; /* Crucial: Make visible and interactive */
+                pointer-events: auto; /* Crucial: Allow interaction when active */
             }
             .nav-menu li {
                 width: 100%;
                 text-align: center;
-                padding: 0.8rem 1.5rem;
+                padding: 0.8rem 1.5rem; /* Consistent padding for main nav items */
+                display: block;
+            }
+            .nav-menu a {
+                color: var(--text-dark);
+                /* Padding handled by li, but keeping this for consistency if needed */
                 display: block;
             }
             .nav-menu a::after {
                 display: none; /* Hide underline on mobile menu */
             }
+            /* IMPORTANT: Mobile dropdown menu styling */
             .dropdown-menu {
                 position: static; /* Remove absolute positioning for mobile */
                 box-shadow: none;
                 border-radius: 0;
-                padding: 0;
+                padding: 0; /* No vertical padding for the dropdown menu itself */
                 min-width: unset;
                 transform: none;
+                opacity: 0; /* Start hidden for animation */
+                visibility: hidden; /* Start hidden for animation */
+                max-height: 0; /* Collapsed height for animation */
+                overflow: hidden; /* Hide overflow for animation */
+                transition: max-height 0.3s ease-out, opacity 0.3s ease-out; /* Smooth transition */
+                background-color: var(--bg-light); /* Slight background for mobile dropdown */
+                margin-top: 5px;
+                width: 50%; /* Set width to 50% of parent */
+                margin-left: auto; /* Center the dropdown */
+                margin-right: auto; /* Center the dropdown */
+                display: block; /* Ensure it's a block element for mobile layout */
+                text-align: left; /* Ensure content within dropdown aligns left */
+            }
+            .dropdown-menu.active { /* New class for mobile dropdown active state */
+                max-height: fit-content; /* Allow content to dictate height to show all items */
                 opacity: 1;
                 visibility: visible;
-                display: none; /* Hidden by default, toggled by JS if needed */
             }
             .dropdown:hover .dropdown-menu {
-                display: none; /* Override hover for mobile */
+                /* This rule is for desktop. On mobile, hover doesn't apply. */
+                /* No need for display: none here, as visibility/opacity handles it */
             }
-            /* You might need JS to toggle dropdown-menu visibility on click for mobile */
+            .dropdown-menu li a {
+                padding: 0 18px; /* Removed vertical padding entirely for list items */
+                line-height: 1; /* Ensure minimal line height */
+                text-align: left; /* Ensure text is left-aligned within dropdown items */
+                display: block;
+                white-space: nowrap;
+                font-size: 0.95em;
+                color: var(--text-dark);
+            }
 
-            .stat-number {
-                font-size: 2.5em; /* Adjusted for responsiveness */
+            /* Specific mobile adjustments for content-block */
+            .content-block {
+                text-align: left; /* Ensure the entire block aligns left on mobile */
             }
-            .stat-text {
-                font-size: 1em; /* Adjusted for responsiveness */
+            .content-block .image-content {
+                margin-top: 0; /* Remove top margin from the block itself */
+                margin-bottom: 1.5rem; /* Add space below the image */
             }
         }
 
@@ -856,7 +961,7 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="about.html">About Us</a></li>
                     <li class="dropdown">
-                        <a href="#" onclick="return false;">Services <i class="fas fa-caret-down"></i></a>
+                        <a href="#" class="dropdown-toggle" aria-expanded="false">Services <i class="fas fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="cfo-service.html">CFO Service</a></li>
                             <li><a href="income-tax.html">Income Tax Consultation</a></li>
@@ -865,7 +970,7 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" onclick="return false;">Tools <i class="fas fa-caret-down"></i></a>
+                        <a href="#" class="dropdown-toggle" aria-expanded="false">Tools <i class="fas fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="income-tax-calculator.html">Income Tax Calculator</a></li>
                             <li><a href="invoice-generator.html">Invoice Generator</a></li>
@@ -900,13 +1005,14 @@
         <div class="container">
             <h2 class="section-heading animated-item">Why a Virtual CFO?</h2>
             <div class="content-block">
-                <div class="text-content animated-item">
-                    <p style="text-align: left; margin: 0 0 1.5em 0;">
-                        As a founder, you're juggling product, sales, team, and vision. Financial strategy often becomes an afterthought, especially for bootstrapped startups. And for venture-backed companies, a full-time CFO can be a significant early expense. That's where One.Finance steps in. We provide dynamic Virtual CFO services tailored to your unique stage and needs. Whether you're building from the ground up or scaling rapidly, our approach adapts. We leverage AI-driven insights to give you cutting-edge financial intelligence, ensuring you make informed decisions, optimize cash flow, and achieve sustainable growth without the traditional overhead. You get more than just numbers; you get a strategic financial partner who truly understands your journey.
-                    </p>
-                </div>
+                <!-- Image content is now first for mobile stacking consistency -->
                 <div class="image-content animated-item" style="transition-delay: 0.2s;">
                     <img src="cfo2.png" alt="Team collaborating on financial strategy.">
+                </div>
+                <div class="text-content animated-item">
+                    <p>
+                        As a founder, you're juggling product, sales, team, and vision. Financial strategy often becomes an afterthought, especially for bootstrapped startups. And for venture-backed companies, a full-time CFO can be a significant early expense. That's where One.Finance steps in. We provide dynamic Virtual CFO services tailored to your unique stage and needs. Whether you're building from the ground up or scaling rapidly, our approach adapts. We leverage AI-driven insights to give you cutting-edge financial intelligence, ensuring you make informed decisions, optimize cash flow, and achieve sustainable growth without the traditional overhead. You get more than just numbers; you get a strategic financial partner who truly understands your journey.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1014,7 +1120,7 @@
         <div class="container animated-item">
             <h3>Ready to Elevate Your Financial Strategy?</h3>
             <div class="form-container">
-                <form action="https://formspree.io/f/mkgberpq" method="post">
+                <form action="https://formspree.io/f/mkgberpq" method="post" id="cta-contact-form">
                     <div class="form-field">
                         <label for="cta-name">Your Name</label>
                         <input type="text" id="cta-name" name="name" required placeholder="Name">
@@ -1048,6 +1154,9 @@
                     <button type="submit" class="btn btn-primary">Submit Request</button>
                 </form>
                 <div id="form-message" class="form-message"></div>
+                <div id="form-loading-overlay" class="loading-overlay">
+                    <div class="loading-spinner"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -1096,11 +1205,113 @@
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    <!-- Firebase SDKs and Page-Specific JavaScript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for Firebase config and app ID
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+
+        // Function to display form messages (re-used from home page)
+        const displayFormMessage = (message, type) => {
+            const formMessageElement = document.getElementById('form-message');
+            if (formMessageElement) {
+                formMessageElement.textContent = message;
+                formMessageElement.className = `form-message show ${type}`;
+                setTimeout(() => {
+                    formMessageElement.classList.remove('show');
+                }, 5000); // Message disappears after 5 seconds
+            }
+        };
+
+        // Function to show/hide loading overlay (re-used from home page)
+        const showLoading = (show) => {
+            const formLoadingOverlay = document.getElementById('form-loading-overlay');
+            if (formLoadingOverlay) {
+                if (show) {
+                    formLoadingOverlay.classList.add('show');
+                } else {
+                    formLoadingOverlay.classList.remove('show');
+                }
+            }
+        };
+
+        // Initialize Firebase and authenticate
+        const initializeFirebase = async () => {
+            try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is empty. Cannot initialize Firebase.");
+                    return;
+                }
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                    console.log("Signed in with custom token for Virtual CFO page.");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("Signed in anonymously for Virtual CFO page.");
+                }
+            } catch (error) {
+                console.error("Error initializing Firebase or signing in on Virtual CFO page:", error);
+                displayFormMessage("Error initializing services. Please try again later.", "error");
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initializeFirebase(); // Initialize Firebase as soon as the DOM is ready
+
             const header = document.querySelector('.header');
             const menuToggle = document.querySelector('.menu-toggle');
             const navMenu = document.querySelector('.nav-menu');
+            // Corrected ID to match HTML for the contact form
+            const contactForm = document.getElementById('cta-contact-form');
+            // formMessage and formLoadingOverlay are now handled by the global functions
+
+            // Handle contact form submission
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    showLoading(true); // Show loading spinner
+
+                    if (!db || !auth || !auth.currentUser) {
+                        displayFormMessage("Service not ready. Please try again in a moment.", "error");
+                        showLoading(false);
+                        return;
+                    }
+
+                    const formData = {
+                        name: contactForm.elements['cta-name'].value,
+                        email: contactForm.elements['cta-email'].value,
+                        phone: contactForm.elements['cta-phone'].value,
+                        serviceInterest: contactForm.elements['cta-service-interest'].value,
+                        message: contactForm.elements['cta-message'].value,
+                        timestamp: serverTimestamp(), // Firestore server timestamp
+                        userId: auth.currentUser.uid // Store the user ID
+                    };
+
+                    try {
+                        // Store in a 'public' collection under the app ID
+                        const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/contact_submissions`), formData);
+                        console.log("Document written with ID: ", docRef.id);
+                        displayFormMessage("Your message has been sent successfully! We will get back to you soon.", "success");
+                        contactForm.reset(); // Clear the form
+                    } catch (e) {
+                        console.error("Error adding document: ", e);
+                        displayFormMessage("Failed to send your message. Please try again.", "error");
+                    } finally {
+                        showLoading(false); // Hide loading spinner
+                    }
+                });
+            }
 
             // Sticky header functionality
             window.addEventListener('scroll', () => {
@@ -1118,15 +1329,60 @@
                 navMenu.classList.toggle('active');
                 menuToggle.querySelector('i').classList.toggle('fa-bars');
                 menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+                // Close any open dropdowns when main menu is toggled
+                document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                    dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                    // Reset caret icon
+                    dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                    dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                });
+            });
+
+            // Handle dropdown toggling for mobile
+            document.querySelectorAll('.nav-menu .dropdown > a.dropdown-toggle').forEach(dropdownToggle => {
+                dropdownToggle.addEventListener('click', (e) => {
+                    // Only apply dropdown toggle logic if the main nav menu is open (i.e., on mobile)
+                    // and if the viewport matches mobile criteria
+                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                        e.preventDefault(); // Prevent default link behavior for dropdown parent
+                        const dropdownMenu = dropdownToggle.nextElementSibling;
+
+                        // Close other active dropdowns if any
+                        navMenu.querySelectorAll('.dropdown-menu.active').forEach(openDropdown => {
+                            if (openDropdown !== dropdownMenu) {
+                                openDropdown.classList.remove('active');
+                                openDropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                                openDropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                                openDropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                            }
+                        });
+
+                        dropdownMenu.classList.toggle('active');
+                        const isExpanded = dropdownMenu.classList.contains('active');
+                        dropdownToggle.setAttribute('aria-expanded', isExpanded);
+                        // Toggle caret icon
+                        dropdownToggle.querySelector('i').classList.toggle('fa-caret-down', !isExpanded);
+                        dropdownToggle.querySelector('i').classList.toggle('fa-caret-up', isExpanded);
+                    }
+                });
             });
 
             // Close mobile menu when a link is clicked
             navMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
-                    if (navMenu.classList.contains('active')) {
+                    // Only close if it's not a dropdown toggle itself AND we are on mobile view
+                    if (!link.classList.contains('dropdown-toggle') && navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
                         menuToggle.querySelector('i').classList.add('fa-bars');
+                        // Close any open dropdowns
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                        });
                     }
                 });
             });
@@ -1139,6 +1395,19 @@
                         e.preventDefault();
                         document.querySelector(this.getAttribute('href')).scrollIntoView({
                             behavior: 'smooth'
+                        });
+                    }
+                    // For mobile menu, close it after clicking an anchor (if it's not a dropdown toggle)
+                    if (navMenu.classList.contains('active') && !this.classList.contains('dropdown-toggle')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                        // Close any open dropdowns
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
                         });
                     }
                 });
@@ -1209,17 +1478,21 @@
                 });
             }
 
-            showAllServicesBtn.addEventListener('click', () => {
-                showAllServicesBtn.classList.add('active');
-                showReportingServicesBtn.classList.remove('active');
-                filterServices('full-stack');
-            });
+            if (showAllServicesBtn) {
+                showAllServicesBtn.addEventListener('click', () => {
+                    showAllServicesBtn.classList.add('active');
+                    showReportingServicesBtn.classList.remove('active');
+                    filterServices('full-stack');
+                });
+            }
 
-            showReportingServicesBtn.addEventListener('click', () => {
-                showReportingServicesBtn.classList.add('active');
-                showAllServicesBtn.classList.remove('active');
-                filterServices('reporting');
-            });
+            if (showReportingServicesBtn) {
+                showReportingServicesBtn.addEventListener('click', () => {
+                    showReportingServicesBtn.classList.add('active');
+                    showAllServicesBtn.classList.remove('active');
+                    filterServices('reporting');
+                });
+            }
 
             // Initial filter to show all services by default
             filterServices('full-stack');
