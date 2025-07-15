@@ -1537,16 +1537,48 @@
                 });
             });
 
-            // Handle dropdown toggling for mobile
-            document.querySelectorAll('.nav-menu .dropdown > .dropdown-toggle').forEach(dropdownToggle => {
-                dropdownToggle.addEventListener('click', (e) => {
-                    // Only apply dropdown toggle logic if the main nav menu is open (i.e., on mobile)
-                    // and if the viewport matches mobile criteria
-                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
-                        e.preventDefault(); // Prevent default link behavior for dropdown parent
-                        const dropdownMenu = dropdownToggle.nextElementSibling;
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                menuToggle.querySelector('i').classList.toggle('fa-bars');
+                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+                // Close any open dropdowns when main menu is toggled
+                document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                    dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                    // Reset caret icon
+                    dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                    dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                });
+            });
 
-                        // Close other active dropdowns if any
+            // Handle dropdown toggling for both desktop (hover) and mobile (click)
+            document.querySelectorAll('.nav-menu .dropdown').forEach(dropdownParent => {
+                const dropdownToggle = dropdownParent.querySelector('.dropdown-toggle');
+                const dropdownMenu = dropdownParent.querySelector('.dropdown-menu');
+
+                // Desktop hover behavior (retained)
+                dropdownParent.addEventListener('mouseenter', () => {
+                    if (window.matchMedia('(min-width: 769px)').matches) { // Only on desktop
+                        dropdownMenu.style.display = 'block'; // Temporarily set display to block for hover
+                        dropdownToggle.setAttribute('aria-expanded', 'true');
+                        // No need to toggle caret on desktop hover, it looks weird
+                    }
+                });
+
+                dropdownParent.addEventListener('mouseleave', () => {
+                    if (window.matchMedia('(min-width: 769px)').matches) { // Only on desktop
+                        dropdownMenu.style.display = 'none'; // Temporarily set display to none for hover
+                        dropdownToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                // Mobile click behavior
+                dropdownToggle.addEventListener('click', (e) => {
+                    if (window.matchMedia('(max-width: 768px)').matches) { // Only on mobile
+                        e.preventDefault(); // Prevent default link behavior for dropdown parent
+                        
+                        // Close other active dropdowns in the mobile menu
                         navMenu.querySelectorAll('.dropdown-menu.active').forEach(openDropdown => {
                             if (openDropdown !== dropdownMenu) {
                                 openDropdown.classList.remove('active');
@@ -1556,6 +1588,7 @@
                             }
                         });
 
+                        // Toggle the clicked dropdown
                         dropdownMenu.classList.toggle('active');
                         const isExpanded = dropdownMenu.classList.contains('active');
                         dropdownToggle.setAttribute('aria-expanded', isExpanded);
@@ -1567,15 +1600,21 @@
             });
 
 
-            // Close mobile menu when a link is clicked
+            // Close mobile menu when any link is clicked (including dropdown items)
             navMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    // Only close if it's not a dropdown toggle itself AND we are on mobile view
-                    if (!link.classList.contains('dropdown-toggle') && navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                link.addEventListener('click', function() {
+                    // Only close if it's the mobile menu and the menu is currently active
+                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                        // If it's a dropdown toggle, don't close the main menu immediately, let the dropdown logic handle it
+                        if (this.classList.contains('dropdown-toggle')) {
+                            // Do nothing here, the specific dropdown toggle logic above will handle the dropdown
+                            return;
+                        }
+                        
+                        // For all other links, close the main menu and all dropdowns
                         navMenu.classList.remove('active');
                         menuToggle.querySelector('i').classList.remove('fa-times');
                         menuToggle.querySelector('i').classList.add('fa-bars');
-                         // Close any open dropdowns
                         document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
                             dropdown.classList.remove('active');
                             dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
@@ -1596,19 +1635,8 @@
                             behavior: 'smooth'
                         });
                     }
-                    // For mobile menu, close it after clicking an anchor (if it's not a dropdown toggle)
-                    if (navMenu.classList.contains('active') && !this.classList.contains('dropdown-toggle')) {
-                        navMenu.classList.remove('active');
-                        menuToggle.querySelector('i').classList.remove('fa-times');
-                        menuToggle.querySelector('i').classList.add('fa-bars');
-                        // Close any open dropdowns
-                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
-                            dropdown.classList.remove('active');
-                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
-                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
-                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
-                        });
-                    }
+                    // The general `navMenu.querySelectorAll('a').forEach` listener above
+                    // will handle closing the mobile menu if this is an internal link.
                 });
             });
 
