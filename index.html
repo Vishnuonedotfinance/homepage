@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -505,37 +506,6 @@
             font-size: 1em; /* Slightly larger paragraph */
         }
 
-        /* Removed slider-nav styles as buttons are removed */
-        /*
-        .slider-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.6);
-            color: var(--bg-white);
-            border: none;
-            padding: 10px 16px;
-            cursor: pointer;
-            border-radius: 50%;
-            font-size: 1.5em;
-            z-index: 10;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .slider-nav:hover {
-            background-color: var(--primary-color);
-            transform: translateY(-50%) scale(1.05);
-        }
-
-        .prev-btn {
-            left: -20px;
-        }
-
-        .next-btn {
-            right: -20px;
-        }
-        */
-
         .slider-dots {
             display: flex;
             justify-content: center;
@@ -848,6 +818,7 @@
             100% { transform: rotate(360deg); }
         }
 
+
         /* --- Footer --- */
         .footer {
             background-color: var(--text-dark); /* Footer remains dark */
@@ -856,32 +827,39 @@
             font-size: 0.8em;
             margin-top: auto; /* Pushes footer to the bottom */
         }
+
         .footer .container {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 1.5rem;
         }
+
         .footer-col {
             flex: 1;
             min-width: 160px;
         }
+
         .footer-col h4 {
             color: var(--bg-white); /* Changed to white */
             margin-bottom: 0.7rem;
             font-size: 1em;
         }
+
         .footer-col p, .footer-col a {
             color: rgba(255, 255, 255, 0.7);
             margin-bottom: 0.3rem;
             display: block;
         }
+
         .footer-col a:hover {
             color: var(--bg-white);
         }
+
         .social-links {
             margin-top: 0.7rem;
         }
+
         .social-links a {
             display: inline-block;
             color: var(--bg-white);
@@ -889,10 +867,12 @@
             margin-right: 0.7rem;
             transition: transform 0.2s ease;
         }
+
         .social-links a:hover {
             color: var(--primary-color); /* Changed to green */
             transform: translateY(-3px);
         }
+
         .footer-bottom {
             text-align: center;
             margin-top: 1.5rem;
@@ -906,7 +886,11 @@
             h1 { font-size: 2.2em; }
             h2 { font-size: 1.8em; }
             h3 { font-size: 1.4em; }
-            .nav-menu { gap: 1rem; }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
             .about-content {
                 flex-direction: column;
                 text-align: center;
@@ -918,6 +902,7 @@
             .about-image {
                 margin-top: 1.2rem;
             }
+
             .humanize-card {
                 flex-direction: column !important; /* Stack on smaller screens */
                 text-align: center;
@@ -931,24 +916,46 @@
             .tax-season-promo-box {
                 margin-top: 1.5em; /* Adjust margin for smaller screens */
             }
-            /* Removed slider-nav styles for smaller screens */
-            /* .slider-nav { padding: 8px 12px; font-size: 1.2em; left: -10px; right: -10px; } */
-            .slider-dots { margin-top: 0.8rem; }
+            .slider-dots {
+                margin-top: 0.8rem;
+            }
             .impact-grid {
                 grid-template-columns: repeat(2, minmax(140px, 1fr)); /* 2 columns on tablets */
             }
         }
 
         @media (max-width: 768px) {
-            .hero { padding: 2.5rem 0; min-height: 300px; }
-            .hero h1 { font-size: 2em; }
-            .hero p { font-size: 0.9em; }
-            .hero .btn { padding: 0.6rem 1.5rem; font-size: 0.9em; }
-            .section { padding: 2.5rem 0; }
-            .section-heading { font-size: 1.8em; }
-            .section-subheading { font-size: 0.9em; margin-bottom: 1.5rem; }
+            .hero {
+                padding: 2.5rem 0;
+                min-height: 300px;
+            }
+            .hero h1 {
+                font-size: 2em;
+            }
+            .hero p {
+                font-size: 0.9em;
+            }
+            .hero .btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9em;
+            }
 
-            /* Mobile menu styles */
+            .section {
+                padding: 2.5rem 0;
+            }
+            /* Reduce padding-bottom for the "Our Approach" section specifically on mobile */
+            .section-light#approach {
+                padding-bottom: 1.5rem; /* Reduced padding for the section itself */
+            }
+
+            .section-heading {
+                font-size: 1.8em;
+            }
+            .section-subheading {
+                font-size: 0.9em;
+                margin-bottom: 1.5rem;
+            }
+
             .header .nav-menu {
                 top: 55px; /* Below header */
             }
@@ -980,6 +987,7 @@
             .nav-menu a::after {
                 display: none; /* Hide underline on mobile menu */
             }
+            /* IMPORTANT: Mobile dropdown menu styling */
             .dropdown-menu {
                 position: static; /* Remove absolute positioning for mobile */
                 box-shadow: none;
@@ -987,13 +995,25 @@
                 padding: 0;
                 min-width: unset;
                 transform: none;
-                opacity: 1;
-                visibility: visible;
+                opacity: 1; /* Always visible if parent is open on mobile */
+                visibility: visible; /* Always visible if parent is open on mobile */
                 display: none; /* Hidden by default, toggled by JS if needed */
+                background-color: var(--bg-light); /* Slight background for mobile dropdown */
+                margin-top: 5px;
+            }
+            .dropdown-menu.active { /* New class for mobile dropdown active state */
+                display: block;
             }
             .dropdown:hover .dropdown-menu {
                 display: none; /* Override hover for mobile */
             }
+
+            /* Fix: Reduce height of "Our Approach" images on mobile */
+            .humanize-card img {
+                max-height: 180px; /* Adjust as needed */
+                object-fit: contain; /* Ensures image fits within the max-height without cropping */
+            }
+
 
             .services-grid, .testimonials-grid, .approach-grid {
                 grid-template-columns: 1fr; /* Stack cards on small screens */
@@ -1007,16 +1027,39 @@
         }
 
         @media (max-width: 480px) {
-            .container { padding: 0 0.8rem; }
-            .hero h1 { font-size: 1.6em; }
-            .hero p { font-size: 0.8em; }
-            .section-heading { font-size: 1.4em; }
-            .section-subheading { font-size: 0.8em; }
-            .service-card, .testimonial-card, .approach-card, .humanize-card, .impact-card { padding: 1rem; }
-            .partners-grid { grid-template-columns: 1fr; /* Stack logos on very small screens */ }
-            .humanize-card img { max-width: 100%; /* Full width for very small screens */ }
-            .tax-season-promo-box { font-size: 0.8em; margin-top: 1em; padding: 8px 15px; }
-            .impact-grid { grid-template-columns: 1fr; /* Still 1 column on very small mobile */ }
+            .container {
+                padding: 0 0.8rem;
+            }
+            .hero h1 {
+                font-size: 1.6em;
+            }
+            .hero p {
+                font-size: 0.8em;
+            }
+            .section-heading {
+                font-size: 1.4em;
+            }
+            .section-subheading {
+                font-size: 0.8em;
+            }
+            .service-card, .testimonial-card, .approach-card, .humanize-card, .impact-card {
+                padding: 1rem;
+            }
+            .partners-grid {
+                grid-template-columns: 1fr; /* Stack logos on very small screens */
+            }
+            .humanize-card img {
+                max-width: 100%; /* Full width for very small screens */
+                max-height: 150px; /* Further reduce height for very small screens */
+            }
+            .tax-season-promo-box {
+                font-size: 0.8em;
+                margin-top: 1em;
+                padding: 8px 15px;
+            }
+            .impact-grid {
+                grid-template-columns: 1fr; /* Still 1 column on very small mobile */
+            }
         }
     </style>
 </head>
@@ -1034,7 +1077,7 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="about.html">About Us</a></li>
                     <li class="dropdown">
-                        <a href="#" onclick="return false;">Services <i class="fas fa-caret-down"></i></a>
+                        <a href="#" class="dropdown-toggle" aria-expanded="false">Services <i class="fas fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="cfo-service.html">CFO Service</a></li>
                             <li><a href="income-tax.html">Income Tax Consultation</a></li>
@@ -1043,7 +1086,7 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" onclick="return false;">Tools <i class="fas fa-caret-down"></i></a>
+                        <a href="#" class="dropdown-toggle" aria-expanded="false">Tools <i class="fas fa-caret-down"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="income-tax-calculator.html">Income Tax Calculator</a></li>
                             <li><a href="invoice-generator.html">Invoice Generator</a></li>
@@ -1053,7 +1096,8 @@
                         </ul>
                     </li>
                     <li><a href="blog.html">Blog</a></li>
-                    <li><a href="#cta-form">Talk to us</a></li> </ul>
+                    <li><a href="#cta-form">Talk to us</a></li>
+                </ul>
             </nav>
         </div>
     </header>
@@ -1086,7 +1130,7 @@
                     <a href="about.html" class="btn btn-outline">Learn More About Us</a>
                 </div>
                 <div class="about-image">
-                    <img src="about-image.jpg" alt="About One.Finance">
+                    <img src="whoweare.jpg" alt="Collaborative Professionals in a modern office">
                 </div>
             </div>
         </div>
@@ -1094,192 +1138,181 @@
 
     <section class="impact-section">
         <div class="container">
-            <h2 class="section-heading">Our Impact in Numbers</h2>
-            <p class="section-subheading">See the measurable difference we make for startups like yours.</p>
+            <h2 class="section-heading" style="color: var(--bg-white);">Our Impact, Quantified</h2>
+            <p class="section-subheading" style="color: rgba(255, 255, 255, 0.9);">
+                Proudly supporting startups with tangible results.
+            </p>
             <div class="impact-grid">
                 <div class="impact-card">
-                    <div class="icon"><i class="fas fa-users"></i></div>
-                    <div class="number">200+</div>
-                    <div class="label">Clients Served</div>
+                    <i class="fas fa-rocket icon"></i>
+                    <div class="number" data-target="25">0</div>
+                    <div class="label">Startups Helped</div>
                 </div>
                 <div class="impact-card">
-                    <div class="icon"><i class="fas fa-chart-line"></i></div>
-                    <div class="number">30%</div>
-                    <div class="label">Average Growth</div>
+                    <i class="fas fa-file-alt icon"></i>
+                    <div class="number" data-target="5000">0</div>
+                    <div class="label">Income Tax Returns Filed</div>
                 </div>
                 <div class="impact-card">
-                    <div class="icon"><i class="fas fa-rupee-sign"></i></div>
-                    <div class="number">5 Cr+</div>
-                    <div class="label">Funds Raised</div>
+                    <i class="fas fa-comments icon"></i>
+                    <div class="number" data-target="100">0</div>
+                    <div class="label">Companies Consulted</div>
                 </div>
                 <div class="impact-card">
-                    <div class="icon"><i class="fas fa-shield-alt"></i></div>
-                    <div class="number">99%</div>
-                    <div class="label">Compliance Rate</div>
+                    <i class="fas fa-building icon"></i>
+                    <div class="number" data-target="50">0</div>
+                    <div class="label">Companies Incorporated</div>
                 </div>
                 <div class="impact-card">
-                    <div class="icon"><i class="fas fa-handshake"></i></div>
-                    <div class="number">5+</div>
-                    <div class="label">Years of Experience</div>
+                    <i class="fas fa-file-invoice icon"></i>
+                    <div class="number" data-target="60">0</div>
+                    <div class="label">GST Registrations</div>
                 </div>
                 <div class="impact-card">
-                    <div class="icon"><i class="fas fa-smile"></i></div>
-                    <div class="number">95%</div>
-                    <div class="label">Client Satisfaction</div>
+                    <i class="fas fa-calculator icon"></i>
+                    <div class="number" data-target="30">0</div>
+                    <div class="label">Bookkeeping Services</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section section-white" id="approach">
+    <section class="section section-light" id="approach">
         <div class="container">
-            <h2 class="section-heading">Our Approach to Your Success</h2>
+            <h2 class="section-heading">Our Approach: Human-Focused, AI Driven</h2>
             <p class="section-subheading">
-                We believe in a tailored, proactive approach that integrates seamlessly with your business.
+                We combine expert financial knowledge with a deep understanding of your startup's unique journey.
             </p>
             <div class="humanize-section-wrapper">
                 <div class="humanize-section-slider">
                     <div class="humanize-card">
-                        <img src="approach1.jpg" alt="Personalized Strategy">
+                        <img src="H1.png" alt="Team members collaborating on a project with laptops">
                         <div class="text-content">
-                            <h3>Personalized Strategy</h3>
-                            <p>Every startup is unique. We deep-dive into your specific needs to craft financial strategies that align perfectly with your business goals and industry demands.</p>
+                            <h3>Collaborative Strategy Sessions</h3>
+                            <p>We partner closely with your team to translate complex financial data into clear, actionable strategies, aligning perfectly with your business goals.</p>
                         </div>
                     </div>
                     <div class="humanize-card">
-                        <img src="approach2.jpg" alt="Proactive Planning">
+                        <img src="H2.png" alt="A person analyzing financial charts on a screen">
                         <div class="text-content">
-                            <h3>Proactive Planning</h3>
-                            <p>We don't just react; we anticipate. Our team provides forward-thinking financial planning, identifying opportunities and mitigating risks before they arise, ensuring sustainable growth.</p>
+                            <h3>Data-Driven Insights.</h3>
+                            <p>Beyond the numbers, we deliver intuitive dashboards and reports, offering a clear, quick overview of your financial health for empowering smarter and faster decision making.</p>
                         </div>
                     </div>
                     <div class="humanize-card">
-                        <img src="approach3.jpg" alt="Seamless Integration">
+                        <img src="H3.png" alt="A financial advisor discussing with a client">
                         <div class="text-content">
-                            <h3>Seamless Integration</h3>
-                            <p>We act as an extension of your team, integrating our financial expertise smoothly into your operations. This collaborative approach ensures that financial insights are always at your fingertips.</p>
-                        </div>
-                    </div>
-                    <div class="humanize-card">
-                        <img src="approach4.jpg" alt="Transparent Communication">
-                        <div class="text-content">
-                            <h3>Transparent Communication</h3>
-                            <p>Clear and consistent communication is at our core. We break down complex financial data into understandable insights, keeping you informed and empowered every step of the way.</p>
-                        </div>
-                    </div>
-                    <div class="humanize-card">
-                        <img src="approach5.jpg" alt="Technology-Driven Solutions">
-                        <div class="text-content">
-                            <h3>Technology-Driven Solutions</h3>
-                            <p>Leveraging the latest financial software and AI, we automate routine tasks, enhance accuracy, and provide real-time financial reporting, making your financial management efficient and modern.</p>
+                            <h3>Dedicated Expert Guidance</h3>
+                            <p>Your own dedicated finance expert offering personalised advise, timely support with a deep business understanding.</p>
                         </div>
                     </div>
                 </div>
-                <div class="slider-dots">
-                    <span class="dot active" data-slide="0"></span>
-                    <span class="dot" data-slide="1"></span>
-                    <span class="dot" data-slide="2"></span>
-                    <span class="dot" data-slide="3"></span>
-                    <span class="dot" data-slide="4"></span>
-                </div>
+                <div class="slider-dots"></div>
             </div>
         </div>
     </section>
 
-    <section class="section section-light" id="services">
+    <section class="section section-white" id="services-overview">
         <div class="container">
             <h2 class="section-heading">Our Core Services</h2>
             <p class="section-subheading">
-                We offer a comprehensive suite of financial services designed to support startups at every stage.
+                We handle your finances end-to-end, providing clarity, compliance, and strategic insights.
             </p>
             <div class="services-grid">
-                <div class="service-card animated-visible">
-                    <div class="icon"><i class="fas fa-chart-area"></i></div>
+                <div class="service-card">
+                    <i class="fas fa-handshake icon"></i>
                     <h3>Virtual CFO Services</h3>
-                    <p>Strategic financial guidance without the overhead of a full-time executive. Get expert insights on budgeting, forecasting, and financial strategy.</p>
+                    <p>Strategic financial guidance, budgeting, forecasting, and financial modeling.</p>
                     <a href="cfo-service.html" class="btn btn-outline">Learn More</a>
                 </div>
-                <div class="service-card animated-visible">
-                    <div class="icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <div class="service-card">
+                    <i class="fas fa-file-invoice-dollar icon"></i>
                     <h3>Income Tax Consultation</h3>
-                    <p>Navigate complex income tax regulations with ease. We provide personalized consultation and filing services for individuals and businesses.</p>
+                    <p>Optimize tax liabilities with expert planning and accurate filing.</p>
                     <a href="income-tax.html" class="btn btn-outline">Learn More</a>
                 </div>
-                <div class="service-card animated-visible">
-                    <div class="icon"><i class="fas fa-receipt"></i></div>
+                <div class="service-card">
+                    <i class="fas fa-file-invoice icon"></i>
                     <h3>GST Filing & Registration</h3>
-                    <p>Ensure seamless GST compliance. From registration to accurate filing, we handle all aspects of Goods and Services Tax for your business.</p>
+                    <p>Hassle-free GST registration, accurate filings, and comprehensive compliance.</p>
                     <a href="gst-filing.html" class="btn btn-outline">Learn More</a>
                 </div>
                 <div class="service-card hidden-service">
-                    <div class="icon"><i class="fas fa-book"></i></div>
-                    <h3>Bookkeeping & Accounting</h3>
-                    <p>Maintain accurate and up-to-date financial records. Our bookkeeping services ensure clarity and compliance for your business transactions.</p>
+                    <i class="fas fa-chart-line icon"></i>
+                    <h3>Accounting Advisory</h3>
+                    <p>Expert advice on accounting standards, financial reporting, and internal controls.</p>
                     <a href="other-service.html" class="btn btn-outline">Learn More</a>
                 </div>
                 <div class="service-card hidden-service">
-                    <div class="icon"><i class="fas fa-user-tie"></i></div>
-                    <h3>Payroll Management</h3>
-                    <p>Simplify your payroll process. We handle salary processing, compliance, and tax deductions, ensuring your employees are paid accurately and on time.</p>
+                    <i class="fas fa-calculator icon"></i>
+                    <h3>Bookkeeping Services</h3>
+                    <p>Comprehensive and accurate recording of all financial transactions.</p>
                     <a href="other-service.html" class="btn btn-outline">Learn More</a>
                 </div>
                 <div class="service-card hidden-service">
-                    <div class="icon"><i class="fas fa-landmark"></i></div>
-                    <h3>Startup Compliance</h3>
-                    <p>Ensure your startup adheres to all legal and regulatory requirements. We guide you through corporate governance and statutory filings.</p>
+                    <i class="fas fa-building icon"></i>
+                    <h3>Other Service</h3>
+                    <p>Expert assistance with various other financial and legal setups like Incorporations etc.</p>
                     <a href="other-service.html" class="btn btn-outline">Learn More</a>
                 </div>
             </div>
-            <button id="viewAllServicesBtn" class="btn btn-primary" style="margin-top: 2rem;">View All Services</button>
+            <div style="margin-top: 2rem;">
+                <button id="view-all-services-btn" class="btn btn-primary">View All Services</button>
+            </div>
         </div>
     </section>
 
-    <section class="partners-section">
+    <section class="partners-section section-light">
         <div class="container">
-            <h2 class="section-heading">Trusted by Leading Partners</h2>
+            <h2 class="section-heading">Our Valued Partners</h2>
             <p class="section-subheading">
-                We collaborate with industry leaders to provide comprehensive solutions.
+                Proud to have supported these innovative startups on their journey to financial success.
             </p>
             <div class="partners-carousel-container">
                 <div class="partners-carousel-track">
-                    <div class="partner-logo"><img src="partner1.png" alt="Partner Logo 1"></div>
-                    <div class="partner-logo"><img src="partner2.png" alt="Partner Logo 2"></div>
-                    <div class="partner-logo"><img src="partner3.png" alt="Partner Logo 3"></div>
-                    <div class="partner-logo"><img src="partner4.png" alt="Partner Logo 4"></div>
-                    <div class="partner-logo"><img src="partner5.png" alt="Partner Logo 5"></div>
-                    <div class="partner-logo"><img src="partner6.png" alt="Partner Logo 6"></div>
-                    <div class="partner-logo"><img src="partner1.png" alt="Partner Logo 1"></div>
-                    <div class="partner-logo"><img src="partner2.png" alt="Partner Logo 2"></div>
-                    <div class="partner-logo"><img src="partner3.png" alt="Partner Logo 3"></div>
-                    <div class="partner-logo"><img src="partner4.png" alt="Partner Logo 4"></div>
-                    <div class="partner-logo"><img src="partner5.png" alt="Partner Logo 5"></div>
-                    <div class="partner-logo"><img src="partner6.png" alt="Partner Logo 6"></div>
+                    <div class="partner-logo"><img src="partner-a-logo.png" alt="Partner A Logo" title="Partner A"></div>
+                    <div class="partner-logo"><img src="partner-b-logo.png" alt="Partner B Logo" title="Partner B"></div>
+                    <div class="partner-logo"><img src="partner-c-logo.png" alt="Partner C Logo" title="Partner C"></div>
+                    <div class="partner-logo"><img src="partner-d-logo.png" alt="Partner D Logo" title="Partner D"></div>
+                    <div class="partner-logo"><img src="partner-e-logo.png" alt="Partner E Logo" title="Partner E"></div>
+                    <div class="partner-logo"><img src="partner-f-logo.png" alt="Partner F Logo" title="Partner F"></div>
+                    <div class="partner-logo"><img src="partner-g-logo.png" alt="Partner G Logo" title="Partner G"></div>
+                    <div class="partner-logo"><img src="partner-h-logo.png" alt="Partner H Logo" title="Partner H"></div>
+                    <div class="partner-logo"><img src="partner-i-logo.png" alt="Partner I Logo" title="Partner I"></div>
+                    <div class="partner-logo"><img src="partner-j-logo.png" alt="Partner J Logo" title="Partner J"></div>
+                    <div class="partner-logo"><img src="partner-a-logo.png" alt="Partner A Logo" title="Partner A"></div>
+                    <div class="partner-logo"><img src="partner-b-logo.png" alt="Partner B Logo" title="Partner B"></div>
+                    <div class="partner-logo"><img src="partner-c-logo.png" alt="Partner C Logo" title="Partner C"></div>
+                    <div class="partner-logo"><img src="partner-d-logo.png" alt="Partner D Logo" title="Partner D"></div>
+                    <div class="partner-logo"><img src="partner-e-logo.png" alt="Partner E Logo" title="Partner E"></div>
+                    <div class="partner-logo"><img src="partner-f-logo.png" alt="Partner F Logo" title="Partner F"></div>
+                    <div class="partner-logo"><img src="partner-g-logo.png" alt="Partner G Logo" title="Partner G"></div>
+                    <div class="partner-logo"><img src="partner-h-logo.png" alt="Partner H Logo" title="Partner H"></div>
+                    <div class="partner-logo"><img src="partner-i-logo.png" alt="Partner I Logo" title="Partner I"></div>
+                    <div class="partner-logo"><img src="partner-j-logo.png" alt="Partner J Logo" title="Partner J"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section section-light" id="testimonials">
+    <section class="section section-white" id="testimonials-overview">
         <div class="container">
-            <h2 class="section-heading">What Our Clients Say</h2>
+            <h2 class="section-heading">Voices of Trust</h2>
             <p class="section-subheading">
-                Hear directly from the startups and businesses we've helped achieve financial clarity and growth.
+                Hear directly from the startups thriving with One.Finance as their financial partner.
             </p>
             <div class="testimonials-grid">
                 <div class="testimonial-card">
-                    <p class="quote">"One.Finance transformed our financial operations. Their Virtual CFO services gave us the strategic insights we needed to scale rapidly. Highly recommended!"</p>
-                    <div class="author">- Priya Sharma, CEO of Tech Innovations</div>
-                    <div class="author-title">SaaS Startup Founder</div>
+                    <p class="quote">"With One.Finance, We don't worry about compliance or financial chaos. Their team acts like in-house finance team."</p>
+                    <div class="author">
+                        Cofounder, PipeRocket.
+                    </div>
                 </div>
                 <div class="testimonial-card">
-                    <p class="quote">"Navigating tax season was always a headache until we partnered with One.Finance. Their income tax consultation was thorough, efficient, and saved us so much time."</p>
-                    <div class="author">- Rajesh Kumar, Founder of Green Harvest</div>
-                    <div class="author-title">E-commerce Business Owner</div>
-                </div>
-                <div class="testimonial-card">
-                    <p class="quote">"The team at One.Finance is exceptional. Their GST filing services are prompt and accurate, allowing us to focus on our core business without worrying about compliance."</p>
-                    <div class="author">- Anita Devi, Director at Creative Designs</div>
-                    <div class="author-title">Marketing Agency Head</div>
+                    <p class="quote">"They helped us clean up our books, make sense of our runway, and prep for growth. Total game changer."</p>
+                    <div class="author">
+                        Founder, Vikird.
+                    </div>
                 </div>
             </div>
         </div>
@@ -1287,43 +1320,42 @@
 
     <section class="cta-form-section" id="cta-form">
         <div class="container">
-            <h3>Ready to take control of your finances?</h3>
-            <p class="section-subheading">Fill out the form below and we'll get in touch shortly for a free consultation.</p>
+            <h3>Talk to your CFO Buddy!</h3>
             <div class="form-container">
-                <form id="contact-form-home">
-                    <div class="form-field">
-                        <label for="name">Your Name</label>
-                        <input type="text" id="name" name="name" required>
+                <form action="https://formspree.io/f/mkgberpq" method="post" id="cta-contact-form"> <div class="form-field">
+                        <label for="cta-name">Your Name</label>
+                        <input type="text" id="cta-name" name="name" required placeholder="Name">
                     </div>
                     <div class="form-field">
-                        <label for="email">Your Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="cta-email">Email</label>
+                        <input type="email" id="cta-email" name="email" required placeholder="Email">
                     </div>
                     <div class="form-field">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone">
+                        <label for="cta-phone">Mobile Number</label>
+                        <input type="tel" id="cta-phone" name="phone" placeholder="+91 9876543210">
                     </div>
                     <div class="form-field">
-                        <label for="service">Interested Service</label>
-                        <select id="service" name="service" required>
-                            <option value="">Select a Service</option>
-                            <option value="Virtual CFO Services">Virtual CFO Services</option>
-                            <option value="Income Tax Consultation">Income Tax Consultation</option>
-                            <option value="GST Filing & Registration">GST Filing & Registration</option>
-                            <option value="Bookkeeping & Accounting">Bookkeeping & Accounting</option>
-                            <option value="Payroll Management">Payroll Management</option>
-                            <option value="Startup Compliance">Startup Compliance</option>
-                            <option value="Other">Other</option>
+                        <label for="cta-service-interest">Service you're looking for</label>
+                        <select id="cta-service-interest" name="service_interest">
+                            <option value="">-- Select a Service --</option>
+                            <option value="Virtual CFO">Virtual CFO Services</option>
+                            <option value="Income Tax">Income Tax Consultation</option>
+                            <option value="GST">GST Filing & Registration</option>
+                            <option value="Other">Company Incorporation</option>
+                            <option value="Bookkeeping Services">Bookkeeping Services</option>
+                            <option value="MIS Reports">MIS Reports</option>
+                            <option value="Accounting Advisory">Accounting Advisory</option>
+                            <option value="Other">Other Services</option>
                         </select>
                     </div>
                     <div class="form-field">
-                        <label for="message">Your Message</label>
-                        <textarea id="message" name="message" rows="4"></textarea>
+                        <label for="cta-message">Tell us more about your needs</label>
+                        <textarea id="cta-message" name="message" rows="4" placeholder=" "></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
                 </form>
-                <div id="form-message-home" class="form-message"></div>
-                <div class="loading-overlay" id="form-loading-overlay-home">
+                <div id="form-message" class="form-message"></div>
+                <div id="form-loading-overlay" class="loading-overlay">
                     <div class="loading-spinner"></div>
                 </div>
             </div>
@@ -1334,7 +1366,7 @@
         <div class="container">
             <div class="footer-col">
                 <h4>One.Finance</h4>
-                <p>Your dedicated CFO partner, empowering startups with streamlined financial operations so you can focus on building your dream.</p>
+                <p>Your dedicated CFO Buddy for startups, handling finances end-to-end so you can focus on building your dream.</p>
                 <div class="social-links">
                     <a href="https://www.linkedin.com/company/onedotfinance/" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                     <a href="https://www.instagram.com/one.finance_?igsh=MTNuemFrdnBkbGhkZg%3D%3D&utm_source=qr" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -1345,7 +1377,8 @@
                 <a href="index.html">Home</a>
                 <a href="about.html">About Us</a>
                 <a href="blog.html">Blog</a>
-                <a href="#cta-form">Talk to us</a> </div>
+                <a href="#cta-form">Talk to us</a>
+            </div>
             <div class="footer-col">
                 <h4>Our Services</h4>
                 <a href="cfo-service.html">Virtual CFO Services</a>
@@ -1358,12 +1391,12 @@
                 <a href="income-tax-calculator.html">Income Tax Calculator</a>
                 <a href="invoice-generator.html">Invoice Generator</a>
                 <a href="rental-agreement-generator.html">Rental Agreement Generator</a>
-                <a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai" target="_blank">One.finance AI</a>
+                <a href="https://chatgpt.com/g/g-687578e125e08191afa13170e0f5d91f-one-finance-ai">One.finance AI</a>
             </div>
             <div class="footer-col">
                 <h4>Contact Us</h4>
                 <p>Email: <a href="mailto:vishnu@onedotfinance.com">vishnu@onedotfinance.com</a></p>
-                <p>Phone: <a href="tel:+917373772883">+91 7373772883</a></p>
+                <p>Phone: <a href="tel:+917373772883">+91 7373772883</p>
                 <p>Address: RR Tower 3, SIDCO, Guindy, Chennai - 600032</p>
             </div>
         </div>
@@ -1372,31 +1405,359 @@
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Service Card Animation (Show More Button Logic)
-            const viewAllServicesBtn = document.getElementById('viewAllServicesBtn');
-            const serviceCards = document.querySelectorAll('.service-card');
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for Firebase config and app ID
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+
+        // Initialize Firebase and authenticate
+        const initializeFirebase = async () => {
+            try {
+                if (Object.keys(firebaseConfig).length === 0) {
+                    console.error("Firebase config is empty. Cannot initialize Firebase.");
+                    // Fallback for local development if firebaseConfig is not provided
+                    // You might want to display a message to the user here.
+                    return;
+                }
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                    console.log("Signed in with custom token.");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("Signed in anonymously.");
+                }
+            } catch (error) {
+                console.error("Error initializing Firebase or signing in:", error);
+                // Display an error message on the page if Firebase fails to initialize
+                displayFormMessage("Error initializing services. Please try again later.", "error");
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initializeFirebase();
+
+            const header = document.querySelector('.header');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            // Changed from 'contact-form' to 'cta-contact-form' to match HTML
+            const contactForm = document.getElementById('cta-contact-form');
+            const formMessage = document.getElementById('form-message');
+            const formLoadingOverlay = document.getElementById('form-loading-overlay');
+
+            // Function to display form messages
+            const displayFormMessage = (message, type) => {
+                formMessage.textContent = message;
+                formMessage.className = `form-message show ${type}`;
+                setTimeout(() => {
+                    formMessage.classList.remove('show');
+                }, 5000); // Message disappears after 5 seconds
+            };
+
+            // Function to show/hide loading overlay
+            const showLoading = (show) => {
+                if (show) {
+                    formLoadingOverlay.classList.add('show');
+                } else {
+                    formLoadingOverlay.classList.remove('show');
+                }
+            };
+
+            // Handle contact form submission
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    showLoading(true); // Show loading spinner
+
+                    if (!db || !auth || !auth.currentUser) {
+                        displayFormMessage("Service not ready. Please try again in a moment.", "error");
+                        showLoading(false);
+                        return;
+                    }
+
+                    const formData = {
+                        name: contactForm.elements['cta-name'].value,
+                        email: contactForm.elements['cta-email'].value,
+                        phone: contactForm.elements['cta-phone'].value,
+                        serviceInterest: contactForm.elements['cta-service-interest'].value,
+                        message: contactForm.elements['cta-message'].value,
+                        timestamp: serverTimestamp(), // Firestore server timestamp
+                        userId: auth.currentUser.uid // Store the user ID
+                    };
+
+                    try {
+                        // Store in a 'public' collection under the app ID
+                        const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/contact_submissions`), formData);
+                        console.log("Document written with ID: ", docRef.id);
+                        displayFormMessage("Your message has been sent successfully! We will get back to you soon.", "success");
+                        contactForm.reset(); // Clear the form
+                    } catch (e) {
+                        console.error("Error adding document: ", e);
+                        displayFormMessage("Failed to send your message. Please try again.", "error");
+                    } finally {
+                        showLoading(false); // Hide loading spinner
+                    }
+                });
+            }
+
+
+            // Sticky header functionality
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.style.padding = '0.6rem 0';
+                    header.style.boxShadow = 'var(--shadow-medium)';
+                } else {
+                    header.style.padding = '0.7rem 0';
+                    header.style.boxShadow = 'var(--shadow-light)';
+                }
+            });
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                menuToggle.querySelector('i').classList.toggle('fa-bars');
+                menuToggle.querySelector('i').classList.toggle('fa-times'); // Change icon to 'X'
+                // Close any open dropdowns when main menu is toggled
+                document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                    dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                    // Reset caret icon
+                    dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                    dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                });
+            });
+
+            // Handle dropdown toggling for mobile
+            document.querySelectorAll('.nav-menu .dropdown > .dropdown-toggle').forEach(dropdownToggle => {
+                dropdownToggle.addEventListener('click', (e) => {
+                    // Only apply dropdown toggle logic if the main nav menu is open (i.e., on mobile)
+                    // and if the viewport matches mobile criteria
+                    if (navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                        e.preventDefault(); // Prevent default link behavior for dropdown parent
+                        const dropdownMenu = dropdownToggle.nextElementSibling;
+
+                        // Close other active dropdowns if any
+                        navMenu.querySelectorAll('.dropdown-menu.active').forEach(openDropdown => {
+                            if (openDropdown !== dropdownMenu) {
+                                openDropdown.classList.remove('active');
+                                openDropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                                openDropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                                openDropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                            }
+                        });
+
+                        dropdownMenu.classList.toggle('active');
+                        const isExpanded = dropdownMenu.classList.contains('active');
+                        dropdownToggle.setAttribute('aria-expanded', isExpanded);
+                        // Toggle caret icon
+                        dropdownToggle.querySelector('i').classList.toggle('fa-caret-down', !isExpanded);
+                        dropdownToggle.querySelector('i').classList.toggle('fa-caret-up', isExpanded);
+                    }
+                });
+            });
+
+
+            // Close mobile menu when a link is clicked
+            navMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    // Only close if it's not a dropdown toggle itself AND we are on mobile view
+                    if (!link.classList.contains('dropdown-toggle') && navMenu.classList.contains('active') && window.matchMedia('(max-width: 768px)').matches) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                         // Close any open dropdowns
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                        });
+                    }
+                });
+            });
+
+            // Smooth scrolling for anchor links (only for current page anchors)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    // Only smooth scroll if the href is an internal anchor on the same page
+                    if (this.pathname === window.location.pathname) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                    // For mobile menu, close it after clicking an anchor (if it's not a dropdown toggle)
+                    if (navMenu.classList.contains('active') && !this.classList.contains('dropdown-toggle')) {
+                        navMenu.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                        // Close any open dropdowns
+                        document.querySelectorAll('.nav-menu .dropdown-menu.active').forEach(dropdown => {
+                            dropdown.classList.remove('active');
+                            dropdown.previousElementSibling.setAttribute('aria-expanded', 'false');
+                            dropdown.previousElementSibling.querySelector('i').classList.remove('fa-caret-up');
+                            dropdown.previousElementSibling.querySelector('i').classList.add('fa-caret-down');
+                        });
+                    }
+                });
+            });
+
+            // Number counting animation (Impact Section)
+            const impactSection = document.querySelector('.impact-section');
+            const counters = document.querySelectorAll('.impact-card .number');
+            const speed = 200; // The lower the speed, the faster the count
+
+            const animateCount = (counter) => {
+                const target = +counter.dataset.target;
+                let current = 0;
+                const increment = target / speed;
+
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = Math.ceil(current) + '+'; // Added '+'
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target + '+'; // Ensure final value is exact and has '+'
+                    }
+                };
+                updateCounter();
+            };
+
+            const impactObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        counters.forEach(counter => {
+                            if (!counter.classList.contains('animated')) { // Prevent re-animation
+                                animateCount(counter);
+                                counter.classList.add('animated');
+                            }
+                        });
+                        observer.unobserve(entry.target); // Stop observing once animated
+                    }
+                });
+            }, { threshold: 0.5 }); // Trigger when 50% of the section is visible
+
+            if (impactSection) {
+                impactObserver.observe(impactSection);
+            }
+
+            // Our Approach Slider functionality
+            const slider = document.querySelector('.humanize-section-slider');
+            const slides = document.querySelectorAll('.humanize-card');
+            const dotsContainer = document.querySelector('.slider-dots');
+            let currentSlide = 0;
+            let autoSlideInterval;
+
+            // Function to start auto-sliding
+            const startAutoSlide = () => {
+                autoSlideInterval = setInterval(() => {
+                    showSlide(currentSlide + 1);
+                }, 5000); // Change slide every 3 seconds
+            };
+
+            // Function to stop auto-sliding
+            const stopAutoSlide = () => {
+                clearInterval(autoSlideInterval);
+            };
+
+            // Create only 3 dots, and map slide index to dot index
+            for (let i = 0; i < 3; i++) { // Loop only 3 times for 3 dots
+                const dot = document.createElement('span');
+                dot.classList.add('dot');
+                if (i === 0) {
+                    dot.classList.add('active');
+                }
+                dot.dataset.dotIndex = i; // Store the dot's index
+                dot.addEventListener('click', (event) => {
+                    stopAutoSlide(); // Stop auto-slide on manual click
+                    // Calculate which slide to show based on the clicked dot and current slide
+                    // This logic ensures clicking a dot jumps to the closest relevant slide
+                    const clickedDotIndex = parseInt(event.target.dataset.dotIndex);
+                    let targetSlide = currentSlide;
+
+                    // If current slide is 0, 1, 2, and dot 0 is clicked, stay at 0.
+                    // If current slide is 3, 4, 5, and dot 0 is clicked, go to 3.
+                    // This ensures the dot reflects the *current group* of slides.
+                    const currentGroupStart = Math.floor(currentSlide / 3) * 3;
+                    targetSlide = currentGroupStart + clickedDotIndex;
+
+                    showSlide(targetSlide);
+                    startAutoSlide(); // Restart auto-slide after manual navigation
+                });
+                dotsContainer.appendChild(dot);
+            }
+
+            const dots = document.querySelectorAll('.dot'); // Re-query after creating them
+
+            const showSlide = (index) => {
+                if (slides.length === 0) return; // Prevent errors if no slides
+
+                if (index >= slides.length) {
+                    currentSlide = 0; // Loop back to the first slide
+                } else if (index < 0) {
+                    currentSlide = slides.length - 1; // Loop to the last slide
+                } else {
+                    currentSlide = index;
+                }
+
+                const offset = -currentSlide * 100;
+                slider.style.transform = `translateX(${offset}%)`;
+
+                // Update active dot based on current slide's position within the 3-dot cycle
+                const activeDotIndex = currentSlide % 3;
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === activeDotIndex);
+                });
+            };
+
+            // Pause auto-slide on hover over the slider wrapper
+            const humanizeSectionWrapper = document.querySelector('.humanize-section-wrapper');
+            if (humanizeSectionWrapper) {
+                humanizeSectionWrapper.addEventListener('mouseenter', stopAutoSlide);
+                humanizeSectionWrapper.addEventListener('mouseleave', startAutoSlide);
+            }
+
+            // Initialize slider and start auto-slide
+            showSlide(currentSlide);
+            startAutoSlide();
+
+
+            // Services "View All" functionality
+            const viewAllServicesBtn = document.getElementById('view-all-services-btn');
+            const serviceCards = document.querySelectorAll('.services-grid .service-card');
             const initialVisibleCount = 3;
 
-            // Initially hide cards beyond the initialVisibleCount
+            // Initialize visibility for service cards
             serviceCards.forEach((card, index) => {
                 if (index >= initialVisibleCount) {
+                    // Initially hide cards beyond the first three using opacity/visibility
                     card.classList.add('hidden-service');
+                } else {
+                    // Ensure the initially visible cards have their animation class
+                    card.classList.add('animated-visible');
                 }
             });
 
             if (viewAllServicesBtn) {
                 viewAllServicesBtn.addEventListener('click', () => {
                     serviceCards.forEach((card, index) => {
-                        if (index >= initialVisibleCount) {
-                            // Remove hidden state and add animation trigger class
-                            card.classList.remove('hidden-service');
-                            card.classList.add('revealed-service'); // Important for layout
-                            setTimeout(() => {
-                                card.classList.add('animated-visible');
-                            }, 50 * (index - initialVisibleCount)); // Stagger animation for revealed cards
-                        }
+                        // Remove the 'hidden-service' class to make them visible and allow animation
+                        card.classList.remove('hidden-service');
+                        // Add 'animated-visible' class after a short delay to trigger the animation
+                        setTimeout(() => {
+                            card.classList.add('animated-visible');
+                        }, 50 * (index - initialVisibleCount)); // Stagger animation for revealed cards
                     });
                     viewAllServicesBtn.style.display = 'none'; // Hide the button after showing all
                 });
@@ -1427,139 +1788,6 @@
             // Do NOT observe service cards here, as their animation is controlled by the button click
             // The initial state for service cards is set above, and the 'animated-visible' class
             // is added either on load (for first 3) or on button click (for the rest).
-
-            // CTA Form Logic (Home Page)
-            const contactFormHome = document.getElementById('contact-form-home');
-            const formMessageHome = document.getElementById('form-message-home');
-            const formLoadingOverlayHome = document.getElementById('form-loading-overlay-home');
-
-            const displayFormMessage = (message, type) => {
-                formMessageHome.textContent = message;
-                formMessageHome.className = `form-message show ${type}`;
-                setTimeout(() => {
-                    formMessageHome.classList.remove('show');
-                }, 5000); // Message disappears after 5 seconds
-            };
-
-            const showLoading = (show) => {
-                if (show) {
-                    formLoadingOverlayHome.classList.add('show');
-                } else {
-                    formLoadingOverlayHome.classList.remove('show');
-                }
-            };
-
-            if (contactFormHome) {
-                contactFormHome.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    showLoading(true);
-
-                    const formData = new FormData(contactFormHome);
-                    const formProps = Object.fromEntries(formData);
-
-                    // For demonstration, simulate an API call
-                    setTimeout(() => {
-                        console.log('Form Submitted:', formProps);
-                        showLoading(false);
-                        displayFormMessage('Thank you for your message! We will get back to you shortly.', 'success');
-                        contactFormHome.reset();
-                    }, 1500); // Simulate network delay
-                });
-            }
-
-            // Humanize Section Slider (Our Approach)
-            const slider = document.querySelector('.humanize-section-slider');
-            const dots = document.querySelectorAll('.dot');
-            let currentSlide = 0;
-
-            function updateSlider() {
-                const slideWidth = slider.children[0].clientWidth;
-                slider.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
-                dots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === currentSlide);
-                });
-            }
-
-            dots.forEach(dot => {
-                dot.addEventListener('click', function() {
-                    currentSlide = parseInt(this.dataset.slide);
-                    updateSlider();
-                });
-            });
-
-            // Auto-advance slider
-            setInterval(() => {
-                currentSlide = (currentSlide + 1) % slider.children.length;
-                updateSlider();
-            }, 5000); // Change slide every 5 seconds
-
-            // Adjust slider on window resize
-            window.addEventListener('resize', updateSlider);
-            updateSlider(); // Initial update
-
-
-            // Mobile Menu Toggle
-            const menuToggle = document.querySelector('.menu-toggle');
-            const navMenu = document.querySelector('.nav-menu');
-
-            if (menuToggle && navMenu) {
-                menuToggle.addEventListener('click', () => {
-                    navMenu.classList.toggle('active');
-                    // Toggle icon
-                    menuToggle.querySelector('i').classList.toggle('fa-bars');
-                    menuToggle.querySelector('i').classList.toggle('fa-times');
-                     // Close any open dropdowns when main menu is toggled
-                    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                        menu.style.display = 'none';
-                    });
-                });
-
-                // Close menu when a nav link is clicked (for single page navigation)
-                // Exclude dropdown menu links from automatically closing the main menu
-                document.querySelectorAll('.nav-menu > li > a:not(.dropdown > a)').forEach(link => {
-                    link.addEventListener('click', () => {
-                        if (navMenu.classList.contains('active')) {
-                            navMenu.classList.remove('active');
-                            menuToggle.querySelector('i').classList.remove('fa-times');
-                            menuToggle.querySelector('i').classList.add('fa-bars');
-                        }
-                    });
-                });
-            }
-
-            // Dropdown Menu for mobile (click to toggle)
-            document.querySelectorAll('.dropdown > a').forEach(dropdownToggle => {
-                dropdownToggle.addEventListener('click', function(e) {
-                    // Prevent default link behavior only if on mobile or small screen
-                    if (window.innerWidth <= 768) { // Adjust breakpoint as needed
-                        e.preventDefault();
-                        const dropdownMenu = this.nextElementSibling;
-                        if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
-                            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-                            // Close other dropdowns
-                            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                                if (menu !== dropdownMenu) {
-                                    menu.style.display = 'none';
-                                }
-                            });
-                        }
-                    }
-                });
-            });
-
-            // Handle window resize to ensure desktop dropdowns work correctly
-            window.addEventListener('resize', () => {
-                if (window.innerWidth > 768) {
-                    // If desktop, ensure dropdowns are hidden by default and rely on CSS hover
-                    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                        menu.style.display = ''; // Reset to default CSS behavior
-                    });
-                     // Ensure mobile menu is hidden and hamburger icon is bars
-                    navMenu.classList.remove('active');
-                    menuToggle.querySelector('i').classList.remove('fa-times');
-                    menuToggle.querySelector('i').classList.add('fa-bars');
-                }
-            });
         });
     </script>
 </body>
