@@ -1432,28 +1432,29 @@ p { margin-bottom: 0.6em; } /* Further reduced */
 </footer>
 
 <script type="module">
+// Firebase imports are still here as they might be used elsewhere,
+// but the contact form submission logic will now use Formspree.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+// Removed Firestore import as it's no longer used for this form submission
+// import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// Global variables for Firebase config and app ID
+// Global variables for Firebase config and app ID (still present for potential future use)
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-let app, db, auth;
+let app, db, auth; // Keep these for other Firebase functionalities if any
 
-// Initialize Firebase and authenticate
+// Initialize Firebase and authenticate (still run in case other parts of the app need it)
 const initializeFirebase = async () => {
     try {
         if (Object.keys(firebaseConfig).length === 0) {
-            console.error("Firebase config is empty. Cannot initialize Firebase.");
-            // Fallback for local development if firebaseConfig is not provided
-            // You might want to display a message to the user here.
+            console.warn("Firebase config is empty. Firebase services might not be fully functional.");
             return;
         }
         app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
+        db = getFirestore(app); // Keep Firestore initialized if other parts of the app use it
         auth = getAuth(app);
 
         if (initialAuthToken) {
@@ -1465,18 +1466,18 @@ const initializeFirebase = async () => {
         }
     } catch (error) {
         console.error("Error initializing Firebase or signing in:", error);
-        // Display an error message on the page if Firebase fails to initialize
-        displayFormMessage("Error initializing services. Please try again later.", "error");
+        // Do not display a general error message here unless it directly impacts the user experience
+        // unrelated to the form submission.
     }
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize Firebase, but its success/failure won't block Formspree submission
     await initializeFirebase();
 
     const header = document.querySelector('.header');
     const menuToggle = document.querySelector('.menu-toggle');
     const navMenu = document.querySelector('.nav-menu');
-    // Changed from 'contact-form' to 'cta-contact-form' to match HTML
     const contactForm = document.getElementById('cta-contact-form');
     const formMessage = document.getElementById('form-message');
     const formLoadingOverlay = document.getElementById('form-loading-overlay');
@@ -1499,37 +1500,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // Handle contact form submission
+    // Handle contact form submission (now using Formspree via fetch)
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             showLoading(true); // Show loading spinner
 
-            if (!db || !auth || !auth.currentUser) {
-                displayFormMessage("Service not ready. Please try again in a moment.", "error");
-                showLoading(false);
-                return;
-            }
-
-            const formData = {
-                name: contactForm.elements['cta-name'].value,
-                email: contactForm.elements['cta-email'].value,
-                phone: contactForm.elements['cta-phone'].value,
-                serviceInterest: contactForm.elements['cta-service-interest'].value,
-                message: contactForm.elements['cta-message'].value,
-                timestamp: serverTimestamp(), // Firestore server timestamp
-                userId: auth.currentUser.uid // Store the user ID
-            };
+            const form = e.target;
+            const formData = new FormData(form); // Use FormData to easily get all form fields
+            const formAction = form.action; // Get the Formspree URL from the form's action attribute
 
             try {
-                // Store in a 'public' collection under the app ID
-                const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/contact_submissions`), formData);
-                console.log("Document written with ID: ", docRef.id);
-                displayFormMessage("Your message has been sent successfully! We will get back to you soon.", "success");
-                contactForm.reset(); // Clear the form
+                const response = await fetch(formAction, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json' // Important for Formspree to return JSON
+                    }
+                });
+
+                if (response.ok) { // Check if the response status is 2xx
+                    displayFormMessage("Your message has been sent successfully! We will get back to you soon.", "success");
+                    form.reset(); // Clear the form
+                } else {
+                    // Handle non-2xx responses (e.g., 400, 500) from Formspree
+                    const errorData = await response.json(); // Try to parse error message from JSON
+                    console.error("Formspree submission error:", errorData);
+                    displayFormMessage(`Failed to send your message: ${errorData.error || 'Unknown error'}`, "error");
+                }
             } catch (e) {
-                console.error("Error adding document: ", e);
-                displayFormMessage("Failed to send your message. Please try again.", "error");
+                console.error("Network or fetch error:", e);
+                displayFormMessage("Failed to send your message. Please check your internet connection and try again.", "error");
             } finally {
                 showLoading(false); // Hide loading spinner
             }
