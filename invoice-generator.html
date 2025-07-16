@@ -965,39 +965,44 @@
             <!-- CTA Form Container (NO CHANGES - as per request) -->
             <div class="cta-form-container" id="ctaForm">
                 <h3>Need Expert Consultation?</h3>
-                <form action="#" method="post">
+                <div class="form-container">
+                <form action="https://formspree.io/f/mkgberpq" method="post">
                     <div class="form-field">
                         <label for="cta-name">Your Name</label>
-                        <input type="text" id="cta-name" name="name" required placeholder="Enter your name">
+                        <input type="text" id="cta-name" name="name" required placeholder="Name">
                     </div>
                     <div class="form-field">
-                        <label for="cta-email">Your Email</label>
-                        <input type="email" id="cta-email" name="email" required placeholder="your.email@example.com">
+                        <label for="cta-email">Email</label>
+                        <input type="email" id="cta-email" name="email" required placeholder="Email">
                     </div>
                     <div class="form-field">
-                        <label for="cta-phone">Phone Number</label>
-                        <input type="tel" id="cta-phone" name="phone" placeholder="e.g., +91 9876543210">
+                        <label for="cta-phone">Mobile Number</label>
+                        <input type="tel" id="cta-phone" name="phone" placeholder="+91 9876543210">
                     </div>
                     <div class="form-field">
-                        <label for="cta-service-interest">Service of Interest</label>
+                        <label for="cta-service-interest">Service you're looking for</label>
                         <select id="cta-service-interest" name="service_interest">
                             <option value="">-- Select a Service --</option>
                             <option value="Virtual CFO">Virtual CFO Services</option>
                             <option value="Income Tax">Income Tax Consultation</option>
                             <option value="GST">GST Filing & Registration</option>
-                            <option value="Incorporation">Incorporation Service</option>
-                            <option value="Accounting Advisory">Accounting Advisory</option>
+                            <option value="Other">Company Incorporation</option>                            
                             <option value="Bookkeeping Services">Bookkeeping Services</option>
                             <option value="MIS Reports">MIS Reports</option>
-                            <option value="Other">Other</option>
+                            <option value="Accounting Advisory">Accounting Advisory</option>
+                            <option value="Other">Other Services</option>
                         </select>
                     </div>
                     <div class="form-field">
-                        <label for="cta-message">Your Message</label>
-                        <textarea id="cta-message" name="message" rows="4" placeholder="Tell us more about your needs..."></textarea>
+                        <label for="cta-message">Tell us more about your needs</label>
+                        <textarea id="cta-message" name="message" rows="4" placeholder=" "></textarea>
                     </div>
-                    <button type="submit" class="btn-primary">Submit Request</button>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
                 </form>
+                <div id="form-message-calc" class="form-message"></div>
+                <div class="loading-overlay" id="form-loading-overlay-calc">
+                    <div class="loading-spinner"></div>
+                </div>
             </div>
         </div>
     </main>
