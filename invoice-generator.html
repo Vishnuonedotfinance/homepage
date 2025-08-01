@@ -908,7 +908,7 @@
                 <div class="totals-section">
                     <div class="totals-row">
                         <span>Subtotal:</span>
-                        <span id="subtotalAmount">₹ 0.00</span>
+                        <span id="subtotalAmount">AED 0.00</span>
                     </div>
                     <div class="totals-row">
                         <span>Discount (%):</span>
@@ -916,7 +916,7 @@
                     </div>
                     <div class="totals-row">
                         <span>Discount Amount:</span>
-                        <span id="discountAmount">₹ 0.00</span>
+                        <span id="discountAmount">AED 0.00</span>
                     </div>
                     <div class="totals-row">
                         <span>Tax Rate (%):</span>
@@ -924,11 +924,11 @@
                     </div>
                     <div class="totals-row">
                         <span>Tax Amount:</span>
-                        <span id="taxAmount">₹ 0.00</span>
+                        <span id="taxAmount">AED 0.00</span>
                     </div>
                     <div class="totals-row grand-total">
                         <span>Total:</span>
-                        <span id="totalAmount">₹ 0.00</span>
+                        <span id="totalAmount">AED 0.00</span>
                     </div>
                 </div>
 
@@ -1091,12 +1091,12 @@
                     <th style="width: 25%;">Item</th>
                     <th style="width: 15%;">HSN/SAC</th>
                     <th style="width: 8%;">Qty</th>
-                    <th style="width: 12%;">Rate (₹)</th>
+                    <th style="width: 12%;">Rate (AED)</th>
                     <th style="width: 10%;">CGST (%)</th>
                     <th style="width: 10%;">CGST Amt</th>
                     <th style="width: 10%;">SGST (%)</th>
                     <th style="width: 10%;">SGST Amt</th>
-                    <th style="width: 10%;" class="text-right">Amount (₹)</th>
+                    <th style="width: 10%;" class="text-right">Amount (AED)</th>
                 </tr>
             </thead>
             <tbody id="pdfLineItemsBody">
@@ -1108,27 +1108,27 @@
             <div class="summary-details">
                 <div class="summary-row">
                     <span>Subtotal:</span>
-                    <span id="pdfSubtotalAmount">₹ 0.00</span>
+                    <span id="pdfSubtotalAmount">AED 0.00</span>
                 </div>
                 <div class="summary-row">
                     <span>Discount:</span>
-                    <span id="pdfDiscountAmount">₹ 0.00</span>
+                    <span id="pdfDiscountAmount">AED 0.00</span>
                 </div>
                 <div class="summary-row">
                     <span>CGST:</span>
-                    <span id="pdfCGSTAmount">₹ 0.00</span>
+                    <span id="pdfCGSTAmount">AED 0.00</span>
                 </div>
                 <div class="summary-row">
                     <span>SGST:</span>
-                    <span id="pdfSGSTAmount">₹ 0.00</span>
+                    <span id="pdfSGSTAmount">AED 0.00</span>
                 </div>
                 <div class="summary-row grand-total">
                     <span>Total:</span>
-                    <span id="pdfTotalAmount">₹ 0.00</span>
+                    <span id="pdfTotalAmount">AED 0.00</span>
                 </div>
                 <div class="summary-row grand-total">
                     <span>Balance Due:</span>
-                    <span id="pdfBalanceDue">₹ 0.00</span>
+                    <span id="pdfBalanceDue">AED 0.00</span>
                 </div>
             </div>
         </div>
@@ -1287,20 +1287,20 @@
                 document.querySelectorAll('.item-amount').forEach(input => {
                     subtotal += parseFloat(input.value) || 0;
                 });
-                subtotalAmountSpan.textContent = `₹ ${subtotal.toFixed(2)}`;
+                subtotalAmountSpan.textContent = `AED ${subtotal.toFixed(2)}`;
 
                 const discountPercent = parseFloat(discountPercentInput.value) || 0;
                 const discountAmount = subtotal * (discountPercent / 100);
-                discountAmountSpan.textContent = `₹ ${discountAmount.toFixed(2)}`;
+                discountAmountSpan.textContent = `AED ${discountAmount.toFixed(2)}`;
 
                 const subtotalAfterDiscount = subtotal - discountAmount;
 
                 const taxRate = parseFloat(taxRateInput.value) || 0;
                 const taxAmount = subtotalAfterDiscount * (taxRate / 100);
-                taxAmountSpan.textContent = `₹ ${taxAmount.toFixed(2)}`;
+                taxAmountSpan.textContent = `AED ${taxAmount.toFixed(2)}`;
 
                 const total = subtotalAfterDiscount + taxAmount;
-                totalAmountSpan.textContent = `₹ ${total.toFixed(2)}`;
+                totalAmountSpan.textContent = `AED ${total.toFixed(2)}`;
             }
 
             // Helper to set text content only if value exists, otherwise hide element
@@ -1381,27 +1381,27 @@
                         <td>${description || ''}</td>
                         <td>${hsn || ''}</td>
                         <td class="text-center">${qty}</td>
-                        <td class="text-right">₹ ${unitPrice.toFixed(2)}</td>
+                        <td class="text-right">AED ${unitPrice.toFixed(2)}</td>
                         <td class="text-center">${cgstRate.toFixed(1)}%</td>
-                        <td class="text-right">₹ ${cgstAmount.toFixed(2)}</td>
+                        <td class="text-right">AED ${cgstAmount.toFixed(2)}</td>
                         <td class="text-center">${sgstRate.toFixed(1)}%</td>
-                        <td class="text-right">₹ ${sgstAmount.toFixed(2)}</td>
-                        <td class="text-right">₹ ${amount.toFixed(2)}</td>
+                        <td class="text-right">AED ${sgstAmount.toFixed(2)}</td>
+                        <td class="text-right">AED ${amount.toFixed(2)}</td>
                     `;
                     pdfLineItemsBody.appendChild(newPdfRow);
                 });
 
                 // Totals
-                const subtotal = parseFloat(subtotalAmountSpan.textContent.replace('₹ ', '')) || 0;
-                const discount = parseFloat(discountAmountSpan.textContent.replace('₹ ', '')) || 0;
-                const total = parseFloat(totalAmountSpan.textContent.replace('₹ ', '')) || 0;
+                const subtotal = parseFloat(subtotalAmountSpan.textContent.replace('AED ', '')) || 0;
+                const discount = parseFloat(discountAmountSpan.textContent.replace('AED ', '')) || 0;
+                const total = parseFloat(totalAmountSpan.textContent.replace('AED ', '')) || 0;
 
-                document.getElementById('pdfSubtotalAmount').textContent = `₹ ${subtotal.toFixed(2)}`;
-                document.getElementById('pdfDiscountAmount').textContent = `₹ ${discount.toFixed(2)}`;
-                document.getElementById('pdfCGSTAmount').textContent = `₹ ${totalCGST.toFixed(2)}`;
-                document.getElementById('pdfSGSTAmount').textContent = `₹ ${totalSGST.toFixed(2)}`;
-                document.getElementById('pdfTotalAmount').textContent = `₹ ${total.toFixed(2)}`;
-                document.getElementById('pdfBalanceDue').textContent = `₹ ${total.toFixed(2)}`;
+                document.getElementById('pdfSubtotalAmount').textContent = `AED ${subtotal.toFixed(2)}`;
+                document.getElementById('pdfDiscountAmount').textContent = `AED ${discount.toFixed(2)}`;
+                document.getElementById('pdfCGSTAmount').textContent = `AED ${totalCGST.toFixed(2)}`;
+                document.getElementById('pdfSGSTAmount').textContent = `AED ${totalSGST.toFixed(2)}`;
+                document.getElementById('pdfTotalAmount').textContent = `AED ${total.toFixed(2)}`;
+                document.getElementById('pdfBalanceDue').textContent = `AED ${total.toFixed(2)}`;
 
                 // Payment & Terms
                 setPdfText('pdfBankName', document.getElementById('bankName').value, 'Bank Name: ');
